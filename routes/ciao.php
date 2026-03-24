@@ -15,7 +15,7 @@ class HelloUser extends Controller
         $html = "<div 
                     style='background-color: #000; 
                     display: flex; 
-                    height: 100%; flex;  
+                    height: 100%;  
                     justify-content: center; 
                     align-items: center;'
                 >
@@ -31,7 +31,5 @@ class HelloUser extends Controller
 
         return $res;
     }
-
-
 
 }

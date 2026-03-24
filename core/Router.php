@@ -97,8 +97,15 @@ class Router
      * @param array<string> $name
      * @param array<Route> $routes
      */
-    static function match(Request $request, array $routes, array $allowedHosts)
+    static function handle(Request $request, array $routes, array $allowedHosts)
     {
+
+        if (!cors($allowedHosts)) {
+            $res = new Response();
+            $res->created();
+            $res->json(["error" => "Richiesta da hostname non valido"]);
+            Router::sendResponse($res);
+        }
 
         $segments = $request->getSegments();
         $request_method = $request->getMethod();
@@ -164,10 +171,13 @@ class Router
                                 throw new Exception("Il programmatore ha sbagliato a scrivere il suo codice.. Skill issue");
                             }
                         } catch (\Throwable $th) {
-                            $res = new Response();
-                            $res->internalServerError();
-                            $res->body($th->getMessage());
-                            $res->contentType(ContentTypes::Text);
+                            $res = Response::create(
+                                [
+                                    "code" => HttpResponseCode::INTERNAL_SERVER_ERROR,
+                                    "body" => $th->getMessage(),
+                                    "contentType" => ContentTypes::Text
+                                ]
+                            );
                         } finally {
                             Router::sendResponse($res);
                         }
@@ -190,15 +200,17 @@ class Router
         // Altrimenti 404
         $res = new Response();
         $res->notFound();
-        $res->body(
+        $res->json(
             ['error' => 'Route non trovata']
         );
-        $res->contentType(ContentTypes::Json);
         Router::sendResponse($res);
     }
 
     static function sendResponse(Response $response)
     {
+        if(!$response || !$response->isValid()){
+            echo "Il programmatore ha sbagliato a scrivere la risposta alla tua richiesta";
+        }
         http_response_code($response->responseCode);
         foreach ($response->headers as $header) {
             header($header);
@@ -234,10 +246,29 @@ class Route
     {
         return new Route(Method::Get, $pattern, $handlerClass);
     }
+
     static function post(array $pattern, string $handlerClass = ""): Route
     {
         return new Route(Method::Post, $pattern, $handlerClass);
     }
+
+    static function patch(array $pattern, string $handlerClass = ""): Route
+    {
+        return new Route(Method::Patch, $pattern, $handlerClass);
+    }
+
+
+    static function put(array $pattern, string $handlerClass = ""): Route
+    {
+        return new Route(Method::Put, $pattern, $handlerClass);
+    }
+
+
+    static function delete(array $pattern, string $handlerClass = ""): Route
+    {
+        return new Route(Method::Delete, $pattern, $handlerClass);
+    }
+
 
 
     public function middleware(string $middleware): Route

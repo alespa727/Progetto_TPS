@@ -2,31 +2,11 @@
 error_reporting(E_ALL);
 
 include_once "functions.php";
+require "config.php";
 
 $allowedHosts = [
-    "http://localhost",
+    "localhost",
 ];
-
-if (!cors($allowedHosts)) {
-    $res = new Response();
-    $res->badRequest();
-    $res->body(["error" => "Richiesta da hostname non valido"]);
-    $res->contentType(ContentTypes::Json);
-    Router::sendResponse($res);
-}
-
-
-$paths = [
-    "core",
-    "middlewares",
-    "routes"
-];
-
-foreach ($paths as $key => $path) {
-    foreach (glob($path . "/*.php") as $filename) {
-        include_once $filename;
-    }
-}
 
 $routes = [
     Route::get(["hello"], HelloUser::class)
@@ -40,4 +20,4 @@ $routes = [
 $request = new Request();
 
 // Gestione della richiesta automatica
-Router::match($request, $routes, $allowedHosts);
+Router::handle($request, $routes, $allowedHosts);

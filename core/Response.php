@@ -2,12 +2,36 @@
 
 class Response
 {
-    public $body;
+    public $body="";
     public array $headers=[];
     
     public string $contentType;
     
     public int $responseCode;
+
+    /**
+     * @param array{"code": int, "body": mixed, "contentType": string}
+     * @return Response
+     */
+    public static function create(array $response) {
+        $res = new Response();
+        $res->responseCode = $response["code"];
+        $res->body = $response["body"];
+        $res->contentType = $response["contentType"];
+        return $res;
+    }
+
+    public function isValid() : bool {
+        if(!$this->responseCode){
+            return false;
+        }
+
+        if(!$this->contentType){
+            return false;
+        }
+
+        return true;
+    }
 
     public function ok(): Response{
         $this->responseCode=HttpResponseCode::OK;
@@ -56,6 +80,12 @@ class Response
 
     public function body(mixed $body): Response{
        $this->body = $body;
+        return $this;
+    }
+
+    public function json(array $body): Response{
+        $this->body = $body;
+        $this->contentType = ContentTypes::Json;
         return $this;
     }
 

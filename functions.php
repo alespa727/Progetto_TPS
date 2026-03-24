@@ -12,12 +12,11 @@ function getExplodedUri()
 
 function cors(array $origins): bool {
 
-    echo $_SERVER["HTTP_ORIGIN"];
-    if (!isset($_SERVER["HTTP_ORIGIN"])) {
+    if (!isset($_SERVER["HTTP_HOST"])) {
         return false;
     }
 
-    $origin = $_SERVER["HTTP_ORIGIN"];
+    $origin = $_SERVER["HTTP_HOST"];
 
     foreach ($origins as $allowed) {
         if ($allowed === $origin) {

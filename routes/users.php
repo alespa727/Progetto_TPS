@@ -23,7 +23,7 @@ class GetUserById extends Controller
 
     function manageRequest(Request $request, array $params): Response
     {
-         $userId = $params["userId"];
+        $userId = $params["userId"];
 
         if (empty($userId)) {
             $res = new Response();
@@ -41,8 +41,7 @@ class GetUserById extends Controller
 
         $res = new Response();
         $res->ok();
-        $res->body($user);
-        $res->contentType(ContentTypes::Json);
+        $res->json($user);
 
         return $res;
     }
@@ -74,9 +73,8 @@ class GetAllUsers extends Controller
     {
         $res = new Response();
         $res->ok();
-        $res->body($this->users);
-        $res->contentType(ContentTypes::Json);
-        
+        $res->json($this->users);
+      
         return $res;
     }
 
