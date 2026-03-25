@@ -21,6 +21,10 @@ class Response
         return $res;
     }
 
+    public static function new(){
+        return new Response();
+    }
+
     public function isValid() : bool {
         if(!$this->responseCode){
             return false;
@@ -83,9 +87,21 @@ class Response
         return $this;
     }
 
+    public function html(mixed $body): Response{
+        $this->body = $body;
+        $this->contentType = ContentTypes::Html;
+        return $this;
+    }
+
     public function json(array $body): Response{
         $this->body = $body;
         $this->contentType = ContentTypes::Json;
+        return $this;
+    }
+
+    public function text(array $body): Response{
+        $this->body = $body;
+        $this->contentType = ContentTypes::Text;
         return $this;
     }
 

@@ -2,7 +2,6 @@
 
 class GetUserById extends Controller
 {
-
     private $users = [
         [
             "id" => 0,
@@ -21,9 +20,9 @@ class GetUserById extends Controller
         ],
     ];
 
-    function manageRequest(Request $request, array $params): Response
+    function manageRequest(Request $request, array $pathVariables): Response
     {
-        $userId = $params["userId"];
+        $userId = $pathVariables["userId"];
 
         if (empty($userId)) {
             $res = new Response();
@@ -69,7 +68,7 @@ class GetAllUsers extends Controller
             "description" => "bhiwehbfdsiyhdiybsdidhbashbiydasihbdasuyhb"
         ],
     ];
-    function manageRequest(Request $request, array $params): Response
+    function manageRequest(Request $request, array $pathVariables): Response
     {
         $res = new Response();
         $res->ok();

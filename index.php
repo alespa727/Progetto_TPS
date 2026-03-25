@@ -8,12 +8,14 @@ $allowedHosts = [
     "localhost",
 ];
 
+// Lista di routes
 $routes = [
     Route::get(["hello"], HelloUser::class)
         ->contentType(ContentTypes::Html),
     Route::get(["users", "{userId}"], GetUserById::class)
         ->middleware(AuthMiddleware::class),
     Route::get(["users"], GetAllUsers::class),
+
 ];
 
 // Inizializzo la richiesta

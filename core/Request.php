@@ -11,23 +11,29 @@ class Request
 
     public function __construct()
     {
+        // GET
         $this->method = $_SERVER['REQUEST_METHOD'];
 
+        // /api/users
         $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         
+        // /api/users
+        // -> ["api", "users"]
         $this->segments = getExplodedUri();
-
-
+    
         $this->query = $_GET;
 
         $this->body = json_decode(file_get_contents("php://input"), true) ?? [];
 
-        $this->headers = function_exists('getallheaders') ? getallheaders() : [];
+        $this->headers = getallheaders() ?? [];
 
         if(empty($this->segments)){
             return;
         }
         
+        // /api/users?name=ale
+        // -> ["api", "users?name=ale"] diventa
+        // -> ["api", "users"]
         if(str_contains($this->segments[count($this->segments)-1], "?")){
             $this->segments[count($this->segments)-1] = str_replace("?", "/", $this->segments[count($this->segments)-1]);
             $this->segments[count($this->segments)-1] = explode("/", $this->segments[count($this->segments)-1])[0];

@@ -101,10 +101,11 @@ class Router
     {
 
         if (!cors($allowedHosts)) {
-            $res = new Response();
-            $res->created();
-            $res->json(["error" => "Richiesta da hostname non valido"]);
-            Router::sendResponse($res);
+            Router::sendResponse(
+                Response::new()
+                    ->unauthorized()
+                    ->json(["error" => "Richiesta da hostname non valido"])
+            );
         }
 
         $segments = $request->getSegments();
@@ -168,16 +169,14 @@ class Router
                         try {
                             $res = $route->manageRequest($request, $params);
                             if ($res === null || $res->body === null || $res->contentType === null || $res->responseCode === null) {
-                                throw new Exception("Il programmatore ha sbagliato a scrivere il suo codice.. Skill issue");
+                                throw new Exception("Ricontrolla il codice mona");
                             }
                         } catch (\Throwable $th) {
-                            $res = Response::create(
-                                [
-                                    "code" => HttpResponseCode::INTERNAL_SERVER_ERROR,
-                                    "body" => $th->getMessage(),
-                                    "contentType" => ContentTypes::Text
-                                ]
-                            );
+                            $res = Response::new()
+                                ->internalServerError()
+                                ->json([
+                                    "body" => $th->getMessage()
+                                ]);
                         } finally {
                             Router::sendResponse($res);
                         }
@@ -188,28 +187,23 @@ class Router
         }
 
         if (!empty($wrong_method_matches)) {
-            $res = new Response();
-            $res->methodNotAllowed();
-            $res->body(
-                ['error' => 'Metodo non valido']
+            Router::sendResponse(
+                Response::new()
+                ->methodNotAllowed()
+                ->json(['error' => 'Metodo non valido'])
             );
-            $res->contentType(ContentTypes::Json);
-            Router::sendResponse($res);
         }
 
         // Altrimenti 404
-        $res = new Response();
-        $res->notFound();
-        $res->json(
-            ['error' => 'Route non trovata']
-        );
-        Router::sendResponse($res);
+        Router::sendResponse(Response::new()
+                ->notFound()
+                ->json(['error' => 'Route non trovata']));
     }
 
     static function sendResponse(Response $response)
     {
         if(!$response || !$response->isValid()){
-            echo "Il programmatore ha sbagliato a scrivere la risposta alla tua richiesta";
+            echo "Ricontrolla il codice mona - 2";
         }
         http_response_code($response->responseCode);
         foreach ($response->headers as $header) {
@@ -277,6 +271,7 @@ class Route
         return $this;
     }
 
+    
     public function contentType(string $contentType): Route
     {
         $this->contentType = $contentType;
