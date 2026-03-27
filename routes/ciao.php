@@ -19,7 +19,7 @@ class HelloUser extends Controller
 
     function validateRequest(Request $request, array $pathVariables): bool
     {
-        if($request->getQuery("name")==="tommy"){
+        if(strtolower($request->getQuery("name"))==="tommy"){
             return false;
         }
         return true;

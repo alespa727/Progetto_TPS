@@ -7,11 +7,14 @@ class AuthMiddleware extends Middleware
     {
         $psw = $request->getHeader("Authorization");
         if ($psw !== "123456") {
-            http_response_code(401);
-            
-            echo json_encode(["message" => "Unauthorized"]);
             return false;
         }
         return true;
+    }
+
+    function getErrorResponse(): Response{
+        return Response::new()
+        ->badRequest()
+        ->json(["message" => "Unauthorized"]);
     }
 }
