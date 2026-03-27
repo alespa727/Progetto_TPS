@@ -6,4 +6,8 @@ class Method
     const Put = "PUT";
     const Patch = "PATCH";
     const Delete = "DELETE";
+
+    static function getMethodList(): array{
+        return [Method::Get, Method::Post,Method::Delete, Method::Put, Method::Patch];
+    }
 }

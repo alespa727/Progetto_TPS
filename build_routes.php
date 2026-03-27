@@ -4,37 +4,8 @@ ini_set('display_startup_errors', 1); // Mostra errori di startup
 error_reporting(E_ALL);
 include_once "functions.php";
 require "autoloader.php";
-
-/*
-[opcache]
-zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1
-opcache.memory_consumption=128
-opcache.interned_strings_buffer=16
-opcache.max_accelerated_files=10000
-opcache.revalidate_freq=2
-
-opcache.preload=/opt/lampp/htdocs/progetto_tps/preload.php
-opcache.preload_user=www-data
-*/
-
-$allowedHosts = [
-    "localhost",
-];
-
-$request = new Request();
-/*
 $routes = require "routes.php";
-Router::handle($request, $routes, $allowedHosts);
-*/
-$indexedRoutes = [];
-
-if (didRouteFileChange()) {
-
-    echo "File cambiato\n";
-    /** @var Route[] $routes */
-    $routes = require "routes.php";
+ $routes = require "routes.php";
 
     $indexedRoutes = [];
 
@@ -69,15 +40,8 @@ if (didRouteFileChange()) {
         file_put_contents($path, $data);
     }
 
-    $indexedRoutes = $indexedRoutes[$request->getSegments()[0]];
-
-} else {
-    if (!empty($request->getSegments()) && file_exists("cache/routes_" . $request->getSegments()[0] . ".php"))
-        $indexedRoutes = require "cache/routes_" . $request->getSegments()[0] . ".php";
-}
-
-
-
-// Gestione della richiesta automatica
-Router::handle2($request, $indexedRoutes, $allowedHosts);
-//Router::handle($request, $routes, $allowedHosts);
+    if(didRouteFileChange()){
+        return "File cambiato";
+    }else{
+          return "File rimasto lo stesso";
+    }

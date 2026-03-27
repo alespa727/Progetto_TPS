@@ -10,7 +10,8 @@ function getExplodedUri()
     return $exploded;
 }
 
-function cors(array $origins): bool {
+function cors(array $origins): bool
+{
 
     if (!isset($_SERVER["HTTP_HOST"])) {
         return false;
@@ -38,10 +39,36 @@ function runMiddleware(Request $req, array $middleware, callable $final)
             $current = new $middleware[$index]();
             $index++;
             $current($req, $next);
-        }else{
+        } else {
             $final($req);
         }
     };
 
     $next();
+}
+
+
+function didRouteFileChange()
+{
+    $file = 'routes.php';
+    $hashFile = __DIR__ . '/cache/routes.php.sha256';
+    if (!is_dir(__DIR__ . '/cache')) {
+        mkdir(__DIR__ . '/cache', 0777, true);
+    }
+    
+    $currentHash = hash_file('sha256', $file);
+
+    if (file_exists($hashFile)) {
+        $oldHash = trim(file_get_contents($hashFile));
+
+        if ($currentHash === $oldHash) {
+            return false;
+        } else {
+            file_put_contents($hashFile, $currentHash);
+            return true;
+        }
+    } else {
+        file_put_contents($hashFile, $currentHash);
+        return true;
+    }
 }

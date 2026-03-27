@@ -19,7 +19,8 @@ class HelloUser extends Controller
 
     function validateRequest(Request $request, array $pathVariables): bool
     {
-        if(strtolower($request->getQuery("name"))==="tommy"){
+        $name = $request->getQuery("name") ?? "";
+        if(strtolower($name)==="tommy"){
             return false;
         }
         return true;
@@ -32,7 +33,6 @@ class HelloUser extends Controller
                 ->ok()
                 ->html($html);;
     }
-
 
     function manageRequest(Request $request, array $pathVariables): Response
     {
