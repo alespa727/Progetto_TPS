@@ -139,6 +139,7 @@ class Router
         $array = &$routes;
         $segments = $request->getSegments();
         $request_method = $request->getMethod();
+        $params = [];
 
         $i = 0;
         foreach ($segments as $key => $segment) {
@@ -161,6 +162,9 @@ class Router
                     $paramName = $array["_param"];
                     $array = &$array[$paramName];
 
+                    $name = substr($paramName, 1, -1);
+                    $params[$name] = $segment;
+
                 }
 
 
@@ -172,6 +176,10 @@ class Router
                 } else {
 
                     $paramName = $array["_param"];
+
+                    $name = substr($paramName, 1, -1);
+                    $params[$name] = $segment;
+
                     if (array_key_exists("_" . $request_method, $array[$paramName])) {
                         $route = $array[$paramName]["_" . $request_method];
                     }
@@ -203,18 +211,6 @@ class Router
 
         $routeInstance = Route::fromArray($route);
         $requested_middleware = $routeInstance->getMiddlewares();
-        $route_segments = $routeInstance->getPattern();
-        $params = [];
-
-        $i = 0;
-        foreach ($route_segments as $key => $seg) {
-            if ($seg[0] === '{' && $seg[strlen($seg) - 1] === '}') {
-                $paramName = substr($seg, 1, -1);
-                $params[$paramName] = $segments[$i];
-            }
-            $i++;
-        }
-
 
         $end = microtime(true);
 
