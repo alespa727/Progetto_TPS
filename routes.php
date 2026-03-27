@@ -15,6 +15,8 @@ return array_merge(
             ->contentType(ContentTypes::Html),
         Route::get(["users", "{userId}"], GetUserById::class)
             ->middleware(AuthMiddleware::class),
+        Route::get(["users", "{userId}", "idk"], GetUserById::class)
+            ->middleware(AuthMiddleware::class),
         Route::get(["users"], GetAllUsers::class),
     ]   
       

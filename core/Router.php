@@ -157,13 +157,9 @@ class Router
                 if (array_key_exists($segment, $array)) {
                     $array = &$array[$segment];
                 } else {
-                    $keys = array_keys($array);
-                    foreach ($keys as $key) {
-                        if ($key[0] === "{" && $key[strlen($key) - 1] === '}') {
-                            $array = &$route[$key];
 
-                        }
-                    }
+                    $paramName = $array["_param"];
+                    $array = &$array[$paramName];
 
                 }
 
@@ -171,30 +167,23 @@ class Router
 
             } else {
 
-                if (array_key_exists($segment, $array)) {
+                if (array_key_exists($segment, $array) && array_key_exists("_" . $request_method, $array[$segment])) {
                     $route = $array[$segment]["_" . $request_method];
                 } else {
-                    $keys = array_keys($array);
-                    foreach ($keys as $key) {
-                        if ($key[0] === "{" && $key[strlen($key) - 1] === '}') {
-                            $route = $array[$key]["_" . $request_method];
 
-                        }
+                    $paramName = $array["_param"];
+                    if (array_key_exists("_" . $request_method, $array[$paramName])) {
+                        $route = $array[$paramName]["_" . $request_method];
                     }
 
                     if (!$route) {
-                        $methods = Method::getMethodList();
-                        foreach ($methods as $key => $method) {
-                            if (array_key_exists($segment, $array)) {
-                                $route = $array[$segment]["_" . $method];
-                            } else {
-                                $keys = array_keys($array);
-                                foreach ($keys as $key) {
-                                    if ($key[0] === "{" && $key[strlen($key) - 1] === '}') {
-                                        $route = $array[$key]["_" . $method];
-                                    }
-                                }
-                            }
+                        $methods = $array["methods"];
+                        if (!empty($methods)) {
+                            Router::sendResponse(
+                                Response::new()
+                                    ->methodNotAllowed()
+                                    ->json(['error' => 'Metodo non valido'])
+                            );
                         }
                     }
 
@@ -222,7 +211,6 @@ class Router
             if ($seg[0] === '{' && $seg[strlen($seg) - 1] === '}') {
                 $paramName = substr($seg, 1, -1);
                 $params[$paramName] = $segments[$i];
-
             }
             $i++;
         }

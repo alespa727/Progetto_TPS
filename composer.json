@@ -1,5 +1,6 @@
 {
     "require": {
-        "firebase/php-jwt": "^7.0"
+        "firebase/php-jwt": "^7.0",
+        "symfony/var-exporter": "^7.0"
     }
 }

@@ -55,7 +55,7 @@ function didRouteFileChange()
     if (!is_dir(__DIR__ . '/cache')) {
         mkdir(__DIR__ . '/cache', 0777, true);
     }
-    
+
     $currentHash = hash_file('sha256', $file);
 
     if (file_exists($hashFile)) {
@@ -71,4 +71,9 @@ function didRouteFileChange()
         file_put_contents($hashFile, $currentHash);
         return true;
     }
+}
+
+function var_export_short(array $array)
+{
+    return str_replace(['array (', ')'], ['[', ']'], var_export($array, true));
 }

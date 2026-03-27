@@ -2,22 +2,11 @@
 ini_set('display_errors', 1);      // Mostra gli errori
 ini_set('display_startup_errors', 1); // Mostra errori di startup
 error_reporting(E_ALL);
+
+require __DIR__ . '/vendor/autoload.php';
 include_once "functions.php";
 require "autoloader.php";
 
-/*
-[opcache]
-zend_extension=opcache.so
-opcache.enable=1
-opcache.enable_cli=1
-opcache.memory_consumption=128
-opcache.interned_strings_buffer=16
-opcache.max_accelerated_files=10000
-opcache.revalidate_freq=2
-
-opcache.preload=/opt/lampp/htdocs/progetto_tps/preload.php
-opcache.preload_user=www-data
-*/
 
 $allowedHosts = [
     "localhost",
@@ -31,46 +20,8 @@ Router::handle($request, $routes, $allowedHosts);
 $indexedRoutes = [];
 
 if (didRouteFileChange()) {
-
     echo "File cambiato\n";
-    /** @var Route[] $routes */
-    $routes = require "routes.php";
-
-    $indexedRoutes = [];
-
-    foreach ($routes as $route) {
-        $node = &$indexedRoutes; 
-
-        $pattern = $route->getPattern();
-        $lastIndex = count($pattern) - 1;
-
-        foreach ($pattern as $i => $segment) {
-            if (!isset($node[$segment])) {
-                $node[$segment] = [];
-            }
-
-            if ($i === $lastIndex) {
-                $node[$segment]['_' . $route->getMethod()] = $route->toArray();
-            }
-
-            $node = &$node[$segment]; 
-        }
-    }
-
-    if (!is_dir(__DIR__ . '/cache')) {
-        mkdir(__DIR__ . '/cache', 0777, true);
-    }
-
-    foreach ($indexedRoutes as $prefix => $routes) {
-        $path = __DIR__ . '/cache/routes_' . $prefix . '.php';
-
-        $data = "<?php\n return " . var_export($routes, true) . ";\n";
-
-        file_put_contents($path, $data);
-    }
-
-    $indexedRoutes = $indexedRoutes[$request->getSegments()[0]];
-
+    $indexedRoutes = (require "build_routes.php")[$request->getSegments()[0]];
 } else {
     if (!empty($request->getSegments()) && file_exists("cache/routes_" . $request->getSegments()[0] . ".php"))
         $indexedRoutes = require "cache/routes_" . $request->getSegments()[0] . ".php";
