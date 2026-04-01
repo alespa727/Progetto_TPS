@@ -1,0 +1,84 @@
+/**
+ * MIO METODO:
+ * Se io volessi cercare GET /users/1/idk
+ * $path = ["users", "1", "idk"];
+ * $array = require "routes_".$path[0].".php";
+ * 
+ * sarà quindi $route = $array[$array["_param"]]["idk"]["_GET"]; 
+ * => O(count($path)-1 + 1*ogni_path_variable)
+ * 
+ * se io avessi 100.000 routes prima della mia il tempo rimarrebbe il tempo
+ * necessario per ciclare su ogni segmento dell'uri
+ * 
+ * se mi facessero una richiesta di 4 segmenti ci metterei 3 cicli a trovare
+ * la route corretta, anche se avessi 100.000 route
+ * => 3 cicli => 0.06 ms
+ * 
+ * TUO METODO:
+ * Se ogni nodo avesse 100 route prima della route che tu vuoi allora faresti
+ * 100 cicli di controllo se sono $path[0]===$node per ogni node prima di
+ * quello che cerchi per ogni segmento che hai (ogni elemento di $path) => O(k*d)
+ * 
+ * se tu avessi 100 sottonodi per ogni nodo in media 
+ * e ti facessero una richiesta valida lunga 7 segmenti
+ * nel peggiore dei casi arriveresti a 100 cicli per ogni segmento
+ * => 7*100 cicli => 700 cicli (peggiore dei casi) => 14.00ms
+    O(n)
+ * 
+ * k => numero medio di route per nodo
+ * d => numero di segmenti
+ */
+
+<?php
+
+
+return [
+    'methods' => [
+        'GET',
+    ],
+    '{userId}' => [
+        'methods' => [
+            'GET',
+        ],
+        '_GET' => [
+            'method' => 'GET',
+            'pattern' => [
+                'users',
+                '{userId}',
+            ],
+            'contentType' => 'Content-Type: application/json',
+            'middlewares' => [
+                'AuthMiddleware',
+            ],
+            'controller' => 'GetUserById',
+        ],
+        'idk' => [
+            'methods' => [
+                'GET',
+            ],
+            '_GET' => [
+                'method' => 'GET',
+                'pattern' => [
+                    'users',
+                    '{userId}',
+                    'idk',
+                ],
+                'contentType' => 'Content-Type: application/json',
+                'middlewares' => [
+                    'AuthMiddleware',
+                ],
+                'controller' => 'GetUserById',
+            ],
+        ],
+    ],
+    '_param' => '{userId}',
+    '_GET' => [
+        'method' => 'GET',
+        'pattern' => [
+            'users',
+        ],
+        'contentType' => 'Content-Type: application/json',
+        'middlewares' => [],
+        'controller' => 'GetAllUsers',
+    ],
+];

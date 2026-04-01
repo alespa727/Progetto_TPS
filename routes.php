@@ -1,23 +1,24 @@
 <?php
 
-return array_merge(
-    array_map( 
-        fn($i) => Route::get(
-                ["api", "resource$i"],  
-                HelloUser::class
-            )
-            ->middleware(AuthMiddleware::class)
-            ->contentType(ContentTypes::Json),
-        range(1, 1000) 
-        ), 
+/**
+ * id types:
+ * int
+ * string
+ * 
+ * // GET /your/pattern
+ * Route::get(["your", {yourId}:{yourType}, "pattern"], YourClass_That_Extends_Controller::class)
+ * ->middleware(YourClass_That_Extends_Middleware::class)
+ * ->contentType(ContentTypes::(YourChoice))
+ */
+return 
     [
         Route::get(["hello"], HelloUser::class)
             ->contentType(ContentTypes::Html),
-        Route::get(["users", "{userId}"], GetUserById::class)
+        Route::get(["users", "{userId}:{string}"], GetUserById::class)
             ->middleware(AuthMiddleware::class),
-        Route::get(["users", "{userId}", "idk"], GetUserById::class)
+        Route::get(["users", "Hello"], HelloUser::class)
+            ->contentType(ContentTypes::Html)
             ->middleware(AuthMiddleware::class),
         Route::get(["users"], GetAllUsers::class),
-    ]   
-      
-);  
+    ]; 
+               

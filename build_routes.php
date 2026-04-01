@@ -7,6 +7,9 @@ error_reporting(E_ALL);
 include_once "functions.php";
 require "autoloader.php";
 $routes = require "routes.php";
+
+// localhost/
+
 $indexedRoutes = [];
 
 foreach ($routes as $route) {
@@ -17,6 +20,28 @@ foreach ($routes as $route) {
     
 
     foreach ($pattern as $i => $segment) {
+         if ($segment[0] === "{" && $segment[strlen($segment) - 1] === '}') {
+            $param = explode(":", $segment);
+            $paramName = $param[0];
+            $node['_param'] = $segment;
+            
+            if (!isset($node[$paramName])) {
+                $node[$paramName] = [];
+            }
+
+            if(!isset($node[$paramName]['methods'])){
+                $node[$paramName]['methods'] = [];
+            }
+
+            if ($i === $lastIndex) {
+                $node[$paramName]['_' . $route->getMethod()] = $route->toArray();
+                $node[$paramName]['methods'][]=$route->getMethod();
+            }
+            continue;
+            
+        }
+
+
         if (!isset($node[$segment])) {
             $node[$segment] = [];
         }
@@ -26,14 +51,11 @@ foreach ($routes as $route) {
         }
         
 
-        if ($segment[0] === "{" && $segment[strlen($segment) - 1] === '}') {
-            $node['_param'] = $segment;   
-        }
-
+       
 
         if ($i === $lastIndex) {
             $node[$segment]['_' . $route->getMethod()] = $route->toArray();
-           $node[$segment]['methods'][]=$route->getMethod();
+            $node[$segment]['methods'][]=$route->getMethod();
         }
 
         $node = &$node[$segment];
@@ -52,4 +74,7 @@ foreach ($indexedRoutes as $prefix => $routes) {
     file_put_contents($path, $data);
 }
 
-return $indexedRoutes;
+return function(Request $request) : array {
+    $path = __DIR__ . '/cache/routes_' . $request->getSegments()[0] . '.php';
+    return (require $path);
+};

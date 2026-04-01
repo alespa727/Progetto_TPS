@@ -1,15 +1,12 @@
 <?php
-
-function getExplodedUri()
+function getExplodedUri(): array
 {
-    $uri = $_SERVER['REQUEST_URI'];
-    $script = $_SERVER['SCRIPT_NAME'];
-    $path = substr($uri, strlen($script));
-    $path = ltrim($path, '/');
-    $exploded = $path ? explode("/", $path) : [];
-    return $exploded;
-}
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+    $path = trim($uri, '/');
+
+    return $path === '' ? [] : explode('/', $path);
+}
 function cors(array $origins): bool
 {
 

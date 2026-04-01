@@ -1,15 +1,8 @@
 <?php
 class Router
 {
-    // Gestisce la richiesta ricercando l'uri all'interno delle routes
-    /**
-     * @param Request $request
-     * @param array<string> $name
-     * @param array<Route> $routes
-     */
-    static function handle(Request $request, array $routes, array $allowedHosts)
+    static function handleCors(array $allowedHosts)
     {
-        $start = microtime(true);
         if (!cors($allowedHosts)) {
             Router::sendResponse(
                 Response::new()
@@ -17,137 +10,37 @@ class Router
                     ->json(["error" => "Richiesta da hostname non valido"])
             );
         }
-
-        $segments = $request->getSegments();
-        $request_method = $request->getMethod();
-
-        $wrong_method_matches = [];
-
-        // Cicla su ogni route possibile
-        foreach ($routes as $route) {
-            $requested_middleware = $route->getMiddlewares();
-
-            // Ex. /users/{userId}
-            $pattern = $route->getPattern();
-
-            // Ex. GET, POST, DELETE, PATCH, PUT
-            $route_method = $route->getMethod();
-
-            // Filtro per velocizzare i loop tramite numero di segmenti dell'uri
-            if (count($pattern) !== count($segments)) {
-                continue;
-            }
-
-            // Lista di parametri (quelli circondati da parentesi grafe)
-            // Ex. {userId}
-            $params = [];
-
-            // Condizione se il pattern è uguale
-            $matched = true;
-
-
-            foreach ($pattern as $i => $seg) {
-                $current = $segments[$i];
-
-                // Se è circondato da parentesi allora salva il segmento all'interno dei parametri
-                if ($seg[0] === '{' && $seg[strlen($seg) - 1] === '}') {
-                    $paramName = substr($seg, 1, -1);
-                    $params[$paramName] = $current;
-                } else // Altrimenti controlla se il segmento attuale è uguale a quello della route
-                {
-                    if ($seg !== $current) {
-                        $matched = false;
-                        break;
-                    }
-                }
-            }
-
-            // Se è uguale
-            if ($matched) {
-                if ($route_method !== $request_method) {
-                    $wrong_method_matches[] = $route_method;
-                    continue;
-                }
-
-                $end = microtime(true);
-
-                $elapsed = $end - $start;
-                echo "Tempo impiegato: " . ($elapsed * 1000) . " ms\n";
-
-                // Runna il middleware
-                runMiddleware(
-                    $request,
-                    $requested_middleware,
-                    function () use ($route, $request, $params) {
-                        // Tipo di risposta
-    
-                        try {
-                            $res = $route->manageRequest($request, $params);
-                            if ($res === null || $res->body === null || $res->contentType === null || $res->responseCode === null) {
-                                throw new Exception("Ricontrolla il codice mona");
-                            }
-                        } catch (\Throwable $th) {
-                            $res = Response::new()
-                                ->internalServerError()
-                                ->json([
-                                    "body" => $th->getMessage()
-                                ]);
-                        } finally {
-
-                            Router::sendResponse($res);
-                        }
-
-                    }
-                );
-            }
-        }
-
-        if (!empty($wrong_method_matches)) {
-            Router::sendResponse(
-                Response::new()
-                    ->methodNotAllowed()
-                    ->json(['error' => 'Metodo non valido'])
-            );
-        }
-
-        // Altrimenti 404
-        Router::sendResponse(Response::new()
-            ->notFound()
-            ->json(['error' => 'Route non trovata']));
     }
 
-
-    // Gestisce la richiesta ricercando l'uri all'interno delle routes
-    /**
-     * @param Request $request
-     * @param array<string> $name
-     * @param array<array> $routes
-     */
-    static function handle2(Request $request, array $routes, array $allowedHosts)
+    static function findMatch(Request &$request, array $routes): array|null
     {
-
-        $start = microtime(true);
-        if (!cors($allowedHosts)) {
-            Router::sendResponse(
-                Response::new()
-                    ->unauthorized()
-                    ->json(["error" => "Richiesta da hostname non valido"])
-            );
-        }
-
         $route = null;
-        $array = &$routes;
+        $array = $routes;
         $segments = $request->getSegments();
         $request_method = $request->getMethod();
         $params = [];
 
+
         $i = 0;
+
         foreach ($segments as $key => $segment) {
             $isLast = $i === count($segments) - 1;
 
             if ($i === 0) {
                 if ($isLast && array_key_exists("_" . $request_method, $array)) {
+
                     $route = $array["_" . $request_method];
+
+                } else if($isLast){
+                    $methods = $array["methods"];
+
+                    if (!empty($methods)) {
+                        Router::sendResponse(
+                            Response::new()
+                                ->methodNotAllowed()
+                                ->json(['error' => 'Metodo non valido'])
+                        );
+                    }
                 }
                 $i++;
                 continue;
@@ -159,7 +52,10 @@ class Router
                     $array = &$array[$segment];
                 } else {
 
-                    $paramName = $array["_param"];
+                    $param = explode(":", $array["_param"]);
+                    $paramName = $param[0];
+                    $type = $param[1];
+                    print_r($param);
                     $array = &$array[$paramName];
 
                     $name = substr($paramName, 1, -1);
@@ -175,17 +71,39 @@ class Router
                     $route = $array[$segment]["_" . $request_method];
                 } else {
 
-                    $paramName = $array["_param"];
-
+                    $param = explode(":", $array["_param"]);
+                    $paramName = $param[0];
+                    $type = substr($param[1], 1, -1);
                     $name = substr($paramName, 1, -1);
-                    $params[$name] = $segment;
 
-                    if (array_key_exists("_" . $request_method, $array[$paramName])) {
+                    $isValidType = false;
+
+                    switch ($type) {
+                        case 'int':
+                            $isValidType = is_numeric($segment);
+                            break;
+                        case 'string':
+                            $isValidType = !is_numeric($segment);
+                            break;
+                        default:
+                            $isValidType = is_numeric($segment);
+                            break;
+                    }
+
+                    if ($isValidType) {
+                        $params[$name] = $segment;
+                    }
+
+                    if (array_key_exists("_" . $request_method, $array[$paramName]) && $isValidType) {
                         $route = $array[$paramName]["_" . $request_method];
                     }
 
                     if (!$route) {
+                        if (!$isValidType) {
+                            continue;
+                        }
                         $methods = $array["methods"];
+
                         if (!empty($methods)) {
                             Router::sendResponse(
                                 Response::new()
@@ -202,6 +120,29 @@ class Router
             $i++;
         }
 
+        $request->setParams($params);
+        $className = $route["controller"];
+        $file = __DIR__ . "/../routes/$className.php";
+
+        if (file_exists($file)) {
+            require $file;
+        }
+
+        return $route;
+    }
+
+
+    // Gestisce la richiesta ricercando l'uri all'interno delle routes
+    /**
+     * @param Request $request
+     * @param array<string> $name
+     * @param array<array> $routes
+     */
+    static function handleDirect(Request $request, array $routes, array $allowedHosts, $start)
+    {
+        Router::handleCors($allowedHosts);
+
+        $route = Router::findMatch($request, $routes);
         if (!$route) {
             // Altrimenti 404
             Router::sendResponse(Response::new()
@@ -209,31 +150,43 @@ class Router
                 ->json(['error' => 'Route non trovata']));
         }
 
+        $requiredFiles = [];
         $routeInstance = Route::fromArray($route);
         $requested_middleware = $routeInstance->getMiddlewares();
 
-        $end = microtime(true);
+        // Importa solo i file necessari
+        foreach ($requested_middleware as $key => $middleware) {
+            $file = __DIR__ . "/../middlewares/$middleware.php";
 
-        $elapsed = $end - $start;
-        echo "Tempo impiegato: " . ($elapsed * 1000) . " ms\n";
+            if (file_exists($file)) {
+                require_once $file;
+            }
+
+        }
+
 
         runMiddleware(
             $request,
             $requested_middleware,
-            function () use ($routeInstance, $request, $params) {
+            function () use ($routeInstance, $request, $start) {
                 try {
-                    $res = $routeInstance->manageRequest($request, $params);
+                    $res = $routeInstance->manageRequest($request, $request->getParams());
                     if ($res === null || $res->body === null || $res->contentType === null || $res->responseCode === null) {
                         throw new Exception("Ricontrolla il codice mona");
                     }
-                } catch (\Throwable $th) {
+                } catch (\Exception $th) {
                     $res = Response::new()
-                        ->internalServerError()
+                        ->status($th->getCode())
                         ->json([
-                            "body" => $th->getMessage()
+                            "error" => $th->getMessage()
                         ]);
                 } finally {
+
+                    $end = microtime(true);
+                    $elapsed = $end - $start;
+                    $res->header("X-time: " . (floor($elapsed * 1000 * 100) / 100) . " ms");
                     Router::sendResponse($res);
+
                 }
             }
         );
@@ -247,17 +200,22 @@ class Router
         }
     }
 
-
-    static function sendResponse(Response $response)
+    static function sendHeaders(Response $response)
     {
-        if (!$response || !$response->isValid()) {
-            echo "Ricontrolla il codice mona - 2";
-        }
         http_response_code($response->responseCode);
         foreach ($response->headers as $header) {
             header($header);
         }
         header($response->contentType);
+    }
+
+    static function sendResponse(Response $response)
+    {
+        Router::sendHeaders($response);
+        if (!$response || !$response->isValid()) {
+            echo "Ricontrolla il codice mona - 2";
+        }
+
         if ($response->contentType === ContentTypes::Json) {
             echo json_encode($response->body);
         } else {

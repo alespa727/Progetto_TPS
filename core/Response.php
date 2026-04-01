@@ -105,6 +105,11 @@ class Response
         return $this;
     }
 
+    public function status(int $code): Response{
+        $this->responseCode = $code;
+        return $this;
+    }
+
     public function header(string $header){
         $this->headers[] = $header;
         return $this;

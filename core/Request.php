@@ -9,6 +9,9 @@ class Request
     private array $body;
     private array $headers;
 
+    private array $params;
+
+
     public function __construct()
     {
         // GET
@@ -38,6 +41,15 @@ class Request
             $this->segments[count($this->segments)-1] = str_replace("?", "/", $this->segments[count($this->segments)-1]);
             $this->segments[count($this->segments)-1] = explode("/", $this->segments[count($this->segments)-1])[0];
         }
+    }
+
+    public function setParams(array $p){
+        $this->params=$p;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     public function getMethod(): string
