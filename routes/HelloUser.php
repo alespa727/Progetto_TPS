@@ -1,20 +1,23 @@
 <?php
 
+
+#[Route(Method::Get, ["api", "hello"], ContentTypes::Html)]
+#[Route(Method::Get, ["hello"], ContentTypes::Html)]  
 class HelloUser extends Controller
 {
-
+ 
     private function getHtml($text) : string {
         return  "<div 
                     style='background-color: #000; 
                     display: flex; 
-                    height: 100%;  
+                    height: 100%;   
                     justify-content: center; 
                     align-items: center;'
-                >
+                > 
                     <div style='font-weight: 600; font-size: 30px; color: #FFF; '>
-                        ". $text . "
+                        ". $text . " 
                     </div>
-                </div>";
+                </div>"; 
     }
 
     function validateRequest(Request $request, array $pathVariables): bool

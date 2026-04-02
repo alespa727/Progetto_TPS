@@ -14,11 +14,11 @@ return
     [
         Route::get(["hello"], HelloUser::class)
             ->contentType(ContentTypes::Html),
-        Route::get(["users", "{userId}:{string}"], GetUserById::class)
+        Route::get(["api", "users", "{userId}:{string}"], GetUserById::class)
             ->middleware(AuthMiddleware::class),
-        Route::get(["users", "Hello"], HelloUser::class)
+        Route::get(["api", "users", "Hello"], HelloUser::class)
             ->contentType(ContentTypes::Html)
             ->middleware(AuthMiddleware::class),
-        Route::get(["users"], GetAllUsers::class),
+        Route::get(["api", "users"], GetAllUsers::class),
     ]; 
-               
+                

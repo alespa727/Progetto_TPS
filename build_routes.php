@@ -1,14 +1,32 @@
 <?php
 use Symfony\Component\VarExporter\VarExporter;
 
-ini_set('display_errors', 1);      // Mostra gli errori
-ini_set('display_startup_errors', 1); // Mostra errori di startup
-error_reporting(E_ALL);
 include_once "functions.php";
 require "autoloader.php";
 $routes = require "routes.php";
 
-// localhost/
+$before = get_declared_classes();
+
+foreach (glob(__DIR__ . '/routes/*.php') as $file) {
+    require_once $file;
+}
+
+$after = get_declared_classes();
+$newClasses = array_diff($after, $before);
+
+$routes = [];
+
+foreach ($newClasses as $className) {
+    $reflection = new ReflectionClass($className);
+    $attributes = $reflection->getAttributes(Route::class);
+
+    foreach ($attributes as $attr) {
+        $route = $attr->newInstance(); 
+        $routeArray = $route->toArray();
+        $routeArray["controller"]=$className;
+        $routes[]=Route::fromArray($routeArray);
+    }
+}
 
 $indexedRoutes = [];
 
@@ -23,8 +41,20 @@ foreach ($routes as $route) {
          if ($segment[0] === "{" && $segment[strlen($segment) - 1] === '}') {
             $param = explode(":", $segment);
             $paramName = $param[0];
-            $node['_param'] = $segment;
+            $node['_param'] = $paramName;
             
+            if(isset($param[1])){
+                $type =substr($param[1], 1, -1);
+            }else{
+                $type="int";
+            }
+           
+            if($type===null || empty($type)){
+                $node['_type'] ="int";
+            }else{
+                $node['_type'] = $type;
+            }
+           
             if (!isset($node[$paramName])) {
                 $node[$paramName] = [];
             }
@@ -50,6 +80,7 @@ foreach ($routes as $route) {
             $node[$segment]['methods'] = [];
         }
         
+        
 
        
 
@@ -63,7 +94,7 @@ foreach ($routes as $route) {
 }
 
 if (!is_dir(__DIR__ . '/cache')) {
-    mkdir(__DIR__ . '/cache', 0777, true);
+    mkdir(__DIR__ . '/cache', 0775, true);
 }
 
 foreach ($indexedRoutes as $prefix => $routes) {

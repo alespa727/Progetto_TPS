@@ -1,10 +1,13 @@
 <?php
 
+
+
+#[Route(Method::Get, ["api", "users"], ContentTypes::Json)] 
 class GetAllUsers extends Controller
 {
 
     private $users = [
-        "ale"=>[
+        "ale"=>[ 
             "id" => 0,
             "username" => "ale",
             "description" => "desc1"
@@ -29,4 +32,4 @@ class GetAllUsers extends Controller
         return $res;
     }
 
-}
+} 

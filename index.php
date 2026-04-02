@@ -1,13 +1,15 @@
 <?php
 $start = microtime(true);
-error_reporting(E_ERROR | E_PARSE);
-
+/*
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);*/
+error_reporting(E_ERROR);
 require __DIR__ . '/vendor/autoload.php';
 include_once "functions.php";
 require "autoloader.php";
 
 $allowedHosts = [
-    "localhost:8080",
+    "localhost",
 ];
 
 $request = new Request();
@@ -18,7 +20,7 @@ switch ($method) {
     case RouterMethod::Direct:
         $indexedRoutes = [];
 
-        if (didRouteFileChange()) {
+        if (routesHaveChanged()/*didRouteFileChange()*/) {
             $indexedRoutes = (require "build_routes.php")($request);
         } else {
             if (!empty($request->getSegments()) && file_exists("cache/routes_" . $request->getSegments()[0] . ".php"))

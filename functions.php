@@ -44,13 +44,14 @@ function runMiddleware(Request $req, array $middleware, callable $final)
     $next();
 }
 
-
 function didRouteFileChange()
 {
     $file = 'routes.php';
-    $hashFile = __DIR__ . '/cache/routes.php.sha256';
-    if (!is_dir(__DIR__ . '/cache')) {
-        mkdir(__DIR__ . '/cache', 0777, true);
+    $cacheDir = __DIR__ . '/cache';
+    $hashFile = $cacheDir . '/routes.php.sha256';
+
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0777, true);
     }
 
     $currentHash = hash_file('sha256', $file);
@@ -60,14 +61,33 @@ function didRouteFileChange()
 
         if ($currentHash === $oldHash) {
             return false;
-        } else {
-            file_put_contents($hashFile, $currentHash);
-            return true;
         }
-    } else {
-        file_put_contents($hashFile, $currentHash);
-        return true;
+
+        foreach (glob($cacheDir . '/*.php') as $cacheFile) {
+            unlink($cacheFile);
+        }
     }
+
+    file_put_contents($hashFile, $currentHash);
+    return true;
+}
+
+function routesHaveChanged(): bool {
+    $hashFile = __DIR__ . '/cache/routes.sha256';
+    $files = glob(__DIR__ . '/routes/*.php'); 
+    $currentHash = '';
+
+    foreach ($files as $file) {
+        $currentHash .= filemtime($file);
+    }
+    $currentHash = hash('sha256', $currentHash);
+
+    if (file_exists($hashFile) && trim(file_get_contents($hashFile)) === $currentHash) {
+        return false;
+    }
+
+    file_put_contents($hashFile, $currentHash);
+    return true; 
 }
 
 function var_export_short(array $array)
