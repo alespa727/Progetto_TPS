@@ -1,4 +1,10 @@
 <?php
+
+namespace Core;
+
+use Attribute; 
+
+
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Route
 {
@@ -61,7 +67,7 @@ class Route
             case "PATCH":
                 return new Route('PATCH', $pattern, $className, $contentType);
             default:
-                throw new Exception("Metodo non valido: $method");
+                throw new \Exception("Metodo non valido: $method");
         }
     }
 
@@ -79,7 +85,7 @@ class Route
         return $this;
     }
 
-    public function manageRequest(Request $request, array $params): Response
+    public function manageRequest(Request $request, Params $params): Response
     {
         if ($this->controller === null) {
             $className = $this->controllerName;

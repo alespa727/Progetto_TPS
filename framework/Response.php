@@ -1,5 +1,5 @@
 <?php 
-
+namespace Core;
 class Response
 {
     public $body="";
@@ -38,47 +38,47 @@ class Response
     }
 
     public function ok(): Response{
-        $this->responseCode=HttpResponseCode::OK;
+        $this->responseCode=HttpResponseCodes::OK;
         return $this;
     }
 
     public function created(): Response{
-        $this->responseCode=HttpResponseCode::CREATED;
+        $this->responseCode=HttpResponseCodes::CREATED;
         return $this;
     }
 
     public function noContent(): Response{
-        $this->responseCode=HttpResponseCode::NO_CONTENT;
+        $this->responseCode=HttpResponseCodes::NO_CONTENT;
         return $this;
     }
 
     public function badRequest(): Response{
-        $this->responseCode=HttpResponseCode::BAD_REQUEST;
+        $this->responseCode=HttpResponseCodes::BAD_REQUEST;
         return $this;
     }
 
     public function notFound(): Response{
-        $this->responseCode=HttpResponseCode::NOT_FOUND;
+        $this->responseCode=HttpResponseCodes::NOT_FOUND;
         return $this;
     }
 
     public function methodNotAllowed(): Response{
-        $this->responseCode=HttpResponseCode::METHOD_NOT_ALLOWED;
+        $this->responseCode=HttpResponseCodes::METHOD_NOT_ALLOWED;
         return $this;
     }
 
     public function forbidden(): Response{
-        $this->responseCode=HttpResponseCode::FORBIDDEN;
+        $this->responseCode=HttpResponseCodes::FORBIDDEN;
         return $this;
     }
 
     public function unauthorized(): Response{
-       $this->responseCode=HttpResponseCode::UNAUTHORIZED;
+       $this->responseCode=HttpResponseCodes::UNAUTHORIZED;
         return $this;
     }
 
     public function internalServerError() : Response {
-        $this->responseCode=HttpResponseCode::INTERNAL_SERVER_ERROR;
+        $this->responseCode=HttpResponseCodes::INTERNAL_SERVER_ERROR;
         return $this;
     }
 

@@ -1,11 +1,19 @@
 <?php
 
+use Core\Route;
+use Core\Controller;
+use Core\Request;
+use Core\Response;
+use Core\Method;
+use Core\HttpResponseCodes; 
+use Core\ContentTypes;
+use Core\Params;
 
 #[Route(Method::Get, ["api", "users", "{userId}:{string}"], ContentTypes::Json)] 
 class GetUserById extends Controller
 {    
     private $users = [
-        "ale" => [
+        "ale" => [  
             "id" => 0, 
             "username" => "ale",
             "description" => "desc1"  
@@ -22,18 +30,18 @@ class GetUserById extends Controller
         ],
     ]; 
 
-    function manageRequest(Request $request, array $pathVariables): Response
+    function manageRequest(Request $request, Params $params): Response
     {
 
         try {
-            $userId = $pathVariables["userId"];
+            $userId = $params->getString("userId");
             $user = $this->users[$userId];
 
             $res = new Response();
             $res->ok();
             $res->json($user);
         } catch (\Throwable $th) {
-            throw new Exception("Inserire un id valido", HttpResponseCode::BAD_REQUEST);
+            throw new Exception("Inserire un id valido", HttpResponseCodes::BAD_REQUEST);
         }
 
 

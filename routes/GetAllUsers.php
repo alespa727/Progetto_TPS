@@ -1,6 +1,14 @@
 <?php
 
 
+use Core\Route;
+use Core\Controller;
+use Core\Request;
+use Core\Response;
+use Core\Method;
+use Core\HttpResponseCodes;
+use Core\ContentTypes;
+use Core\Params;
 
 #[Route(Method::Get, ["api", "users"], ContentTypes::Json)] 
 class GetAllUsers extends Controller
@@ -23,7 +31,7 @@ class GetAllUsers extends Controller
             "description" => "bhiwehbfdsiyhdiybsdidhbashbiydasihbdasuyhb"
         ],
     ];
-    function manageRequest(Request $request, array $pathVariables): Response
+    function manageRequest(Request $request, Params $params): Response
     {
         $res = new Response();
         $res->ok();

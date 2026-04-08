@@ -1,4 +1,5 @@
 <?php
+namespace Core;
 
 class ContentTypes{
     const Json = "Content-Type: application/json";

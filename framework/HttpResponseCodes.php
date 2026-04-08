@@ -1,6 +1,7 @@
 <?php
+namespace Core;
 
-class HttpResponseCode {
+class HttpResponseCodes {
 
     // Success
     const OK = 200;

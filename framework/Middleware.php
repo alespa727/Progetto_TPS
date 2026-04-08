@@ -1,4 +1,5 @@
 <?php
+namespace Core;
 
 abstract class Middleware {
     public function __invoke(Request $request, callable $next){
@@ -22,7 +23,6 @@ abstract class Middleware {
      * dopo questo metodo verrà chiamata la successa successiva se restituisci true,
      * altrimenti ferma la richiesta se restituisci
      * @param Request $request
-     * @param array $pathVariables
      * @return bool
      */
     public abstract function manageRequest(Request $request): bool;

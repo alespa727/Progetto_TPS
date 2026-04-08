@@ -1,4 +1,5 @@
 <?php
+namespace Core;
 class Method
 {
     const Post = "POST";

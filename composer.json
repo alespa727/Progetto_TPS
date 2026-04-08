@@ -3,5 +3,11 @@
         "firebase/php-jwt": "^7.0",
         "symfony/var-exporter": "^7.0",
         "doctrine/dbal": "^4.4"
+    },
+    
+    "autoload": {
+        "psr-4": {
+            "Core\\": "framework/"
+        }
     }
 }

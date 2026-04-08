@@ -27,7 +27,7 @@ function cors(array $origins): bool
 }
 
 
-function runMiddleware(Request $req, array $middleware, callable $final)
+function runMiddleware(\Core\Request $req, array $middleware, callable $final)
 {
     $index = 0;
 

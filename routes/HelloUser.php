@@ -1,6 +1,15 @@
 <?php
 
 
+use Core\Route;
+use Core\Controller;
+use Core\Request;
+use Core\Response;
+use Core\Method;
+use Core\HttpResponseCodes;
+use Core\ContentTypes;
+use Core\Params;
+
 #[Route(Method::Get, ["api", "hello"], ContentTypes::Html)]
 #[Route(Method::Get, ["hello"], ContentTypes::Html)]  
 class HelloUser extends Controller
@@ -20,7 +29,7 @@ class HelloUser extends Controller
                 </div>"; 
     }
 
-    function validateRequest(Request $request, array $pathVariables): bool
+    function validateRequest(Request $request, Params $params): bool
     {
         $name = $request->getQuery("name") ?? "";
         if(strtolower($name)==="tommy"){
@@ -29,7 +38,7 @@ class HelloUser extends Controller
         return true;
     }
 
-    function manageUnvalidRequest(Request $request, array $pathVariables): Response{
+    function manageUnvalidRequest(Request $request, Params $params): Response{
         $html = $this->getHtml("Vai in mona ".$request->getQuery("name"));
 
         return Response::new()
@@ -37,7 +46,7 @@ class HelloUser extends Controller
                 ->html($html);;
     }
 
-    function manageRequest(Request $request, array $pathVariables): Response
+    function manageRequest(Request $request, Params $params): Response
     {
         if (empty($request->getQuery("name"))) {
             $name = "World";

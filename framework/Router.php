@@ -1,6 +1,15 @@
 <?php
+namespace Core;
+
+
+
 class Router
 {
+
+
+    private static $routesPath = "";
+    private static $middlewarePath = "";
+
     static function handleCors(array $allowedHosts)
     {
         if (!cors($allowedHosts)) {
@@ -9,6 +18,21 @@ class Router
                     ->unauthorized()
                     ->json(["error" => "Richiesta da hostname non valido"])
             );
+        }
+    }
+
+    static function loadConfig(array $config): void
+    {
+        Router::$routesPath = $config["routes"];
+        Router::$middlewarePath = $config["middlewares"];
+    }
+
+    static function init(): void
+    {
+        include_once "functions.php";
+        if (routesHaveChanged()/*didRouteFileChange()*/) {
+            (require "core/build_routes.php")(Router::$routesPath);
+            echo "ciao";
         }
     }
 
@@ -137,13 +161,17 @@ class Router
 
     // Gestisce la richiesta ricercando l'uri all'interno delle routes
     /**
-     * @param Request $request
-     * @param array<string> $name
-     * @param array<array> $routes
+     * @param array<string> $allowedHosts
+     * @param $start
      */
-    static function handleDirect(Request $request, array $routes, array $allowedHosts, $start)
+    static function handleDirect(array $allowedHosts, $start)
     {
+        $request = new Request();
         Router::handleCors($allowedHosts);
+
+        if (!empty($request->getSegments())) {
+            $routes = require "cache/routes_" . $request->getSegments()[0] . ".php";
+        }
 
         $route = Router::findMatch($request, $routes);
         if (!$route) {
@@ -173,9 +201,9 @@ class Router
             $requested_middleware,
             function () use ($routeInstance, $request, $start) {
                 try {
-                    $res = $routeInstance->manageRequest($request, $request->getParams());
+                    $res = $routeInstance->manageRequest($request, new Params($request->getParams()));
                     if ($res === null || $res->body === null || $res->contentType === null || $res->responseCode === null) {
-                        throw new Exception("Ricontrolla il codice mona");
+                        throw new \Exception("Ricontrolla il codice mona");
                     }
                 } catch (\Exception $th) {
                     $res = Response::new()
