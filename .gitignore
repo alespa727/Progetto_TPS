@@ -1,2 +1,5 @@
 vendor
 cache
+static
+framework/cache
+framework/file_permissions
