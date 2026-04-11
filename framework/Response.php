@@ -6,8 +6,28 @@ class Response
     public array $headers=[];
     
     public string $contentType;
+    public array $file=[];
     
     public int $responseCode;
+
+    public function __construct() {
+        $this->contentType=ContentTypes::Json;
+    }
+
+    public function addFile($path, $filename): Response{
+        $this->file["path"]=$path;
+        $this->file["filename"]=$filename;
+        $this->contentType=ContentTypes::DownloadFile;
+        return $this;
+    }
+
+    public function addFileInline($path): Response{
+        $this->file["path"]=$path;
+        $this->contentType=ContentTypes::InlineFile;
+        return $this;
+    }
+
+    
 
     /**
      * @param array{"code": int, "body": mixed, "contentType": string}

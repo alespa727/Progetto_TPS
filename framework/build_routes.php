@@ -100,11 +100,11 @@ return function (string $path, Request $request = new Request()): array|null {
     }
 
     foreach ($indexedRoutes as $prefix => $routes) {
-        $path = __DIR__ . '/cache/routes_' . $prefix . '.php';
+        $p = __DIR__ . '/cache/routes_' . $prefix . '.php';
 
 
         $data = "<?php\nreturn " . VarExporter::export($routes) . ";\n";
-        file_put_contents($path, $data);
+        file_put_contents($p, $data);
     }
     $path = __DIR__ . '/cache/routes_' . $request->getSegments()[0] . '.php';
     return (require $path);

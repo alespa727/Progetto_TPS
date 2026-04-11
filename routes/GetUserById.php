@@ -1,48 +1,37 @@
 <?php
 
+use Core\Exceptions\NotFound;
 use Core\Route;
 use Core\Controller;
 use Core\Request;
 use Core\Response;
 use Core\Method;
-use Core\HttpResponseCodes; 
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "users", "{userId}:{string}"], ContentTypes::Json)] 
+#[Route(Method::Get, ["api", "users", "{userId}:{int}"], ContentTypes::Json)]
 class GetUserById extends Controller
-{    
-    private $users = [
-        "ale" => [  
-            "id" => 0, 
-            "username" => "ale",
-            "description" => "desc1"  
-        ], 
-        "tommy" => [  
-            "id" => 1,  
-            "username" => "tommy",  
-            "description" => "tommy e' stato qui'"
-        ],     
-        "ashan" => [
-            "id" => 2,
-            "username" => "ashan",
-            "description" => "bhiwehbfdsiyhdiybsdidhbashbiydasihbdasuyhb"
-        ],
-    ]; 
+{  
+
 
     function manageRequest(Request $request, Params $params): Response
     {
 
-        try {
-            $userId = $params->getString("userId");
-            $user = $this->users[$userId];
+        $db = require_once __DIR__ . '/../database/Database.php';
 
-            $res = new Response();
-            $res->ok();
+        $res = new Response();
+
+        $pr = $db->prepare("SELECT id, username, password FROM users WHERE id=:id");
+        $pr->execute(["id" => $params->getInt("userId")]);
+
+        $user = $pr->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $res->ok();  
             $res->json($user);
-        } catch (\Throwable $th) {
-            throw new Exception("Inserire un id valido", HttpResponseCodes::BAD_REQUEST);
-        }
+        } else 
+            throw new NotFound("utente non trovato");
+
 
 
         return $res;

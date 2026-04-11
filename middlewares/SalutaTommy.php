@@ -1,5 +1,10 @@
 <?php
 
+
+use Core\Middleware;
+use Core\Request;
+use Core\Response;
+
 class SalutaTommy extends Middleware
 {
 

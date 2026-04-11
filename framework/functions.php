@@ -44,6 +44,18 @@ function runMiddleware(\Core\Request $req, array $middleware, callable $final)
     $next();
 }
 
+function importMiddlewares(array $requested_middleware): void
+{
+    foreach ($requested_middleware as $key => $middleware) {
+        $file = __DIR__ . "/../middlewares/$middleware.php";
+
+        if (file_exists($file)) {
+            require_once $file;
+        }
+
+    }
+}
+
 function didRouteFileChange()
 {
     $file = 'routes.php';
@@ -71,25 +83,41 @@ function didRouteFileChange()
     file_put_contents($hashFile, $currentHash);
     return true;
 }
+function routesHaveChanged($routesPath): bool
+{
 
-function routesHaveChanged(): bool {
     $hashFile = __DIR__ . '/cache/routes.sha256';
-    $files = glob(__DIR__ . '/routes/*.php'); 
-    $currentHash = '';
+
+    if (!is_dir(__DIR__ . '/cache')) {
+        mkdir(__DIR__ . '/cache', 0777, true);
+    }
+
+    $files = glob($routesPath . '/*.php');
+
+    if (!$files) {
+        return false;
+    }
+
+    $hashes = '';
 
     foreach ($files as $file) {
-        $currentHash .= filemtime($file);
+        $hashes .= hash_file('sha256', $file);
     }
-    $currentHash = hash('sha256', $currentHash);
 
-    if (file_exists($hashFile) && trim(file_get_contents($hashFile)) === $currentHash) {
+    $currentHash = hash('sha256', $hashes);
+
+    $oldHash = file_exists($hashFile)
+        ? trim(file_get_contents($hashFile))
+        : null;
+
+    if ($oldHash === $currentHash) {
         return false;
     }
 
     file_put_contents($hashFile, $currentHash);
-    return true; 
-}
 
+    return true;
+}
 function var_export_short(array $array)
 {
     return str_replace(['array (', ')'], ['[', ']'], var_export($array, true));

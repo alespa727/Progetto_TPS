@@ -1,5 +1,9 @@
 <?php
 
+use Core\Middleware;
+use Core\Request;
+use Core\Response;
+
 class AuthMiddleware extends Middleware
 {
 

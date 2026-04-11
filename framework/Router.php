@@ -1,14 +1,12 @@
 <?php
 namespace Core;
 
-
-
 class Router
 {
 
-
     private static $routesPath = "";
     private static $middlewarePath = "";
+    private static $debug = false;
 
     static function handleCors(array $allowedHosts)
     {
@@ -21,18 +19,23 @@ class Router
         }
     }
 
+    /**
+     * @param array{routes: string, middlewares: string, debug?: bool} $config
+     * @return void
+     */
     static function loadConfig(array $config): void
     {
         Router::$routesPath = $config["routes"];
         Router::$middlewarePath = $config["middlewares"];
+        Router::$debug = $config["debug"] ?? false;
     }
 
     static function init(): void
     {
         include_once "functions.php";
-        if (routesHaveChanged()/*didRouteFileChange()*/) {
-            (require "core/build_routes.php")(Router::$routesPath);
-            echo "ciao";
+        if (routesHaveChanged(Router::$routesPath)) {
+            (require "build_routes.php")(Router::$routesPath);
+
         }
     }
 
@@ -79,7 +82,6 @@ class Router
                     $param = explode(":", $array["_param"]);
                     $paramName = $param[0];
                     $type = $param[1];
-                    print_r($param);
                     $array = &$array[$paramName];
 
                     $name = substr($paramName, 1, -1);
@@ -91,13 +93,17 @@ class Router
 
             } else {
 
+
                 if (array_key_exists($segment, $array) && array_key_exists("_" . $request_method, $array[$segment])) {
                     $route = $array[$segment]["_" . $request_method];
                 } else if (array_key_exists("_param", $array)) {
 
                     $param = explode(":", $array["_param"]);
+
                     $paramName = $param[0];
+
                     $type = $array["_type"];
+
                     $name = substr($paramName, 1, -1);
 
                     $isValidType = false;
@@ -110,7 +116,7 @@ class Router
                             $isValidType = !is_numeric($segment);
                             break;
                         default:
-                            $isValidType = is_numeric($segment);
+                            $isValidType = true;
                             break;
                     }
 
@@ -118,23 +124,8 @@ class Router
                         $params[$name] = $segment;
                     }
 
-                    if (array_key_exists("_" . $request_method, $array[$paramName]) && $isValidType) {
+                    if (array_key_exists("_" . $request_method, $array[$paramName])) {
                         $route = $array[$paramName]["_" . $request_method];
-                    }
-
-                    if (!$route) {
-                        if (!$isValidType) {
-                            continue;
-                        }
-                        $methods = $array["methods"];
-
-                        if (!empty($methods)) {
-                            Router::sendResponse(
-                                Response::new()
-                                    ->methodNotAllowed()
-                                    ->json(['error' => 'Metodo non valido'])
-                            );
-                        }
                     }
 
                 }
@@ -169,6 +160,7 @@ class Router
         $request = new Request();
         Router::handleCors($allowedHosts);
 
+        $routes = [];
         if (!empty($request->getSegments())) {
             $routes = require "cache/routes_" . $request->getSegments()[0] . ".php";
         }
@@ -185,32 +177,33 @@ class Router
         $routeInstance = Route::fromArray($route);
         $requested_middleware = $routeInstance->getMiddlewares();
 
-        // Importa solo i file necessari
-        foreach ($requested_middleware as $key => $middleware) {
-            $file = __DIR__ . "/../middlewares/$middleware.php";
-
-            if (file_exists($file)) {
-                require_once $file;
-            }
-
-        }
-
+        importMiddlewares($requested_middleware);
 
         runMiddleware(
             $request,
             $requested_middleware,
             function () use ($routeInstance, $request, $start) {
+                $res = null;
+
                 try {
                     $res = $routeInstance->manageRequest($request, new Params($request->getParams()));
-                    if ($res === null || $res->body === null || $res->contentType === null || $res->responseCode === null) {
-                        throw new \Exception("Ricontrolla il codice mona");
+                    if (!$res || $res->body === null || $res->contentType === null || $res->responseCode === null) {
+                        throw new \Core\Exceptions\InternalServerError("Ricontrolla il codice mona");
                     }
-                } catch (\Exception $th) {
-                    $res = Response::new()
-                        ->status($th->getCode())
-                        ->json([
-                            "error" => $th->getMessage()
-                        ]);
+                } catch (\Throwable $th) {
+                    if (Router::$debug) {
+                        $res = Response::new()
+                            ->status($th->getCode() ?? 500)
+                            ->json([
+                                "message" => "Ricontrolla il codice mona",
+                                "error" => $th->getMessage()
+                            ]);
+                    } else {
+                        $res = Response::new()
+                            ->status($th->getCode() ?? 500)
+                            ->json(["error" => $th->getMessage()]);
+                    }
+
                 } finally {
 
                     $end = microtime(true);
@@ -243,13 +236,16 @@ class Router
     static function sendResponse(Response $response)
     {
         Router::sendHeaders($response);
-        if (!$response || !$response->isValid()) {
-            echo "Ricontrolla il codice mona - 2";
-        }
 
         if ($response->contentType === ContentTypes::Json) {
             echo json_encode($response->body);
-        } else {
+        } else if($response->contentType === ContentTypes::DownloadFile){
+            FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
+        }else if($response->contentType === ContentTypes::InlineFile){
+            FileHandler::returnInlineFile($response->file["path"]);
+        }
+        else
+        {
             echo $response->body;
         }
         die;

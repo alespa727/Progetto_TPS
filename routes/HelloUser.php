@@ -6,12 +6,11 @@ use Core\Controller;
 use Core\Request;
 use Core\Response;
 use Core\Method;
-use Core\HttpResponseCodes;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "hello"], ContentTypes::Html)]
-#[Route(Method::Get, ["hello"], ContentTypes::Html)]  
+#[Route(Method::Get, ["api", "hello"], ContentTypes::Html)] 
+#[Route(Method::Post, ["api", "hello"], ContentTypes::Html)]
 class HelloUser extends Controller
 {
  
@@ -22,7 +21,7 @@ class HelloUser extends Controller
                     height: 100%;   
                     justify-content: center; 
                     align-items: center;'
-                > 
+                >  
                     <div style='font-weight: 600; font-size: 30px; color: #FFF; '>
                         ". $text . " 
                     </div>
