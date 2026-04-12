@@ -19,6 +19,6 @@ class AuthMiddleware extends Middleware
     function getErrorResponse(): Response{
         return Response::new()
         ->badRequest()
-        ->json(["message" => "Unauthorized"]);
+        ->body(["message" => "Unauthorized"]);
     }
 }

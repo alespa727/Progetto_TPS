@@ -14,7 +14,8 @@ class Router
             Router::sendResponse(
                 Response::new()
                     ->unauthorized()
-                    ->json(["error" => "Richiesta da hostname non valido"])
+                    ->body(["error" => "Richiesta da hostname non valido"]),
+                ContentTypes::Json
             );
         }
     }
@@ -28,6 +29,11 @@ class Router
         Router::$routesPath = $config["routes"];
         Router::$middlewarePath = $config["middlewares"];
         Router::$debug = $config["debug"] ?? false;
+        if (Router::$debug) {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+        }
     }
 
     static function init(): void
@@ -65,7 +71,8 @@ class Router
                         Router::sendResponse(
                             Response::new()
                                 ->methodNotAllowed()
-                                ->json(['error' => 'Metodo non valido'])
+                                ->body(['error' => 'Metodo non valido']),
+                            ContentTypes::Json
                         );
                     }
                 }
@@ -168,9 +175,12 @@ class Router
         $route = Router::findMatch($request, $routes);
         if (!$route) {
             // Altrimenti 404
-            Router::sendResponse(Response::new()
-                ->notFound()
-                ->json(['error' => 'Route non trovata']));
+            Router::sendResponse(
+                Response::new()
+                    ->notFound()
+                    ->body(['error' => 'Route non trovata']),
+                ContentTypes::Json
+            );
         }
 
         $requiredFiles = [];
@@ -187,21 +197,26 @@ class Router
 
                 try {
                     $res = $routeInstance->manageRequest($request, new Params($request->getParams()));
-                    if (!$res || $res->body === null || $res->contentType === null || $res->responseCode === null) {
+                    if (!$res || $res->body === null || $routeInstance->getContentType() === null || $res->responseCode === null) {
                         throw new \Core\Exceptions\InternalServerError("Ricontrolla il codice mona");
                     }
                 } catch (\Throwable $th) {
                     if (Router::$debug) {
                         $res = Response::new()
                             ->status($th->getCode() ?? 500)
-                            ->json([
+                            ->body([
                                 "message" => "Ricontrolla il codice mona",
                                 "error" => $th->getMessage()
                             ]);
+
+                        Router::sendResponse($res, ContentTypes::Json);
                     } else {
                         $res = Response::new()
                             ->status($th->getCode() ?? 500)
-                            ->json(["error" => $th->getMessage()]);
+                            ->body(["error" => $th->getTraceAsString()]);
+
+                        Router::sendResponse($res, ContentTypes::Json);
+
                     }
 
                 } finally {
@@ -209,7 +224,8 @@ class Router
                     $end = microtime(true);
                     $elapsed = $end - $start;
                     $res->header("X-time: " . (floor($elapsed * 1000 * 100) / 100) . " ms");
-                    Router::sendResponse($res);
+            
+                    Router::sendResponse($res, $routeInstance->getContentType());
 
                 }
             }
@@ -219,33 +235,32 @@ class Router
             Router::sendResponse(
                 Response::new()
                     ->methodNotAllowed()
-                    ->json(['error' => 'Metodo non valido'])
+                    ->body(['error' => 'Metodo non valido']),
+                $routeInstance->getContentType()
             );
         }
     }
 
-    static function sendHeaders(Response $response)
+    static function sendHeaders(Response $response, string $type)
     {
         http_response_code($response->responseCode);
         foreach ($response->headers as $header) {
             header($header);
         }
-        header($response->contentType);
+        header($type);
     }
 
-    static function sendResponse(Response $response)
+    static function sendResponse(Response $response, string $contentType)
     {
-        Router::sendHeaders($response);
+        Router::sendHeaders($response, $contentType);
 
-        if ($response->contentType === ContentTypes::Json) {
+        if ($contentType === ContentTypes::Json) {
             echo json_encode($response->body);
-        } else if($response->contentType === ContentTypes::DownloadFile){
+        } else if ($contentType === ContentTypes::DownloadFile) {
             FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
-        }else if($response->contentType === ContentTypes::InlineFile){
+        } else if ($contentType === ContentTypes::InlineFile) {
             FileHandler::returnInlineFile($response->file["path"]);
-        }
-        else
-        {
+        } else {
             echo $response->body;
         }
         die;

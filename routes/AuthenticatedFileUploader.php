@@ -19,8 +19,8 @@ class AuthenticatedFileUploader extends Controller
         $hash = FileHandler::addFile($_FILES["file"], [AuthMiddleware::class]);
         $res = Response::new()
         ->ok()
-        ->json(["hash"=>$hash]);
+        ->body(["hash"=>$hash]);
         return $res;
     }
-
+  
 }

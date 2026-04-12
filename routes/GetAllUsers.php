@@ -12,7 +12,7 @@ use Core\Params;
 class GetAllUsers extends Controller
 {
     private PDO $db;
-
+ 
     public function __construct()
     {
         $dsn = "mysql:unix_socket=/var/run/mysqld/mysqld.sock;dbname=progetto_tps;charset=utf8mb4";
@@ -33,10 +33,10 @@ class GetAllUsers extends Controller
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $res->ok();
-            $res->json($users);
+            $res->body($users);
         } catch (PDOException $e) {
             $res->internalServerError();
-            $res->json(["error" => $e->getMessage()]);
+            $res->body(["error" => $e->getMessage()]);
         }
 
         return $res;

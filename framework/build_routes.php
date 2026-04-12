@@ -23,10 +23,16 @@ return function (string $path, Request $request = new Request()): array|null {
         $attributes = $reflection->getAttributes(Route::class);
 
         foreach ($attributes as $attr) {
+            /**
+             * @var Route $route
+             */
             $route = $attr->newInstance();
+            
             $routeArray = $route->toArray();
             $routeArray["controller"] = $className;
             $routes[] = Route::fromArray($routeArray);
+
+            print_r($routes);
         }
     }
 

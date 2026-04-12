@@ -4,26 +4,18 @@ class Response
 {
     public $body="";
     public array $headers=[];
-    
-    public string $contentType;
     public array $file=[];
     
     public int $responseCode;
 
-    public function __construct() {
-        $this->contentType=ContentTypes::Json;
-    }
-
     public function addFile($path, $filename): Response{
         $this->file["path"]=$path;
         $this->file["filename"]=$filename;
-        $this->contentType=ContentTypes::DownloadFile;
         return $this;
     }
 
     public function addFileInline($path): Response{
         $this->file["path"]=$path;
-        $this->contentType=ContentTypes::InlineFile;
         return $this;
     }
 
@@ -37,7 +29,6 @@ class Response
         $res = new Response();
         $res->responseCode = $response["code"];
         $res->body = $response["body"];
-        $res->contentType = $response["contentType"];
         return $res;
     }
 
@@ -47,10 +38,6 @@ class Response
 
     public function isValid() : bool {
         if(!$this->responseCode){
-            return false;
-        }
-
-        if(!$this->contentType){
             return false;
         }
 
@@ -107,23 +94,6 @@ class Response
         return $this;
     }
 
-    public function html(mixed $body): Response{
-        $this->body = $body;
-        $this->contentType = ContentTypes::Html;
-        return $this;
-    }
-
-    public function json(array $body): Response{
-        $this->body = $body;
-        $this->contentType = ContentTypes::Json;
-        return $this;
-    }
-
-    public function text(array $body): Response{
-        $this->body = $body;
-        $this->contentType = ContentTypes::Text;
-        return $this;
-    }
 
     public function status(int $code): Response{
         $this->responseCode = $code;
@@ -132,11 +102,6 @@ class Response
 
     public function header(string $header){
         $this->headers[] = $header;
-        return $this;
-    }
-
-    public function contentType(string $contentType): Response{
-       $this->contentType = $contentType;
         return $this;
     }
 

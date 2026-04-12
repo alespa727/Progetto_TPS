@@ -52,7 +52,7 @@ class Login extends Controller
             );
             $res = Response::new()
             ->ok()
-            ->json([]);
+            ->body([]);
             return $res;
         }else{
             throw new BadRequest("Credenziali errate");

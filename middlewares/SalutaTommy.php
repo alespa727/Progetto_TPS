@@ -16,7 +16,7 @@ class SalutaTommy extends Middleware
     function getErrorResponse(): Response{
         return Response::new()
         ->forbidden()
-        ->json(["Vai in mona tommy"]);
+        ->body(["Vai in mona tommy"]);
     }
     
 }

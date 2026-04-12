@@ -28,7 +28,7 @@ class GetUserById extends Controller
 
         if ($user) {
             $res->ok();  
-            $res->json($user);
+            $res->body($user);
         } else 
             throw new NotFound("utente non trovato");
 

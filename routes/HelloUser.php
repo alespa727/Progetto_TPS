@@ -42,7 +42,7 @@ class HelloUser extends Controller
 
         return Response::new()
                 ->ok()
-                ->html($html);;
+                ->body($html);;
     }
 
     function manageRequest(Request $request, Params $params): Response
@@ -56,7 +56,7 @@ class HelloUser extends Controller
         $html = $this->getHtml("Hello ".$name."!");
         return Response::new()
                 ->ok()
-                ->html($html);;
+                ->body($html);;
     }
 
 }

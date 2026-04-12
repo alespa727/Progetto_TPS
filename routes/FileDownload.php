@@ -9,7 +9,7 @@ use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "download", "{fileName}:{string}"], ContentTypes::Json)] 
+#[Route(Method::Get, ["api", "download", "{fileName}:{string}"], ContentTypes::DownloadFile)] 
 class FileDownload extends Controller
 {
 
@@ -24,5 +24,5 @@ class FileDownload extends Controller
 
         return $res;
     }
-
+ 
 }

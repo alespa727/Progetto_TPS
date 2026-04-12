@@ -15,7 +15,7 @@ class Route
     private Controller|null $controller;
     private array $pattern;
 
-    public function __construct(string $method, array $pattern, string $className = "", $contentType = ContentTypes::Json)
+    public function __construct(string $method, array $pattern, string $contentType = ContentTypes::Json, $className ="")
     {
         $this->method = $method;
         $this->pattern = $pattern;
@@ -126,6 +126,7 @@ class Route
 
     public function toArray(): array
     {
+        
         return [
             "method" => $this->getMethod(),
             "pattern" => $this->getPattern(),
