@@ -1,4 +1,5 @@
 <?php
+
 use Core\Route;
 use Core\Controller;
 use Core\Request;
@@ -12,12 +13,12 @@ use Core\Params;
 class GetAllUsers extends Controller
 {
     private PDO $db;
- 
+
     public function __construct()
     {
-        $dsn = "mysql:unix_socket=/var/run/mysqld/mysqld.sock;dbname=progetto_tps;charset=utf8mb4";
-        $user = "db_user";
-        $pass = "db_pass";
+        $dsn = "mysql:host=127.0.0.1;port=3306;dbname=tps;charset=utf8mb4";
+        $user = "root";
+        $pass = "";
 
         $this->db = new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -29,7 +30,7 @@ class GetAllUsers extends Controller
     {
         $res = new Response();
         try {
-            $stmt = $this->db->query("SELECT id, username, password FROM users");
+            $stmt = $this->db->query("SELECT username, password FROM users");
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $res->ok();

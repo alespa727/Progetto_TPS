@@ -145,6 +145,8 @@ class Router
         if ($route) {
             $request->setParams($params);
             $className = $route["controller"];
+           
+            
             $file = __DIR__ . "/../routes/$className.php";
 
             if (file_exists($file) && !class_exists($className, false)) {
@@ -213,7 +215,9 @@ class Router
                     } else {
                         $res = Response::new()
                             ->status($th->getCode() ?? 500)
-                            ->body(["error" => $th->getTraceAsString()]);
+                            ->body([
+                                "error" => $th->getMessage() . "\n" . $th->getTraceAsString()
+                            ]);
 
                         Router::sendResponse($res, ContentTypes::Json);
 
@@ -224,7 +228,7 @@ class Router
                     $end = microtime(true);
                     $elapsed = $end - $start;
                     $res->header("X-time: " . (floor($elapsed * 1000 * 100) / 100) . " ms");
-            
+
                     Router::sendResponse($res, $routeInstance->getContentType());
 
                 }

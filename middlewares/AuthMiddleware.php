@@ -6,7 +6,6 @@ use Core\Response;
 
 class AuthMiddleware extends Middleware
 {
-
     function manageRequest(Request $request): bool
     {
         $psw = $request->getHeader("Authorization");
@@ -16,7 +15,8 @@ class AuthMiddleware extends Middleware
         return true;
     }
 
-    function getErrorResponse(): Response{
+    function getErrorResponse(): Response
+    {
         return Response::new()
         ->badRequest()
         ->body(["message" => "Unauthorized"]);

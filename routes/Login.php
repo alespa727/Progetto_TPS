@@ -1,6 +1,5 @@
 <?php
 
-
 use Core\Exceptions\BadRequest;
 use Core\Route;
 use Core\Controller;
@@ -9,15 +8,12 @@ use Core\Response;
 use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
-
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-
 
 #[Route(Method::Post, ["api", "login"], ContentTypes::Json)]
 class Login extends Controller
 {
-
     private $key = 'example_key_of_sufficient_length';
 
 
@@ -38,27 +34,24 @@ class Login extends Controller
         $user = $pr->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            $jwt = JWT::encode(["username"=>$user["username"]], $this->key, 'HS256');
+            $jwt = JWT::encode(["username" => $user["username"]], $this->key, 'HS256');
             setcookie(
                 "token",
                 $jwt,
                 [
                     "expires" => time() + 3600,
                     "path" => "/",
-                    "httponly" => true,   
-                    "secure" => false,     
-                    "samesite" => "Lax"   
+                    "httponly" => true,
+                    "secure" => false,
+                    "samesite" => "Lax"
                 ]
             );
             $res = Response::new()
             ->ok()
             ->body([]);
             return $res;
-        }else{
+        } else {
             throw new BadRequest("Credenziali errate");
         }
-
-
     }
-
 }

@@ -11,9 +11,7 @@ use Core\Params;
 
 #[Route(Method::Get, ["api", "users", "{userId}:{int}"], ContentTypes::Json)]
 class GetUserById extends Controller
-{  
-
-
+{
     function manageRequest(Request $request, Params $params): Response
     {
 
@@ -27,14 +25,14 @@ class GetUserById extends Controller
         $user = $pr->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            $res->ok();  
+            $res->ok();
             $res->body($user);
-        } else 
+        } else {
             throw new NotFound("utente non trovato");
+        }
 
 
 
         return $res;
     }
-
 }

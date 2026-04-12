@@ -2,8 +2,7 @@
 
 namespace Core;
 
-use Attribute; 
-
+use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Route
@@ -15,7 +14,7 @@ class Route
     private Controller|null $controller;
     private array $pattern;
 
-    public function __construct(string $method, array $pattern, string $contentType = ContentTypes::Json, $className ="")
+    public function __construct(string $method, array $pattern, string $contentType = ContentTypes::Json, $className = "")
     {
         $this->method = $method;
         $this->pattern = $pattern;
@@ -57,15 +56,15 @@ class Route
 
         switch ($method) {
             case "GET":
-                return new Route('GET', $pattern, $className, $contentType);
+                return new Route('GET', $pattern, $contentType, $className);
             case "POST":
-                return new Route('POST', $pattern, $className, $contentType);
+                return new Route('POST', $pattern,$contentType, $className);
             case "DELETE":
-                return new Route('DELETE', $pattern, $className, $contentType);
+                return new Route('DELETE', $pattern, $contentType, $className);
             case "PUT":
-                return new Route('PUT', $pattern, $className, $contentType);
+                return new Route('PUT', $pattern, $contentType, $className);
             case "PATCH":
-                return new Route('PATCH', $pattern, $className, $contentType);
+                return new Route('PATCH', $pattern, $contentType, $className);
             default:
                 throw new \Exception("Metodo non valido: $method");
         }
@@ -126,7 +125,7 @@ class Route
 
     public function toArray(): array
     {
-        
+
         return [
             "method" => $this->getMethod(),
             "pattern" => $this->getPattern(),
@@ -136,4 +135,3 @@ class Route
         ];
     }
 }
-
