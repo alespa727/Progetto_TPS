@@ -23,7 +23,7 @@ final class Authorization
         $db = Database::getDatabase();
 
         if (!array_key_exists("token", $_COOKIE))
-            throw new Unauthorized("Esegui il login");
+            return false;
 
         $cookie_jwt = $_COOKIE["token"];
         $decoded = JWT::decode($cookie_jwt, new Key(self::$secret, 'HS256'), $headers);
@@ -50,7 +50,7 @@ final class Authorization
         $db = Database::getDatabase();
 
         if (!array_key_exists("token", $_COOKIE))
-            throw new Unauthorized("Esegui il login");
+            return false;
 
         $cookie_jwt = $_COOKIE["token"];
         $decoded = JWT::decode($cookie_jwt, new Key(self::$secret, 'HS256'), $headers);

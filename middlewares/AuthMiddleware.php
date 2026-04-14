@@ -15,7 +15,7 @@ class AuthMiddleware extends Middleware
     function getErrorResponse(Request $request): Response
     {
         return Response::new()
-        ->unauthorized()
-        ->body(["description" => "Not authenticated"]);
+            ->unauthorized()
+            ->body(["description" => "Not authenticated"]);
     }
 }

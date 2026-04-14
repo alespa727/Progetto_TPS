@@ -1,19 +1,5 @@
 <?php
 
-register_shutdown_function(function () {
-    $error = error_get_last();
-    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_COMPILE_ERROR])) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'error' => $error['message'],
-            'file'  => $error['file'],
-            'line'  => $error['line'],
-        ]);
-        exit;
-    }
-});
-
 function getExplodedUri(): array
 {
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
