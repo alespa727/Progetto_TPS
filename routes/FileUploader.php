@@ -8,8 +8,8 @@ use Core\Response;
 use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
-
-#[Route(Method::Post, ["api", "upload"], ContentTypes::Json)]
+ 
+#[Route(Method::Post, ["api", "upload"], [], ContentTypes::Json)]
 class FileUploader extends Controller
 {
     function manageRequest(Request $request, Params $params): Response

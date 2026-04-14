@@ -9,7 +9,7 @@ use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "users", "{userId}:{int}"], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "users", "{userId}:{int}"], [], ContentTypes::Json)]
 class GetUserById extends Controller
 {
     function manageRequest(Request $request, Params $params): Response

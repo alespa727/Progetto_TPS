@@ -75,7 +75,9 @@ class Request
 
     public function getBody(string $key)
     {
-        return $key ? ($this->body[$key] ?? null) : $this->body;
+        $value = $key ? ($this->body[$key] ?? null) : $this->body;
+        
+        return $value;
     }
 
     public function getHeader(string $key): ?string

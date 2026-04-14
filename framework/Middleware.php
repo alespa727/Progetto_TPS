@@ -6,14 +6,14 @@ abstract class Middleware {
         if($this->manageRequest($request))
             $next();
         else 
-            Router::sendResponse($this->getErrorResponse());
+            Router::sendResponse($this->getErrorResponse($request), ContentTypes::Json);
     }
 
     /**
      * Override per restituire una risposta custom in caso si restituisca false in manageRequest
      * @return Response
      */
-    public function getErrorResponse(): Response{
+    public function getErrorResponse(Request $request): Response{
         return Response::new()
         ->badRequest();
     }

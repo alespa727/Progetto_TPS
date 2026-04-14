@@ -1,6 +1,8 @@
 <?php
 namespace Core;
 
+use Core\Exceptions\MethodNotAllowed;
+
 class Router
 {
 
@@ -39,10 +41,16 @@ class Router
     static function init(): void
     {
         include_once "functions.php";
-        if (routesHaveChanged(Router::$routesPath)) {
+        $cacheExists = !empty(glob(__DIR__ . '/cache/routes_*.php'));
+        if ( routesHaveChanged(Router::$routesPath)) {
             (require "build_routes.php")(Router::$routesPath);
 
         }
+    }
+
+    public static function getRoutes(): array
+    {
+        return (require "get_all_routes.php")(Router::$routesPath);
     }
 
     static function findMatch(Request &$request, array $routes): array|null
@@ -99,10 +107,17 @@ class Router
 
 
             } else {
+        
+                if (array_key_exists($segment, $array)) {
+                    if (array_key_exists("_" . $request_method, $array[$segment]))
+                        $route = $array[$segment]["_" . $request_method];
+                    else if (count($array[$segment]) > 0) {
+                        $res = Response::new()
+                            ->status(HttpResponseCodes::METHOD_NOT_ALLOWED)
+                            ->body(["description"=>"metodo non valido"]);
+                        Router::sendResponse($res, ContentTypes::Json);
+                    }
 
-
-                if (array_key_exists($segment, $array) && array_key_exists("_" . $request_method, $array[$segment])) {
-                    $route = $array[$segment]["_" . $request_method];
                 } else if (array_key_exists("_param", $array)) {
 
                     $param = explode(":", $array["_param"]);
@@ -145,15 +160,16 @@ class Router
         if ($route) {
             $request->setParams($params);
             $className = $route["controller"];
-           
-            
-            $file = __DIR__ . "/../routes/$className.php";
 
-            if (file_exists($file) && !class_exists($className, false)) {
-                require $file;
+            $path = $route["controller_path"];
+
+            if (file_exists($path) && !class_exists($className, false)) {
+                require $path;
             }
 
-        }
+        }/*else{
+
+       }*/
 
         return $route;
     }
@@ -216,7 +232,7 @@ class Router
                         $res = Response::new()
                             ->status($th->getCode() ?? 500)
                             ->body([
-                                "error" => $th->getMessage() . "\n" . $th->getTraceAsString()
+                                "error" => $th->getMessage() ?? "Internal Server Error"
                             ]);
 
                         Router::sendResponse($res, ContentTypes::Json);

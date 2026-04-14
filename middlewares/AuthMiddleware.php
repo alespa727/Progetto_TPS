@@ -3,22 +3,19 @@
 use Core\Middleware;
 use Core\Request;
 use Core\Response;
+use Authorization\Authorization;
 
 class AuthMiddleware extends Middleware
 {
     function manageRequest(Request $request): bool
     {
-        $psw = $request->getHeader("Authorization");
-        if ($psw !== "123456") {
-            return false;
-        }
-        return true;
+        return Authorization::is_logged_in();
     }
 
-    function getErrorResponse(): Response
+    function getErrorResponse(Request $request): Response
     {
         return Response::new()
-        ->badRequest()
-        ->body(["message" => "Unauthorized"]);
+        ->unauthorized()
+        ->body(["description" => "Not authenticated"]);
     }
 }

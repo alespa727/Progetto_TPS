@@ -11,60 +11,69 @@ class Route
     private array $middlewares = [];
     private string $contentType = ContentTypes::Json;
     private string $controllerName;
+    private string $controllerPath;
     private Controller|null $controller;
+
+    private ApiDoc|null $docs;
     private array $pattern;
 
-    public function __construct(string $method, array $pattern, string $contentType = ContentTypes::Json, $className = "")
+    public function __construct(string $method, array $pattern, array $middlewares, string $contentType = ContentTypes::Json, $className = "", $controllerPath = "", $docs = null)
     {
         $this->method = $method;
         $this->pattern = $pattern;
         $this->controllerName = $className;
         $this->controller = null;
+        $this->middlewares = $middlewares;
         $this->contentType = $contentType;
+        $this->controllerPath = $controllerPath;
+        $this->docs = $docs;
     }
     static function get(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
     {
-        return new Route(Method::Get, $pattern, $handlerClass, $contentType);
+        return new Route(Method::Get, $pattern, [], $handlerClass, $contentType);
     }
 
     static function post(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
     {
-        return new Route(Method::Post, $pattern, $handlerClass, $contentType);
+        return new Route(Method::Post, $pattern, [], $handlerClass, $contentType);
     }
 
     static function patch(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
     {
-        return new Route(Method::Patch, $pattern, $handlerClass, $contentType);
+        return new Route(Method::Patch, $pattern, [], $handlerClass, $contentType);
     }
 
     static function put(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
     {
-        return new Route(Method::Put, $pattern, $handlerClass, $contentType);
+        return new Route(Method::Put, $pattern, [], $handlerClass, $contentType);
     }
 
     static function delete(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
     {
-        return new Route(Method::Delete, $pattern, $handlerClass, $contentType);
+        return new Route(Method::Delete, $pattern, [], $handlerClass, $contentType);
     }
 
     static function fromArray(array $route): Route
     {
         $className = $route['controller'];
+        $path = $route['controller_path'];
+        $docs = $route['docs'] ?? null;
+        $middlewares = $route["middlewares"] ?? [];
         $pattern = $route['pattern'] ?? [];
         $method = strtoupper($route['method'] ?? '');
         $contentType = $route['contentType'] ?? ContentTypes::Json;
 
         switch ($method) {
             case "GET":
-                return new Route('GET', $pattern, $contentType, $className);
+                return new Route('GET', $pattern, $middlewares, $contentType, $className, $path, $docs);
             case "POST":
-                return new Route('POST', $pattern,$contentType, $className);
+                return new Route('POST', $pattern, $middlewares, $contentType, $className, $path, $docs);
             case "DELETE":
-                return new Route('DELETE', $pattern, $contentType, $className);
+                return new Route('DELETE', $pattern, $middlewares, $contentType, $className, $path, $docs);
             case "PUT":
-                return new Route('PUT', $pattern, $contentType, $className);
+                return new Route('PUT', $pattern, $middlewares, $contentType, $className, $path, $docs);
             case "PATCH":
-                return new Route('PATCH', $pattern, $contentType, $className);
+                return new Route('PATCH', $pattern, $middlewares, $contentType, $className, $path, $docs);
             default:
                 throw new \Exception("Metodo non valido: $method");
         }
@@ -118,6 +127,11 @@ class Route
         return $this->controllerName;
     }
 
+    public function getControllerPath(): string
+    {
+        return $this->controllerPath;
+    }
+
     public function prefixPattern(array $pattern): void
     {
         $this->pattern = array_merge($this->pattern, $pattern);
@@ -125,13 +139,20 @@ class Route
 
     public function toArray(): array
     {
+        $uri = '/' . implode('/', array_map(
+            fn($p) => preg_replace('/\{(\w+)\}:[^}]+/', '{$1}', $p),
+            $this->getPattern()
+        ));
 
         return [
-            "method" => $this->getMethod(),
-            "pattern" => $this->getPattern(),
-            "contentType" => $this->getContentType(),
-            "middlewares" => $this->getMiddlewares(),
-            "controller" => $this->getController()
+            'uri' => $uri,
+            'method' => $this->getMethod(),
+            'pattern' => $this->getPattern(),
+            'contentType' => $this->getContentType(),
+            'middlewares' => $this->getMiddlewares(),
+            'controller' => $this->getController(),
+            'controller_path' => $this->getControllerPath(),
+            'docs' => $this->docs,
         ];
     }
 }

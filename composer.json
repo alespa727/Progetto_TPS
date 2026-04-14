@@ -7,7 +7,9 @@
     
     "autoload": {
         "psr-4": {
-            "Core\\": "framework/"
+            "Core\\": "framework/",
+            "DatabaseUtil\\": "database/",
+            "Authorization\\": "authorization/"
         }
     }
 }

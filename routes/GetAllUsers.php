@@ -9,7 +9,7 @@ use Core\HttpResponseCodes;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "users"], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "users"], [], ContentTypes::Json)]
 class GetAllUsers extends Controller
 {
     private PDO $db;

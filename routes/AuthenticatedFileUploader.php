@@ -9,7 +9,7 @@ use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Post, ["api", "protectedUpload"], ContentTypes::Json)]
+#[Route(Method::Post, ["api", "protectedUpload"], [], ContentTypes::Json)]
 class AuthenticatedFileUploader extends Controller
 {
     function manageRequest(Request $request, Params $params): Response
@@ -21,3 +21,4 @@ class AuthenticatedFileUploader extends Controller
         return $res;
     }
 }
+        

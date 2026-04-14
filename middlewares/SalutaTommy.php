@@ -11,7 +11,7 @@ class SalutaTommy extends Middleware
         return false;
     }
 
-    function getErrorResponse(): Response
+    function getErrorResponse(Request $request): Response
     {
         return Response::new()
         ->forbidden()

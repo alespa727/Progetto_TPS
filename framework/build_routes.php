@@ -8,9 +8,23 @@ return function (string $path, Request $request = new Request()): array|null {
     include_once "functions.php";
 
     $before = get_declared_classes();
+    $iterator = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($path)
+    );
 
-    foreach (glob($path.'/*.php') as $file) {
-        require_once $file;
+    try {
+
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                require_once $file->getPathname();
+            }
+        }
+
+    } catch (\Throwable $th) {
+        $res = Response::new()
+                ->internalServerError()
+                ->body(["description"=>"route duplicate"]);
+        Router::sendResponse($res, ContentTypes::Json);
     }
 
     $after = get_declared_classes();
@@ -21,18 +35,23 @@ return function (string $path, Request $request = new Request()): array|null {
     foreach ($newClasses as $className) {
         $reflection = new \ReflectionClass($className);
         $attributes = $reflection->getAttributes(Route::class);
+        $apiDocAttrs = $reflection->getAttributes(ApiDoc::class);
 
         foreach ($attributes as $attr) {
-            /**
+            /** 
              * @var Route $route
              */
             $route = $attr->newInstance();
-            
+
             $routeArray = $route->toArray();
+            $controllerPath = $reflection->getFileName();
             $routeArray["controller"] = $className;
+            $routeArray["controller_path"] = $controllerPath;
+            $routeArray["docs"] = !empty($apiDocAttrs)
+                ? $apiDocAttrs[0]->newInstance()
+                : null;
             $routes[] = Route::fromArray($routeArray);
 
-            print_r($routes);
         }
     }
 
@@ -112,6 +131,7 @@ return function (string $path, Request $request = new Request()): array|null {
         $data = "<?php\nreturn " . VarExporter::export($routes) . ";\n";
         file_put_contents($p, $data);
     }
+
     $path = __DIR__ . '/cache/routes_' . $request->getSegments()[0] . '.php';
     return (require $path);
 };

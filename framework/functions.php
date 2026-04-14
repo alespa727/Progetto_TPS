@@ -1,4 +1,19 @@
 <?php
+
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_COMPILE_ERROR])) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error' => $error['message'],
+            'file'  => $error['file'],
+            'line'  => $error['line'],
+        ]);
+        exit;
+    }
+});
+
 function getExplodedUri(): array
 {
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -85,27 +100,31 @@ function didRouteFileChange()
 }
 function routesHaveChanged($routesPath): bool
 {
-
     $hashFile = __DIR__ . '/cache/routes.sha256';
-
     if (!is_dir(__DIR__ . '/cache')) {
         mkdir(__DIR__ . '/cache', 0777, true);
     }
 
-    $files = glob($routesPath . '/*.php');
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($routesPath, RecursiveDirectoryIterator::SKIP_DOTS)
+    );
 
-    if (!$files) {
+    $hashes = '';
+    $found = false;
+
+    foreach ($iterator as $file) {
+        if ($file->isFile() && $file->getExtension() === 'php') {
+
+            $hashes .= hash_file('sha256', $file->getPathname());
+            $found = true;
+        }
+    }
+
+    if (!$found) {
         return false;
     }
 
-    $hashes = '';
-
-    foreach ($files as $file) {
-        $hashes .= hash_file('sha256', $file);
-    }
-
     $currentHash = hash('sha256', $hashes);
-
     $oldHash = file_exists($hashFile)
         ? trim(file_get_contents($hashFile))
         : null;
@@ -115,10 +134,8 @@ function routesHaveChanged($routesPath): bool
     }
 
     file_put_contents($hashFile, $currentHash);
-
     return true;
-}
-function var_export_short(array $array)
+}function var_export_short(array $array)
 {
     return str_replace(['array (', ')'], ['[', ']'], var_export($array, true));
 }

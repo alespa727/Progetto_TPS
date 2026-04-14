@@ -9,7 +9,7 @@ use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "download", "{fileName}:{string}"], ContentTypes::DownloadFile)]
+#[Route(Method::Get, ["api", "download", "{fileName}:{string}"], [], ContentTypes::DownloadFile)]
 class FileDownload extends Controller
 {
     function manageRequest(Request $request, Params $params): Response
@@ -21,6 +21,7 @@ class FileDownload extends Controller
         ->ok()
         ->addFile($path, $name);
 
-        return $res;
-    }
+        return $res; 
+    } 
 }
+ 

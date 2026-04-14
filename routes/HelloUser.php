@@ -8,8 +8,8 @@ use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
 
-#[Route(Method::Get, ["api", "hello"], ContentTypes::Html)]
-#[Route(Method::Post, ["api", "hello"], ContentTypes::Html)]
+#[Route(Method::Get, ["api", "hello"], [], ContentTypes::Html)]
+#[Route(Method::Post, ["api", "hello"], [], ContentTypes::Html)]
 class HelloUser extends Controller
 {
     private function getHtml($text): string
