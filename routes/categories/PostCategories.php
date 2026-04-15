@@ -15,12 +15,17 @@ use Firebase\JWT\Key;
 #[Route(Method::Post, ["api", "categories"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 class PostCategories extends Controller
 {
-   
+
     function manageRequest(Request $request, Params $params): Response
     {
-        
+
         $nome_categoria = $request->getBody("name");
-        if(!isset($nome_categoria)){
+        /**
+         * @var array
+         */
+        $required_specified_specs = $request->getBody("specs");
+
+        if (!isset($nome_categoria)) {
             throw new BadRequest("Inserisci un nome nel body");
         }
         $nome_url = str_replace(" ", "-", strtolower($nome_categoria));
@@ -29,18 +34,25 @@ class PostCategories extends Controller
          */
         $db = \DatabaseUtil\Database::getDatabase();
 
-
         $pr = $db->prepare("INSERT INTO categories (name, url_name) values (?, ?)");
-
         $success = $pr->execute([$nome_categoria, $nome_url]);
-        if($success){
+        $lastId = $db->lastInsertId();
+
+        $pr = $db->prepare("INSERT INTO category_specs (category_id, spec_key, spec_label, unit) values (?, ?, ?, ?)");
+
+        if ($success) {
+
+            foreach ($required_specified_specs as $key => $spec) {
+                $pr->execute([$lastId, $spec["key"], $spec["label"], $spec["unit"] ?? ""]);
+            }
+            
             $res = Response::new()
                 ->created()
-                ->body(["description"=>"creata nuova categoria"]);
-        }else{
+                ->body(["description" => "creata nuova categoria"]);
+        } else {
             throw new BadRequest("Error Processing Request");
         }
         return $res;
 
-    } 
+    }
 }

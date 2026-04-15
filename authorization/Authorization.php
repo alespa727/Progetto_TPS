@@ -67,31 +67,36 @@ final class Authorization
             return false;
     }
 
-    public static function verify(): void
+    public static function verify(): string
     {
-        if(!Authorization::is_logged_in()){
+        if (!Authorization::is_logged_in()) {
             $res = Response::new()
-            ->unauthorized()
-            ->body(["description" => "Esegui il login"]);
+                ->unauthorized()
+                ->body(["description" => "Esegui il login"]);
 
             Router::sendResponse($res, ContentTypes::Json);
         }
+
+        $cookie_jwt = $_COOKIE["token"];
+        $decoded = JWT::decode($cookie_jwt, new Key(self::$secret, 'HS256'), $headers);
+        $decoded_array = (array) $decoded;
+        return $decoded_array["username"];
     }
     public static function verifyOwnership(): void
     {
-        if(!Authorization::is_logged_in()){
+        if (!Authorization::is_logged_in()) {
             $res = Response::new()
-            ->unauthorized()
-            ->body(["description" => "Esegui il login"]);
+                ->unauthorized()
+                ->body(["description" => "Esegui il login"]);
 
             Router::sendResponse($res, ContentTypes::Json);
-        }else if(!Authorization::is_owner()){
+        } else if (!Authorization::is_owner()) {
             $res = Response::new()
-                    ->forbidden()
-                    ->body(["description" => "Non sei autorizzato"]);
+                ->forbidden()
+                ->body(["description" => "Non sei autorizzato"]);
 
             Router::sendResponse($res, ContentTypes::Json);
         }
-       
+
     }
 }
