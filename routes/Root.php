@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 
 #[Route(Method::Get, [], [], ContentTypes::Html)]
 #[OA\Get(
-    path: "",
+    path: "/",
     summary: "Welcomes the user into my web service",
     parameters: [
         new OA\Parameter(
