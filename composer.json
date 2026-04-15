@@ -1,15 +1,24 @@
 {
+    "config": {
+        "platform-check": false
+    },
     "require": {
         "firebase/php-jwt": "^7.0",
         "symfony/var-exporter": "^7.0",
-        "doctrine/dbal": "^4.4"
+        "doctrine/dbal": "^4.4",
+        "zircote/swagger-php": "^4.0"
     },
-    
     "autoload": {
+        "classmap": [
+            "routes/"
+        ],
         "psr-4": {
             "Core\\": "framework/",
             "DatabaseUtil\\": "database/",
             "Authorization\\": "authorization/"
         }
+    },
+    "scripts": {
+        "docs": "./vendor/bin/openapi --bootstrap vendor/autoload.php routes/ -o public/openapi.json"
     }
 }

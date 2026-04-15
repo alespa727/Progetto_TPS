@@ -11,22 +11,27 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "login"], [], ContentTypes::Json)]
-#[ApiDoc(
-    summary: 'Login utente',
-    description: 'Autentica un utente tramite username e password. In caso di successo imposta un cookie JWT HttpOnly valido per 1 ora.',
-    request: [
-        'username' => 'string',
-        'password' => 'string',
-    ],
+#[OA\Post(
+    path: "/api/login",
+    summary: "Fai il login",
+    parameters: [
+        new OA\Parameter(
+            name: "username",
+            required: false,
+            schema: new OA\Schema(type: "string")
+        ),
+        new OA\Parameter(
+            name: "password",
+            required: false,
+            schema: new OA\Schema(type: "string")
+        ) 
+
+    ], 
     responses: [
-        200 => [
-            'description' => 'Login riuscito, cookie JWT impostato',
-        ],
-        400 => [
-            'description' => 'Credenziali errate o utente non trovato',
-        ],
+        new OA\Response(response: 200, description: 'Login riuscito, cookie JWT impostato',)
     ]
 )]
 class Login extends Controller

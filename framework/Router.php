@@ -41,10 +41,8 @@ class Router
     static function init(): void
     {
         include_once "functions.php";
-        $cacheExists = !empty(glob(__DIR__ . '/cache/routes_*.php'));
-        if ( routesHaveChanged(Router::$routesPath)) {
+        if (routesHaveChanged(Router::$routesPath)) {
             (require "build_routes.php")(Router::$routesPath);
-
         }
     }
 
@@ -61,60 +59,49 @@ class Router
         $request_method = $request->getMethod();
         $params = [];
 
-
         $i = 0;
+
+        if (empty($segments)) {
+            if (isset($array["_" . $request_method])) {
+                $route = $array["_" . $request_method];
+            }
+        }
 
         foreach ($segments as $key => $segment) {
             $isLast = $i === count($segments) - 1;
 
-            if ($i === 0) {
-                if ($isLast && array_key_exists("_" . $request_method, $array)) {
-
-                    $route = $array["_" . $request_method];
-
-                } else if ($isLast) {
-                    $methods = $array["methods"];
-
-                    if (!empty($methods)) {
-                        Router::sendResponse(
-                            Response::new()
-                                ->methodNotAllowed()
-                                ->body(['error' => 'Metodo non valido']),
-                            ContentTypes::Json
-                        );
-                    }
-                }
-                $i++;
-                continue;
-            }
 
             if (!$isLast) {
 
                 if (array_key_exists($segment, $array)) {
                     $array = &$array[$segment];
+
                 } else {
 
+
                     $param = explode(":", $array["_param"]);
+
                     $paramName = $param[0];
-                    $type = $param[1];
-                    $array = &$array[$paramName];
+
+                    $type = $array["_type"];
 
                     $name = substr($paramName, 1, -1);
+
+                    $isValidType = false;
+
+                    $array = &$array[$paramName];
+
                     $params[$name] = $segment;
 
                 }
-
-
-
             } else {
-        
                 if (array_key_exists($segment, $array)) {
                     if (array_key_exists("_" . $request_method, $array[$segment]))
                         $route = $array[$segment]["_" . $request_method];
-                    else if (count($array[$segment]) > 0) {
+                    else if (count($array[$segment]["methods"]) > 0) {
                         $res = Response::new()
                             ->status(HttpResponseCodes::METHOD_NOT_ALLOWED)
-                            ->body(["description"=>"metodo non valido"]);
+                            ->body(["description" => "metodo non valido"]);
                         Router::sendResponse($res, ContentTypes::Json);
                     }
 
@@ -169,7 +156,7 @@ class Router
 
         }/*else{
 
-       }*/
+     }*/
 
         return $route;
     }
@@ -185,10 +172,8 @@ class Router
         $request = new Request();
         Router::handleCors($allowedHosts);
 
-        $routes = [];
-        if (!empty($request->getSegments())) {
-            $routes = require "cache/routes_" . $request->getSegments()[0] . ".php";
-        }
+        $routes = (require "cache/routes.php");
+
 
         $route = Router::findMatch($request, $routes);
         if (!$route) {
@@ -251,14 +236,6 @@ class Router
             }
         );
 
-        if (!empty($wrong_method_matches)) {
-            Router::sendResponse(
-                Response::new()
-                    ->methodNotAllowed()
-                    ->body(['error' => 'Metodo non valido']),
-                $routeInstance->getContentType()
-            );
-        }
     }
 
     static function sendHeaders(Response $response, string $type)

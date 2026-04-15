@@ -11,10 +11,31 @@ use Core\ContentTypes;
 use Core\Params;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
 use DatabaseUtil\Database;
 
 #[Route(Method::Get, ["api", "profile"], [], ContentTypes::Json)]
+#[OA\Get(
+    path: "/api/profile",
+    summary: "Vedi il tuo profilo",
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "OK",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "id", type: "number", example: 1),
+                    new OA\Property(property: "username", type: "string", example: "Ale"),
+                    new OA\Property(property: "pfp_path", type: "string", example: "/idk.jpg"),
+                    new OA\Property(property: "created_at", type: "string", example: "data"),
+                     new OA\Property(property: "is_owner", type: "boolean", example: true),
+
+                ]
+            )
+        )
+    ]
+)]
 class Profile extends Controller
 {
     private $key = 'example_key_of_sufficient_length';
@@ -22,14 +43,14 @@ class Profile extends Controller
 
     function manageRequest(Request $request, Params $params): Response
     {
-        
+
         /**
          * @var PDO $db
          */
         $db = Database::getDatabase();
-        if(!array_key_exists("token", $_COOKIE))
+        if (!array_key_exists("token", $_COOKIE))
             throw new Unauthorized("Esegui il login");
-            
+
         $cookie_jwt = $_COOKIE["token"];
         $decoded = JWT::decode($cookie_jwt, new Key($this->key, 'HS256'), $headers);
         $decoded_array = (array) $decoded;
@@ -38,12 +59,12 @@ class Profile extends Controller
 
         $pr->execute(["username" => $decoded_array["username"]]);
         $user = $pr->fetch(PDO::FETCH_ASSOC);
- 
+
 
         $res = Response::new()
             ->ok()
             ->body($user);
-            
+
         return $res;
 
     }

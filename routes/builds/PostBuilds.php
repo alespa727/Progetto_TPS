@@ -15,6 +15,17 @@ use Firebase\JWT\Key;
 use Authorization\Authorization;
 
 #[Route(Method::Post, ["api", "builds"], [AuthMiddleware::class], ContentTypes::Json)]
+#[ApiDoc(
+    summary: "To post a build",
+    description: "Route creata per aggiungere una nuova build al proprio account",
+    request: [
+        "name"=> "La tua build",
+        "description"=> "idk"
+    ],
+    responses: [
+        200 => ["description" => "build creata con successo"]
+    ]
+)]
 class PostBuilds extends Controller
 {
 

@@ -22,8 +22,8 @@ return function (string $path, Request $request = new Request()): array|null {
 
     } catch (\Throwable $th) {
         $res = Response::new()
-                ->internalServerError()
-                ->body(["description"=>"route duplicate"]);
+            ->internalServerError()
+            ->body(["description" => "route duplicate"]);
         Router::sendResponse($res, ContentTypes::Json);
     }
 
@@ -63,6 +63,9 @@ return function (string $path, Request $request = new Request()): array|null {
         $pattern = $route->getPattern();
         $lastIndex = count($pattern) - 1;
 
+        if (empty($pattern)) {
+            $indexedRoutes['_' . $route->getMethod()] = $route->toArray();
+        }
 
         foreach ($pattern as $i => $segment) {
             if ($segment[0] === "{" && $segment[strlen($segment) - 1] === '}') {
@@ -77,7 +80,7 @@ return function (string $path, Request $request = new Request()): array|null {
                 }
 
                 if ($type === null || empty($type)) {
-                    $node['_type'] = "int";
+                    $node['_type'] = "string";
                 } else {
                     $node['_type'] = $type;
                 }
@@ -90,10 +93,13 @@ return function (string $path, Request $request = new Request()): array|null {
                     $node[$paramName]['methods'] = [];
                 }
 
+
                 if ($i === $lastIndex) {
                     $node[$paramName]['_' . $route->getMethod()] = $route->toArray();
                     $node[$paramName]['methods'][] = $route->getMethod();
                 }
+
+                $node = &$node[$paramName];
                 continue;
 
             }
@@ -106,10 +112,6 @@ return function (string $path, Request $request = new Request()): array|null {
             if (!isset($node[$segment]['methods'])) {
                 $node[$segment]['methods'] = [];
             }
-
-
-
-
 
             if ($i === $lastIndex) {
                 $node[$segment]['_' . $route->getMethod()] = $route->toArray();
@@ -124,14 +126,13 @@ return function (string $path, Request $request = new Request()): array|null {
         mkdir(__DIR__ . '/cache', 0775, true);
     }
 
-    foreach ($indexedRoutes as $prefix => $routes) {
-        $p = __DIR__ . '/cache/routes_' . $prefix . '.php';
+    $p = __DIR__ . '/cache/routes.php';
 
 
-        $data = "<?php\nreturn " . VarExporter::export($routes) . ";\n";
-        file_put_contents($p, $data);
-    }
+    $data = "<?php\nreturn " . VarExporter::export($indexedRoutes) . ";\n";
+    file_put_contents($p, $data);
 
-    $path = __DIR__ . '/cache/routes_' . $request->getSegments()[0] . '.php';
+
+    $path = __DIR__ . '/cache/routes.php';
     return (require $path);
 };

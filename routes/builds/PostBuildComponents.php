@@ -14,13 +14,13 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Authorization\Authorization;
 
-#[Route(Method::Post, ["api", "builds", "components"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Post, ["api", "builds", "{buildId}:{int}", "components"], [], ContentTypes::Json)]
 class PostBuildComponents extends Controller
 {
 
    function manageRequest(Request $request, Params $params): Response
 {
-    $build_id = $request->getBody("build_id");
+    $build_id = $params->getInt("buildId");
     $component_id = $request->getBody("component_id");
 
     if (!isset($build_id))
@@ -29,7 +29,7 @@ class PostBuildComponents extends Controller
         throw new BadRequest("component_id mancante");
 
     $db = Database::getDatabase();
-    $username = Authorization::verify();
+    $username = Authorization::verify(); 
 
     $stmt = $db->prepare("SELECT id FROM users WHERE username = ?");
     $stmt->execute([$username]);
@@ -39,6 +39,7 @@ class PostBuildComponents extends Controller
     $stmt->execute([$build_id, $user["id"]]);
 
     $build = $stmt->fetch(PDO::FETCH_ASSOC);
+
     if (!$build)
         throw new BadRequest("Build non disponibile");
 

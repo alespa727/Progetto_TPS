@@ -1,0 +1,81 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "my api",
+        "description": "idk",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/hello": {
+            "get": {
+                "summary": "Saluta l'utente",
+                "operationId": "2e3681a1a0c420ef522d2dec6cb8a990",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Saluta l'utente",
+                "operationId": "0b38c890f1564d79beabfde872e83090",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "summary": "Fai il login",
+                "operationId": "d6827308a526a60560c67612dfd96265",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": null,
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": null,
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login riuscito, cookie JWT impostato"
+                    }
+                }
+            }
+        }
+    }
+}
