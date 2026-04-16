@@ -29,4 +29,4 @@ Config::load(__DIR__."/config/config.yaml");
 Router::init();
 
 FileHandler::setStaticFilesPath(Config::path("directories.static"));
-Router::handleDirect($start);
+Router::handle($start);

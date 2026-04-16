@@ -11,15 +11,15 @@ use Core\Params;
 use Core\ApiDoc;
 use DatabaseUtil\Database;
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use Firebase\JWT\Key; 
 use Authorization\Authorization;
 use OpenApi\Attributes as OA;
 
 
 #[OA\Get(
     path: "/api/builds",
-    tags: ["Builds"],
     summary: "Lista delle build dell'utente loggato",
+    tags: ["Builds"],
     responses: [
         new OA\Response(
             response: 200,

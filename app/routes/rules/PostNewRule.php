@@ -20,7 +20,6 @@ use OpenApi\Attributes as OA;
 #[OA\Post(
     path: "/api/rules",
     summary: "Crea una nuova regola di compatibilità",
-    tags: ["Rules"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -40,6 +39,7 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Rules"],
     responses: [
         new OA\Response(response: 201, description: "Regola creata con successo"),
     ]

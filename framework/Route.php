@@ -3,7 +3,13 @@
 namespace Core;
 
 use Attribute;
-
+/**
+ * Attributo PHP che definisce una route HTTP associata a una classe controller.
+ *
+ * Può essere applicato più volte sulla stessa classe per registrare route multiple.
+ * Usato da {@see RouteBuilder} per la discovery automatica dei controller.
+ *
+ */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Route
 {
@@ -14,10 +20,17 @@ class Route
     private string $controllerPath;
     private Controller|null $controller;
 
-    private ApiDoc|null $docs;
     private array $pattern;
 
-    public function __construct(string $method, array $pattern, array $middlewares, string $contentType = ContentTypes::Json, $className = "", $controllerPath = "", $docs = null)
+      /**
+     * @param string $method        Metodo HTTP (es. 'GET', 'POST').
+     * @param array  $pattern       Segmenti URI (es. `['users', '{id:int}']`).
+     * @param array  $middlewares   Lista di classi middleware da eseguire prima del controller.
+     * @param string $contentType   Content-Type della risposta (default {@see ContentTypes::Json}).
+     * @param string $className     FQCN del controller associato.
+     * @param string $controllerPath Percorso assoluto del file del controller.
+     */
+    public function __construct(string $method, array $pattern, array $middlewares, string $contentType = ContentTypes::Json, $className = "", $controllerPath = "")
     {
         $this->method = $method;
         $this->pattern = $pattern;
@@ -26,38 +39,63 @@ class Route
         $this->middlewares = $middlewares;
         $this->contentType = $contentType;
         $this->controllerPath = $controllerPath;
-        $this->docs = $docs;
-    }
-    static function get(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
-    {
-        return new Route(Method::Get, $pattern, [], $handlerClass, $contentType);
+
     }
 
-    static function post(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
+     /**
+     * Istanzia il controller (se necessario) e invoca il suo handler `__invoke`.
+     *
+     * @param Request $request Oggetto della richiesta HTTP corrente.
+     * @param Params  $params  Parametri estratti dall'URI.
+     * @return Response        Risposta prodotta dal controller.
+     */
+    public function manageRequest(Request $request, Params $params): Response
     {
-        return new Route(Method::Post, $pattern, [], $handlerClass, $contentType);
+        if ($this->controller === null) {
+            $className = $this->controllerName;
+            $this->controller = new $className();
+        }
+        return ($this->controller)($request, $params);
     }
 
-    static function patch(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
+    /**
+     * Serializza la route in un array associativo, normalizzando i segmenti dinamici
+     * (es. `{id:int}` → `{id}`).
+     *
+     * @return array Array con chiavi: `uri`, `method`, `pattern`, `contentType`,
+     *               `middlewares`, `controller`, `controller_path`.
+     */
+    public function toArray(): array
     {
-        return new Route(Method::Patch, $pattern, [], $handlerClass, $contentType);
+        $uri = '/' . implode('/', array_map(
+            fn($p) => preg_replace('/:\{[^}]+\}/', '', $p),
+            $this->getPattern()
+        ));
+
+        return [
+            'uri' => $uri,
+            'method' => $this->getMethod(),
+            'pattern' => $this->getPattern(),
+            'contentType' => $this->getContentType(),
+            'middlewares' => $this->getMiddlewares(),
+            'controller' => $this->getController(),
+            'controller_path' => $this->getControllerPath()
+        ];
     }
 
-    static function put(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
-    {
-        return new Route(Method::Put, $pattern, [], $handlerClass, $contentType);
-    }
-
-    static function delete(array $pattern, string $handlerClass = "", string $contentType = ContentTypes::Json): Route
-    {
-        return new Route(Method::Delete, $pattern, [], $handlerClass, $contentType);
-    }
-
+    /**
+     * Istanzia una Route a partire da un array associativo (es. letto dalla cache).
+     *
+     * @param array $route Array con chiavi: `controller`, `controller_path`, `middlewares`,
+     *                     `pattern`, `method`, `contentType`.
+     * @return Route       Istanza configurata per il metodo HTTP specificato.
+     *
+     * @throws \Exception Se il metodo HTTP non è tra GET, POST, PUT, PATCH, DELETE.
+     */
     static function fromArray(array $route): Route
     {
         $className = $route['controller'];
         $path = $route['controller_path'];
-        $docs = $route['docs'] ?? null;
         $middlewares = $route["middlewares"] ?? [];
         $pattern = $route['pattern'] ?? [];
         $method = strtoupper($route['method'] ?? '');
@@ -65,15 +103,15 @@ class Route
 
         switch ($method) {
             case "GET":
-                return new Route('GET', $pattern, $middlewares, $contentType, $className, $path, $docs);
+                return new Route('GET', $pattern, $middlewares, $contentType, $className, $path);
             case "POST":
-                return new Route('POST', $pattern, $middlewares, $contentType, $className, $path, $docs);
+                return new Route('POST', $pattern, $middlewares, $contentType, $className, $path);
             case "DELETE":
-                return new Route('DELETE', $pattern, $middlewares, $contentType, $className, $path, $docs);
+                return new Route('DELETE', $pattern, $middlewares, $contentType, $className, $path);
             case "PUT":
-                return new Route('PUT', $pattern, $middlewares, $contentType, $className, $path, $docs);
+                return new Route('PUT', $pattern, $middlewares, $contentType, $className, $path);
             case "PATCH":
-                return new Route('PATCH', $pattern, $middlewares, $contentType, $className, $path, $docs);
+                return new Route('PATCH', $pattern, $middlewares, $contentType, $className, $path);
             default:
                 throw new \Exception("Metodo non valido: $method");
         }
@@ -93,14 +131,7 @@ class Route
         return $this;
     }
 
-    public function manageRequest(Request $request, Params $params): Response
-    {
-        if ($this->controller === null) {
-            $className = $this->controllerName;
-            $this->controller = new $className();
-        }
-        return ($this->controller)($request, $params);
-    }
+    
     public function getMethod(): string
     {
         return $this->method;
@@ -137,22 +168,5 @@ class Route
         $this->pattern = array_merge($this->pattern, $pattern);
     }
 
-    public function toArray(): array
-    {
-        $uri = '/' . implode('/', array_map(
-            fn($p) => preg_replace('/\{(\w+)\}:[^}]+/', '{$1}', $p),
-            $this->getPattern()
-        ));
-
-        return [
-            'uri' => $uri,
-            'method' => $this->getMethod(),
-            'pattern' => $this->getPattern(),
-            'contentType' => $this->getContentType(),
-            'middlewares' => $this->getMiddlewares(),
-            'controller' => $this->getController(),
-            'controller_path' => $this->getControllerPath(),
-            'docs' => $this->docs,
-        ];
-    }
+    
 }

@@ -20,24 +20,30 @@ use OpenApi\Attributes as OA;
     parameters: [
         new OA\Parameter(
             name: "manufacturerName",
+            description: "url_name del produttore",
             in: "path",
             required: true,
-            description: "url_name del produttore",
             schema: new OA\Schema(type: "string", example: "asus")
         )
     ],
     responses: [
         new OA\Response(
             response: 204,
-            description: "Produttore eliminato"
+            description: "Produttore eliminato con successo"
         ),
         new OA\Response(
             response: 400,
-            description: "Produttore non esistente"
+            description: "Produttore non esistente",
+            content: new OA\JsonContent(
+                example: ["error" => "Azienda non esistente"]
+            )
         ),
         new OA\Response(
             response: 403,
-            description: "Non autorizzato"
+            description: "Non autorizzato",
+            content: new OA\JsonContent(
+                example: ["error" => "Non autorizzato"]
+            )
         )
     ]
 )]

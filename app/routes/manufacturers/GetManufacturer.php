@@ -22,9 +22,9 @@ use OpenApi\Attributes as OA;
     parameters: [
         new OA\Parameter(
             name: "url_name",
+            description: "url-name del produttore",
             in: "path",
             required: true,
-            description: "url-name del produttore",
             schema: new OA\Schema(type: "string")
         )
     ],
@@ -33,12 +33,12 @@ use OpenApi\Attributes as OA;
             response: 200,
             description: "OK",
             content: new OA\JsonContent(
-                type: "object",
                 properties: [
                     new OA\Property(property: "id", type: "integer"),
                     new OA\Property(property: "name", type: "string"),
                     new OA\Property(property: "url_name", type: "string"),
-                ]
+                ],
+                type: "object"
             )
         ),
         new OA\Response(

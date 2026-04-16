@@ -8,9 +8,6 @@ use Core\Response;
 use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
-use Core\ApiDoc;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
 #[OA\Get(
@@ -20,9 +17,9 @@ use OpenApi\Attributes as OA;
     parameters: [
         new OA\Parameter(
             name: "page",
+            description: "Pagina (default 1)",
             in: "query",
             required: false,
-            description: "Pagina (default 1)",
             schema: new OA\Schema(type: "integer", example: 1)
         )
     ],

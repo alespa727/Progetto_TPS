@@ -19,7 +19,6 @@ use OpenApi\Attributes as OA;
 #[OA\Post(
     path: "/api/login",
     summary: "Fai il login",
-    tags: ["Profile"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -29,6 +28,7 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Profile"],
     responses: [
         new OA\Response(response: 200, description: "Login riuscito, cookie JWT impostato")
     ]

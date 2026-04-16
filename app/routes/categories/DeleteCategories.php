@@ -22,9 +22,9 @@ use OpenApi\Attributes as OA;
     parameters: [
         new OA\Parameter(
             name: "categoryName",
+            description: "url_name della categoria",
             in: "path",
             required: true,
-            description: "url_name della categoria",
             schema: new OA\Schema(type: "string", example: "cpu")
         )
     ],

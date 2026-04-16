@@ -22,9 +22,9 @@ use OpenApi\Attributes as OA;
     parameters: [
         new OA\Parameter(
             name: "url_name",
+            description: "url-name del componente",
             in: "path",
             required: true,
-            description: "url-name del componente",
             schema: new OA\Schema(type: "string")
         )
     ],

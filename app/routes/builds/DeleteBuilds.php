@@ -21,8 +21,8 @@ use OpenApi\Attributes as OA;
 #[Route(Method::Delete, ["api", "builds", "{buildId}:{int}"], [AuthMiddleware::class], ContentTypes::Json)]
 #[OA\Delete(
     path: "/api/builds/{buildId}",
-    tags: ["Builds"],
     summary: "Cancella una build",
+    tags: ["Builds"],
     parameters: [
         new OA\Parameter(
             name: "buildId",

@@ -10,7 +10,7 @@ use Core\Response;
 use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
-use Core\ApiDoc;
+use Core\ApiDoc; 
 use DatabaseUtil\Database;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -20,14 +20,14 @@ use OpenApi\Attributes as OA;
 #[Route(Method::Get, ["api", "builds", "{buildId}:{int}"], [AuthMiddleware::class], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/builds/{buildId}",
-    tags: ["Builds"],
     summary: "Dettagli di una build",
+    tags: ["Builds"],
     parameters: [
         new OA\Parameter(
             name: "buildId",
             description: "ID del build",
-            required: true,
             in: "path",
+            required: true,
             schema: new OA\Schema(type: "integer")
         )
     ],
@@ -36,7 +36,6 @@ use OpenApi\Attributes as OA;
             response: 200,
             description: "OK",
             content: new OA\JsonContent(
-                type: "object",
                 properties: [
                         new OA\Property(property: "id", type: "integer"),
                         new OA\Property(property: "user_id", type: "integer"),
@@ -47,7 +46,8 @@ use OpenApi\Attributes as OA;
                         new OA\Property(property: "total_price", type: "integer", nullable: true),
                         new OA\Property(property: "created_at", type: "string"),
                         new OA\Property(property: "updated_at", type: "string", nullable: true)
-                    ]
+                    ],
+                type: "object"
             )
         ),
         new OA\Response(response: 403, description: "Forbidden"),

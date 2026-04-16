@@ -14,35 +14,31 @@ use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "categories"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
-#[OA\Tag(name: "Categories")]
-#[OA\PathItem(path: "/api/categories")]
 #[OA\Post(
     path: "/api/categories",
     summary: "Crea una nuova categoria con le sue specifiche",
-    tags: ["Categories"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
             required: ["name"],
             properties: [
-                "name" => new OA\Schema(
-                    type: "string",
-                    example: "CPU"
-                ),
-                "specs" => new OA\Schema(
+                new OA\Property(property: "name", type: "string", example: "CPU"),
+                new OA\Property(
+                    property: "specs",
                     type: "array",
                     items: new OA\Items(
-                        type: "object",
                         properties: [
-                            "key" => new OA\Schema(type: "string"),
-                            "label" => new OA\Schema(type: "string"),
-                            "unit" => new OA\Schema(type: "string")
-                        ]
+                            new OA\Property(property: "key", type: "string"),
+                            new OA\Property(property: "label", type: "string"),
+                            new OA\Property(property: "unit", type: "string")
+                        ],
+                        type: "object"
                     )
                 )
             ]
         )
     ),
+    tags: ["Categories"],
     responses: [
         new OA\Response(response: 201, description: "Categoria creata con successo"),
         new OA\Response(response: 400, description: "Errore nella richiesta"),

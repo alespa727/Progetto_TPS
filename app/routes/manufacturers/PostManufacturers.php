@@ -18,7 +18,6 @@ use OpenApi\Attributes as OA;
 #[OA\Post(
     path: "/api/manufacturers",
     summary: "Crea un nuovo produttore",
-    tags: ["Manufacturers"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -32,6 +31,7 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Manufacturers"],
     responses: [
         new OA\Response(
             response: 201,

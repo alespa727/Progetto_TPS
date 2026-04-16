@@ -20,7 +20,6 @@ use OpenApi\Attributes as OA;
 #[OA\Post(
     path: "/api/components",
     summary: "Crea un nuovo componente",
-    tags: ["Components"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -75,6 +74,7 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Components"],
     responses: [
         new OA\Response(response: 201, description: "Componente creato con successo"),
         new OA\Response(response: 400, description: "Componente non esistente o errore nella richiesta"),

@@ -20,7 +20,6 @@ use OpenApi\Attributes as OA;
 #[OA\PathItem(path: "/api/builds")]
 #[OA\Post(
     path: "/api/builds",
-    tags: ["Builds"],
     summary: "Crea una nuova build per il tuo account",
     requestBody: new OA\RequestBody(
         required: true,
@@ -40,6 +39,7 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Builds"],
     responses: [
         new OA\Response(response: 201, description: "Build creata con successo"),
     ]

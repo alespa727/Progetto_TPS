@@ -28,7 +28,7 @@ class GetRoutes extends Controller
             $array = $r->toArray();
             $routes_array_form[] = $array;
         }
-
+ 
         $sorted_by_methods=[];
         $methods = Method::getMethodList();
         foreach ($methods as $key => $m) {
@@ -36,11 +36,7 @@ class GetRoutes extends Controller
                 if($m===$route["method"]){
                     unset($route["pattern"]);
                     unset($route["controller_path"]);
-                    unset($route["pattern"]);
                     unset($route["middlewares"]);
-                    if($route["docs"]===null){
-                        unset($route["docs"]);
-                    }
                     $sorted_by_methods[$m][] = $route;
                 }
             }

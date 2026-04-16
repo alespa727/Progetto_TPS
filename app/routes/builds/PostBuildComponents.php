@@ -18,17 +18,7 @@ use OpenApi\Attributes as OA;
 #[Route(Method::Post, ["api", "builds", "{buildId}:{int}", "components"], [], ContentTypes::Json)]
 #[OA\Post(
     path: "/api/builds/{buildId}/components",
-    tags: ["Builds"],
     summary: "Aggiunge un componente a un build specifico",
-    parameters: [
-        new OA\Parameter(
-            name: "buildId",
-            description: "ID del build",
-            required: true,
-            in: "path",
-            schema: new OA\Schema(type: "integer")
-        )
-    ],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -42,6 +32,16 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Builds"],
+    parameters: [
+        new OA\Parameter(
+            name: "buildId",
+            description: "ID del build",
+            required: true,
+            in: "path",
+            schema: new OA\Schema(type: "integer")
+        )
+    ],
     responses: [
         new OA\Response(response: 200, description: "Componente aggiunto con successo"),
         new OA\Response(response: 409, description: "Conflitti di compatibilità"),

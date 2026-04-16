@@ -11,10 +11,10 @@ use OpenApi\Attributes as OA;
 
 #[Route(Method::Get, [], [], ContentTypes::Html)]
 #[OA\Tag(name: "Root")]
-#[OA\Get(
+#[OA\Get( 
     path: "/",
-    tags: ["/"],
     summary: "Welcomes the user into my web service",
+    tags: ["/"],
     parameters: [
         new OA\Parameter(
             name: "name",

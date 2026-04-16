@@ -19,7 +19,6 @@ use OpenApi\Attributes as OA;
 #[OA\Post(
     path: "/api/register",
     summary: "Fai il register",
-    tags: ["Profile"],
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -29,13 +28,24 @@ use OpenApi\Attributes as OA;
             ]
         )
     ),
+    tags: ["Profile"],
     responses: [
-        new OA\Response(response: 200, description: "Login riuscito, cookie JWT impostato", content: new JsonContent(
-            ["description"=>"Login riuscito, cookie JWT impostato"]
-        )),
-         new OA\Response(response: 409, description: "Nome utente già utilizzato", content: new JsonContent(
-            ["error"=>"Nome utente già utilizzato"]
-        ))
+        new OA\Response(
+            response: 200,
+            description: "Login riuscito, cookie JWT impostato",
+            content: new OA\JsonContent(
+                example: [
+                    "message" => "Login effettuato con successo"
+                ]
+            )
+        ),
+        new OA\Response(
+            response: 409,
+            description: "Nome utente già utilizzato",
+            content: new OA\JsonContent(
+                example: ["error" => "Nome utente già utilizzato"]
+            )
+        )
     ]
 )]
 class Register extends Controller
