@@ -22,27 +22,18 @@ class Router
         }
     }
 
-    /**
-     * @param array{routes: string, middlewares: string, debug?: bool} $config
-     * @return void
-     */
-    static function loadConfig(array $config): void
+    static function init(): void
     {
-        Router::$routesPath = $config["routes"];
-        Router::$middlewarePath = $config["middlewares"];
-        Router::$debug = $config["debug"] ?? false;
+        Router::$routesPath = Config::path("directories.controllers");
+        Router::$middlewarePath =Config::path("directories.middlewares");
+        Router::$debug = Config::get("app.debug");
+
+
         if (Router::$debug) {
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
-        } else {
-
-        }
-    }
-
-    static function init(): void
-    {
-
+        } 
         include_once "functions.php";
         if (true)/*routesHaveChanged(Router::$routesPath)) */ {
             (require "build_routes.php")(Router::$routesPath);
@@ -183,13 +174,12 @@ class Router
 
     // Gestisce la richiesta ricercando l'uri all'interno delle routes
     /**
-     * @param array<string> $allowedHosts
      * @param $start
      */
-    static function handleDirect(array $allowedHosts, $start)
+    static function handleDirect($start)
     {
         $request = new Request();
-        Router::handleCors($allowedHosts);
+        Router::handleCors(Config::get('app.allowed_hosts', []));
 
         $routes = (require "cache/routes.php");
 

@@ -1,12 +1,12 @@
 <?php
 
+use Core\Config;
+
+define('BASE_PATH', __DIR__);
+$start = microtime(true);
 
 use Core\FileHandler;
-
-$start = microtime(true);
 use Core\Router;
-use Core\Response;
-use Core\ContentTypes;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -25,14 +25,8 @@ register_shutdown_function(function () {
     
 });
 
-Router::loadConfig(["routes" => __DIR__ . "/routes", "middlewares" => __DIR__ . "/middlewares", "debug" => false]);
+Config::load(__DIR__."/config.yaml");
 Router::init();
 
-
-FileHandler::setStaticFilesPath(__DIR__ . "/static");
-
-$allowedHosts = [
-    "localhost",
-];
-
-Router::handleDirect($allowedHosts, $start);
+FileHandler::setStaticFilesPath(Config::path("directories.static"));
+Router::handleDirect($start);
