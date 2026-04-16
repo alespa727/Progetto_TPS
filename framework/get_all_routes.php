@@ -35,8 +35,7 @@ return function (string $path, Request $request = new Request()): array|null {
     foreach ($newClasses as $className) {
         $reflection = new \ReflectionClass($className);
         $attributes = $reflection->getAttributes(Route::class);
-        $apiDocAttrs = $reflection->getAttributes(ApiDoc::class);
-
+       
         foreach ($attributes as $attr) {
             /** 
              * @var Route $route
@@ -47,9 +46,6 @@ return function (string $path, Request $request = new Request()): array|null {
             $controllerPath = $reflection->getFileName();
             $routeArray["controller"] = $className;
             $routeArray["controller_path"] = $controllerPath;
-            $routeArray["docs"] = !empty($apiDocAttrs)
-                ? $apiDocAttrs[0]->newInstance()
-                : null;
             $routes[] = Route::fromArray($routeArray);
 
         }

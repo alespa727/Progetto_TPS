@@ -1,5 +1,5 @@
 <?php
-
+use Core\Config;
 function getExplodedUri(): array
 {
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -34,6 +34,7 @@ function runMiddleware(\Core\Request $req, array $middleware, callable $final)
 
     $next = function () use (&$index, $middleware, $req, &$next, $final) {
         if ($index < count($middleware)) {
+            require Config::path("directories.middlewares")."/".$middleware[$index].".php";
             $current = new $middleware[$index]();
             $index++;
             $current($req, $next);
@@ -43,18 +44,6 @@ function runMiddleware(\Core\Request $req, array $middleware, callable $final)
     };
 
     $next();
-}
-
-function importMiddlewares(array $requested_middleware): void
-{
-    foreach ($requested_middleware as $key => $middleware) {
-        $file = __DIR__ . "/../middlewares/$middleware.php";
-
-        if (file_exists($file)) {
-            require_once $file;
-        }
-
-    }
 }
 
 function didRouteFileChange()

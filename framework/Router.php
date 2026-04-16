@@ -199,8 +199,6 @@ class Router
         $routeInstance = Route::fromArray($route);
         $requested_middleware = $routeInstance->getMiddlewares();
 
-        importMiddlewares($requested_middleware);
-
         runMiddleware(
             $request,
             $requested_middleware,

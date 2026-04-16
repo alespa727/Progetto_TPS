@@ -25,7 +25,7 @@ register_shutdown_function(function () {
     
 });
 
-Config::load(__DIR__."/config.yaml");
+Config::load(__DIR__."/config/config.yaml");
 Router::init();
 
 FileHandler::setStaticFilesPath(Config::path("directories.static"));
