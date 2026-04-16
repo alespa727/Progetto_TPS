@@ -36,7 +36,7 @@ class Router
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
         } else {
-            
+
         }
     }
 
@@ -81,14 +81,22 @@ class Router
                     $array = &$array[$segment];
 
                 } else {
+                    
+                    if (array_key_exists("_param", $array)){
+                        $param = explode(":", $array["_param"]);
+                        continue;
+                    }
+                        
+                    $paramName = null;
+                    if(isset($param))
+                        $paramName = $param[0];
 
-
-                    $param = explode(":", $array["_param"]);
-
-                    $paramName = $param[0];
-
-                    $type = $array["_type"];
-
+                    if (array_key_exists("_type", $array)){
+                        $type = $array["_type"];
+                        continue;
+                    }
+                        
+                    if(!$paramName) continue;
                     $name = substr($paramName, 1, -1);
 
                     $isValidType = false;
@@ -99,6 +107,13 @@ class Router
 
                 }
             } else {
+                if (!is_array($array)) {
+                    $res = Response::new()
+                        ->status(HttpResponseCodes::NOT_FOUND)
+                        ->body(["description" => "route non trovata"]);
+                    Router::sendResponse($res, ContentTypes::Json);
+                }
+
                 if (array_key_exists($segment, $array)) {
                     if (array_key_exists("_" . $request_method, $array[$segment]))
                         $route = $array[$segment]["_" . $request_method];
@@ -160,7 +175,7 @@ class Router
 
         }/*else{
 
-   }*/
+  }*/
 
         return $route;
     }
