@@ -16,9 +16,12 @@ use OpenApi\Attributes as OA;
 use DatabaseUtil\Database;
 
 #[Route(Method::Get, ["api", "profile"], [], ContentTypes::Json)]
+#[OA\Tag(name: "Profile")]
+#[OA\PathItem(path: "/api/profile")]
 #[OA\Get(
     path: "/api/profile",
     summary: "Vedi il tuo profilo",
+    tags: ["Profile"],
     responses: [
         new OA\Response(
             response: 200,

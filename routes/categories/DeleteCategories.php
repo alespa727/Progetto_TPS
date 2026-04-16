@@ -11,8 +11,38 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Delete, ["api", "categories", "{categoryName}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+
+#[OA\Delete(
+    path: "/api/categories/{categoryName}",
+    summary: "Elimina una categoria",
+    tags: ["Categories"],
+    parameters: [
+        new OA\Parameter(
+            name: "categoryName",
+            in: "path",
+            required: true,
+            description: "url_name della categoria",
+            schema: new OA\Schema(type: "string", example: "cpu")
+        )
+    ],
+    responses: [
+        new OA\Response(
+            response: 204,
+            description: "Categoria eliminata"
+        ),
+        new OA\Response(
+            response: 400,
+            description: "Categoria non esistente"
+        ),
+        new OA\Response(
+            response: 403,
+            description: "Non autorizzato"
+        )
+    ]
+)]
 class DeleteCategories extends Controller
 {
    

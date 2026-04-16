@@ -10,6 +10,7 @@ use Core\Params;
 use OpenApi\Attributes as OA;
 
 #[Route(Method::Get, [], [], ContentTypes::Html)]
+#[OA\Tag(name: "Root")]
 #[OA\Get(
     path: "/",
     summary: "Welcomes the user into my web service",

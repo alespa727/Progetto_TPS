@@ -10,8 +10,34 @@ use Core\ContentTypes;
 use Core\Params;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes\JsonContent;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "register"], [], ContentTypes::Json)]
+#[OA\Tag(name: "Profile")]
+#[OA\PathItem(path: "/api/register")]
+#[OA\Post(
+    path: "/api/register",
+    summary: "Fai il register",
+    tags: ["Profile"],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "username", type: "string"),
+                new OA\Property(property: "password", type: "string"),
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 200, description: "Login riuscito, cookie JWT impostato", content: new JsonContent(
+            ["description"=>"Login riuscito, cookie JWT impostato"]
+        )),
+         new OA\Response(response: 409, description: "Nome utente già utilizzato", content: new JsonContent(
+            ["error"=>"Nome utente già utilizzato"]
+        ))
+    ]
+)]
 class Register extends Controller
 {
     function manageRequest(Request $request, Params $params): Response
@@ -33,11 +59,14 @@ class Register extends Controller
             $pr->execute([$username, $hash]);
 
         } catch (\Throwable $th) {
-            throw new BadRequest("Nome utente già utilizzato");
+            $res = Response::new()
+                    ->status(409)
+                    ->body(["error"=>"Nome utente già utilizzato"]);
+            return $res;
         } 
         $res = Response::new()
-            ->ok()
-            ->body([]);
+            ->created()
+            ->body("Register riuscito");
         return $res; 
     }
 }

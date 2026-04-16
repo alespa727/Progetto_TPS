@@ -13,17 +13,35 @@ use DatabaseUtil\Database;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Authorization\Authorization;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "builds"], [AuthMiddleware::class], ContentTypes::Json)]
-#[ApiDoc(
-    summary: "To post a build",
-    description: "Route creata per aggiungere una nuova build al proprio account",
-    request: [
-        "name"=> "La tua build",
-        "description"=> "idk"
-    ],
+#[OA\Tag(name: "Builds")]
+#[OA\PathItem(path: "/api/builds")]
+#[OA\Post(
+    path: "/api/builds",
+    tags: ["Builds"],
+    summary: "Crea una nuova build per il tuo account",
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["name", "description"],
+            properties: [
+                new OA\Property(
+                    property: "name",
+                    type: "string",
+                    example: "ASUS"
+                ),
+                new OA\Property(
+                    property: "description",
+                    type: "string",
+                    example: "lunga descrizione"
+                )
+            ]
+        )
+    ),
     responses: [
-        200 => ["description" => "build creata con successo"]
+        new OA\Response(response: 201, description: "Build creata con successo"),
     ]
 )]
 class PostBuilds extends Controller

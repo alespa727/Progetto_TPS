@@ -11,8 +11,51 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
+
 
 #[Route(Method::Post, ["api", "manufacturers"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[OA\Post(
+    path: "/api/manufacturers",
+    summary: "Crea un nuovo produttore",
+    tags: ["Manufacturers"],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["name"],
+            properties: [
+                new OA\Property(
+                    property: "name",
+                    type: "string",
+                    example: "ASUS"
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(
+            response: 201,
+            description: "Produttore creato",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: "description",
+                        type: "string",
+                        example: "creata nuovo marca"
+                    )
+                ]
+            )
+        ),
+        new OA\Response(
+            response: 400,
+            description: "Errore richiesta"
+        ),
+        new OA\Response(
+            response: 403,
+            description: "Non autorizzato"
+        )
+    ]
+)]
 class PostManufacturers extends Controller
 {
    

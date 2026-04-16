@@ -11,7 +11,36 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
+#[OA\Delete(
+    path: "/api/manufacturers/{manufacturerName}",
+    summary: "Elimina un produttore",
+    tags: ["Manufacturers"],
+    parameters: [
+        new OA\Parameter(
+            name: "manufacturerName",
+            in: "path",
+            required: true,
+            description: "url_name del produttore",
+            schema: new OA\Schema(type: "string", example: "asus")
+        )
+    ],
+    responses: [
+        new OA\Response(
+            response: 204,
+            description: "Produttore eliminato"
+        ),
+        new OA\Response(
+            response: 400,
+            description: "Produttore non esistente"
+        ),
+        new OA\Response(
+            response: 403,
+            description: "Non autorizzato"
+        )
+    ]
+)]
 #[Route(Method::Delete, ["api", "manufacturers", "{manufacturerName}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 class DeleteManufacturers extends Controller
 {

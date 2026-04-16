@@ -12,8 +12,35 @@ use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Authorization\Authorization;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Get, ["api", "manufacturers"], [AuthMiddleware::class], ContentTypes::Json)]
+#[OA\Tag(name: "Manufacturers")]
+#[OA\PathItem(path: "/api/manufacturers")]
+#[OA\Get(
+    path: "/api/manufacturers",
+    summary: "Lista di tutti i produttori",
+    tags: ["Manufacturers"],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Lista produttori",
+            content: new OA\JsonContent(
+                type: "array",
+                items: new OA\Items(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "ASUS"),
+                        new OA\Property(property: "url_name", type: "string", example: "asus")
+                    ]
+                )
+            )
+        ),
+        new OA\Response(
+            response: 400,
+            description: "Errore richiesta"
+        )
+    ]
+)]
 class GetAllManufacturers extends Controller
 {
    

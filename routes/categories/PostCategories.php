@@ -11,8 +11,43 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "categories"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[OA\Tag(name: "Categories")]
+#[OA\PathItem(path: "/api/categories")]
+#[OA\Post(
+    path: "/api/categories",
+    summary: "Crea una nuova categoria con le sue specifiche",
+    tags: ["Categories"],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["name"],
+            properties: [
+                "name" => new OA\Schema(
+                    type: "string",
+                    example: "CPU"
+                ),
+                "specs" => new OA\Schema(
+                    type: "array",
+                    items: new OA\Items(
+                        type: "object",
+                        properties: [
+                            "key" => new OA\Schema(type: "string"),
+                            "label" => new OA\Schema(type: "string"),
+                            "unit" => new OA\Schema(type: "string")
+                        ]
+                    )
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 201, description: "Categoria creata con successo"),
+        new OA\Response(response: 400, description: "Errore nella richiesta"),
+    ]
+)]
 class PostCategories extends Controller
 {
 
@@ -45,7 +80,7 @@ class PostCategories extends Controller
             foreach ($required_specified_specs as $key => $spec) {
                 $pr->execute([$lastId, $spec["key"], $spec["label"], $spec["unit"] ?? ""]);
             }
-            
+
             $res = Response::new()
                 ->created()
                 ->body(["description" => "creata nuova categoria"]);

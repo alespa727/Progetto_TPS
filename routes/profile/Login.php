@@ -14,24 +14,23 @@ use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
 #[Route(Method::Post, ["api", "login"], [], ContentTypes::Json)]
+#[OA\Tag(name: "Profile")]
+#[OA\PathItem(path: "/api/login")]
 #[OA\Post(
     path: "/api/login",
     summary: "Fai il login",
-    parameters: [
-        new OA\Parameter(
-            name: "username",
-            required: false,
-            schema: new OA\Schema(type: "string")
-        ),
-        new OA\Parameter(
-            name: "password",
-            required: false,
-            schema: new OA\Schema(type: "string")
-        ) 
-
-    ], 
+    tags: ["Profile"],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "username", type: "string"),
+                new OA\Property(property: "password", type: "string"),
+            ]
+        )
+    ),
     responses: [
-        new OA\Response(response: 200, description: 'Login riuscito, cookie JWT impostato',)
+        new OA\Response(response: 200, description: "Login riuscito, cookie JWT impostato")
     ]
 )]
 class Login extends Controller

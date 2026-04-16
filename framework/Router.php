@@ -35,15 +35,19 @@ class Router
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+        } else {
+            
         }
     }
 
     static function init(): void
     {
+
         include_once "functions.php";
-        if (routesHaveChanged(Router::$routesPath)) {
+        if (true)/*routesHaveChanged(Router::$routesPath)) */ {
             (require "build_routes.php")(Router::$routesPath);
         }
+
     }
 
     public static function getRoutes(): array
@@ -156,7 +160,7 @@ class Router
 
         }/*else{
 
-     }*/
+   }*/
 
         return $route;
     }

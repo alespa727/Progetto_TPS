@@ -11,8 +11,33 @@ use Core\Params;
 use Core\ApiDoc;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use OpenApi\Attributes as OA;
 
 #[Route(Method::Get, ["api", "categories"], [AuthMiddleware::class], ContentTypes::Json)]
+#[OA\Get(
+    path: "/api/categories",
+    summary: "Lista di tutte le categorie",
+    tags: ["Categories"],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Lista categorie",
+            content: new OA\JsonContent(
+                type: "array",
+                items: new OA\Items(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "ASUS"),
+                        new OA\Property(property: "url_name", type: "string", example: "asus")
+                    ]
+                )
+            )
+        ),
+        new OA\Response(
+            response: 400,
+            description: "Errore richiesta"
+        )
+    ]
+)]
 class GetAllCategories extends Controller
 {
    

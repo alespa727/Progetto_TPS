@@ -14,17 +14,17 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "components", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "manufacturers", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 #[OA\Get(
-    path: "/api/components/{url_name}",
-    summary: "Dettaglio componente",
-    tags: ["Components"],
+    path: "/api/manufacturers/{url_name}",
+    summary: "Dettagli produttori",
+    tags: ["Manufacturers"],
     parameters: [
         new OA\Parameter(
             name: "url_name",
             in: "path",
             required: true,
-            description: "url-name del componente",
+            description: "url-name del produttore",
             schema: new OA\Schema(type: "string")
         )
     ],
@@ -38,8 +38,6 @@ use OpenApi\Attributes as OA;
                     new OA\Property(property: "id", type: "integer"),
                     new OA\Property(property: "name", type: "string"),
                     new OA\Property(property: "url_name", type: "string"),
-                    new OA\Property(property: "price", type: "integer", nullable: true),
-                    new OA\Property(property: "description", type: "string", nullable: true)
                 ]
             )
         ),
@@ -49,7 +47,7 @@ use OpenApi\Attributes as OA;
         )
     ]
 )]
-class GetComponents extends Controller
+class GetManufacturersam extends Controller
 {
    
     function manageRequest(Request $request, Params $params): Response
@@ -58,7 +56,7 @@ class GetComponents extends Controller
         $db = \DatabaseUtil\Database::getDatabase();
 
 
-        $pr = $db->prepare("SELECT * FROM components WHERE url_name=?");
+        $pr = $db->prepare("SELECT * FROM manufacturers WHERE url_name=?");
        
         $success = $pr->execute([$url_name]);
         $res = $pr->fetch(PDO::FETCH_ASSOC);
@@ -67,7 +65,7 @@ class GetComponents extends Controller
                 ->created()
                 ->body($res);
         }else{
-            throw new NotFound("Componente non esistente");
+            throw new NotFound("Manufacturer non esistente");
         }
         return $res;
 

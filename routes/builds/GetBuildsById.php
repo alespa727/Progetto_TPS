@@ -1,6 +1,8 @@
 <?php
 
 use Core\Exceptions\BadRequest;
+use Core\Exceptions\Forbidden;
+use Core\Exceptions\NotFound;
 use Core\Route;
 use Core\Controller;
 use Core\Request;
@@ -15,19 +17,27 @@ use Firebase\JWT\Key;
 use Authorization\Authorization;
 use OpenApi\Attributes as OA;
 
-
+#[Route(Method::Get, ["api", "builds", "{buildId}:{int}"], [AuthMiddleware::class], ContentTypes::Json)]
 #[OA\Get(
-    path: "/api/builds",
+    path: "/api/builds/{buildId}",
     tags: ["Builds"],
-    summary: "Lista delle build dell'utente loggato",
+    summary: "Dettagli di una build",
+    parameters: [
+        new OA\Parameter(
+            name: "buildId",
+            description: "ID del build",
+            required: true,
+            in: "path",
+            schema: new OA\Schema(type: "integer")
+        )
+    ],
     responses: [
         new OA\Response(
             response: 200,
-            description: "Lista build",
+            description: "OK",
             content: new OA\JsonContent(
-                type: "array",
-                items: new OA\Items(
-                    properties: [
+                type: "object",
+                properties: [
                         new OA\Property(property: "id", type: "integer"),
                         new OA\Property(property: "user_id", type: "integer"),
                         new OA\Property(property: "name", type: "string"),
@@ -38,40 +48,41 @@ use OpenApi\Attributes as OA;
                         new OA\Property(property: "created_at", type: "string"),
                         new OA\Property(property: "updated_at", type: "string", nullable: true)
                     ]
-                )
             )
         ),
-        new OA\Response(
-            response: 401,
-            description: "Non autorizzato"
-        )
+        new OA\Response(response: 403, description: "Forbidden"),
+        new OA\Response(response: 404, description: "Build non trovata"),
     ]
 )]
-#[Route(Method::Get, ["api", "builds"], [AuthMiddleware::class], ContentTypes::Json)]
-class GetMyBuilds extends Controller
+class GetBuildsById extends Controller
 {
 
     function manageRequest(Request $request, Params $params): Response
     {
-      
+        $id = $params->getInt("buildId");
+
         $db = Database::getDatabase();
         $username = Authorization::verify();
 
+        $user = Authorization::getUser($username);
 
-        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
-        $stmt->execute(["username" => $username]);
-        
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt = $db->prepare("SELECT id, user_id, name, description, status, is_public, total_price, created_at, updated_at FROM builds WHERE user_id=?");
-        $stmt->execute([$user["id"]]);
-        
-        
-        $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $db->prepare("SELECT id, user_id, name, description, status, is_public, total_price, created_at, updated_at FROM builds WHERE id=?");
+        $stmt->execute([$id]);
+
+        $build = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$build) {
+            throw new NotFound("Build non trovata");
+        }
+
+        if ($build["user_id"] !== $user["id"]) {
+            throw new Forbidden("Non hai il permesso di modificare questa risorsa");
+        }
+
         $res = Response::new()
             ->ok()
-            ->body($list); 
-
+            ->body($build);
 
         return $res;
 

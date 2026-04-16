@@ -14,10 +14,10 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "components", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
-#[OA\Get(
+#[Route(Method::Delete, ["api", "components", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[OA\Delete(
     path: "/api/components/{url_name}",
-    summary: "Dettaglio componente",
+    summary: "Cancella componente componente",
     tags: ["Components"],
     parameters: [
         new OA\Parameter(
@@ -30,18 +30,8 @@ use OpenApi\Attributes as OA;
     ],
     responses: [
         new OA\Response(
-            response: 200,
-            description: "OK",
-            content: new OA\JsonContent(
-                type: "object",
-                properties: [
-                    new OA\Property(property: "id", type: "integer"),
-                    new OA\Property(property: "name", type: "string"),
-                    new OA\Property(property: "url_name", type: "string"),
-                    new OA\Property(property: "price", type: "integer", nullable: true),
-                    new OA\Property(property: "description", type: "string", nullable: true)
-                ]
-            )
+            response: 204,
+            description: "OK"
         ),
         new OA\Response(
             response: 404,
@@ -49,7 +39,7 @@ use OpenApi\Attributes as OA;
         )
     ]
 )]
-class GetComponents extends Controller
+class DeleteComponents extends Controller
 {
    
     function manageRequest(Request $request, Params $params): Response
@@ -62,10 +52,14 @@ class GetComponents extends Controller
        
         $success = $pr->execute([$url_name]);
         $res = $pr->fetch(PDO::FETCH_ASSOC);
+
+        $pr = $db->prepare("DELETE FROM components WHERE url_name=?");
+       
+        $success = $pr->execute([$url_name]);
+    
         if($success && $res){
             $res = Response::new()
-                ->created()
-                ->body($res);
+                ->noContent();
         }else{
             throw new NotFound("Componente non esistente");
         }
