@@ -6,20 +6,19 @@
         "firebase/php-jwt": "^7.0",
         "symfony/var-exporter": "^7.0",
         "doctrine/dbal": "^4.4",
-        "zircote/swagger-php": "^4.0",
-        "symfony/yaml": "^8.0"
+        "zircote/swagger-php": "^4.0"
     },
     "autoload": {
         "classmap": [
-            "routes/"
+            "app/routes/"
         ],
         "psr-4": {
             "Core\\": "framework/",
-            "DatabaseUtil\\": "database/",
-            "Authorization\\": "authorization/"
+            "DatabaseUtil\\": "app/database/",
+            "Authorization\\": "app/authorization/"
         }
     },
     "scripts": {
-        "docs": "./vendor/bin/openapi --bootstrap vendor/autoload.php routes/ -o public/openapi.json"
+        "docs": "./vendor/bin/openapi --bootstrap vendor/autoload.php app/routes/ -o public/openapi.json"
     }
 }

@@ -13,6 +13,7 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: "Root")]
 #[OA\Get(
     path: "/",
+    tags: ["/"],
     summary: "Welcomes the user into my web service",
     parameters: [
         new OA\Parameter(
