@@ -3,8 +3,8 @@ app:
   allowed_hosts:
     - localhost
     - 127.0.0.1
-  swagger:
-    /swagger/swagger.html
+  docs:
+    /docs/swagger.html
 
 directories:
   controllers: /app/routes

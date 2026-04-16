@@ -1,0 +1,61 @@
+/* Background generale */
+body {
+    margin: 0;
+    background: #0f172a; /* blu scuro moderno */
+    font-family: Inter, system-ui, sans-serif;
+}
+
+/* Top bar */
+.swagger-ui .topbar {
+    display: none;
+}
+
+/* Container principale */
+.swagger-ui {
+    padding: 20px;
+}
+
+/* Titoli */
+.swagger-ui .info h1 {
+    color: #ffffff;
+    font-size: 32px;
+}
+
+/* Description */
+.swagger-ui .info p {
+    color: #94a3b8;
+}
+
+/* Endpoint cards */
+.swagger-ui .opblock {
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #1e293b;
+}
+
+/* GET */
+.swagger-ui .opblock.opblock-get {
+    background: #0b1220;
+}
+
+/* POST */
+.swagger-ui .opblock.opblock-post {
+    background: #0f1a2e;
+}
+
+/* Buttons */
+.swagger-ui .btn {
+    border-radius: 8px;
+}
+
+/* Schede parametri */
+.swagger-ui table {
+    color: #e2e8f0;
+}
+
+/* Model section */
+.swagger-ui section.models {
+    background: #0b1220;
+    border-radius: 12px;
+    padding: 10px;
+}

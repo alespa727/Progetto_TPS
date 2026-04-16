@@ -44,7 +44,7 @@ use OpenApi\Attributes as OA;
         new OA\Response(response: 201, description: "Regola creata con successo"),
     ]
 )]
-class PostNewRule extends Controller
+class PostRule extends Controller
 {
 
     function manageRequest(Request $request, Params $params): Response

@@ -61,6 +61,7 @@ class Router
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
         }
+
         include_once "functions.php";
         if (routesHaveChanged(Router::$routesPath)) {
             RouteBuilder::build(self::$routesPath);
