@@ -50,6 +50,12 @@ use OpenApi\Attributes as OA;
 )]
 class Register extends Controller
 {
+
+    function validateBody(): array {
+        return ["username", "password"];
+    }
+
+
     function manageRequest(Request $request, Params $params): Response
     {
         $username = $request->getBody("username");

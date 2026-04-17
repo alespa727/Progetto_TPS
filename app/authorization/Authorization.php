@@ -83,13 +83,24 @@ final class Authorization
         return $decoded_array["username"];
     }
 
-    public static function getUser(string $username) : array {
+    public static function getUser() : array {
+        $username = self::verify();
         $db = Database::getDatabase();
         $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
         $stmt->execute(["username" => $username]);
 
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
         return $res;
+    }
+
+    public static function userId() : int {
+        $username = self::verify();
+        $db = Database::getDatabase();
+        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $stmt->execute(["username" => $username]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $res["id"];
     }
     public static function verifyOwnership(): void
     {

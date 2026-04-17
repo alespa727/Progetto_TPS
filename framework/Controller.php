@@ -1,6 +1,9 @@
 <?php
 namespace Core;
 
+use Core\Exceptions\BadRequest;
+use Core\Exceptions\InternalServerError;
+
 /**
  * Classe base astratta per tutti i controller dell'applicazione.
  *
@@ -12,12 +15,23 @@ namespace Core;
  */
 abstract class Controller
 {
-    public function __invoke(Request $request, Params $params): Response{
-        if($this->validateRequest($request, $params)){
+    public function __invoke(Request $request, Params $params): Response
+    {
+        if ($this->validateRequest($request, $params)) {
             return $this->manageRequest($request, $params);
-        }else{
+        } else {
             return $this->manageUnvalidRequest($request, $params);
         }
+    }
+
+
+    /**
+     * Parametri del body da controllare con isset
+     * @return array ["param1", "param2"]
+     */
+    public function validateBody(): array
+    {
+        return [];
     }
 
     /**
@@ -25,18 +39,49 @@ abstract class Controller
      * @param Request $request
      * @return bool
      */
-    public function validateRequest(Request $request, Params $params): bool{
+    public function validateRequest(Request $request, Params $params): bool
+    {
+        
+        foreach ($this->validateBody() as $key) {
+            $value = $request->getBody($key);
+
+            if (!isset($value)) {
+                return false;
+            }
+        }
+
         return true;
     }
-
     /**
      * Se fai override di questa puoi gestire una richiesta non valida, di default restitituisce ["code"=>400, "body"=>[], "contentType"=>ContentTypes::Json]
      * @param Request $request
-     * @param array $pathVariables
+     * @param Params $pathVariables
      * @return Response
      */
-    public function manageUnvalidRequest(Request $request, Params $pathVariables): Response{
-        return Response::create(["code"=>400, "body"=>[], "contentType"=>ContentTypes::Json]);
+    public function manageUnvalidRequest(Request $request, Params $pathVariables): Response
+    {
+
+        $body_not_found = [];
+    
+        foreach ($this->validateBody() as $key) {
+            $value = $request->getBody($key);
+
+            if (!isset($value)) {
+                $body_not_found[]=$key;
+            }
+        }
+
+
+        if(!empty($body_not_found)){
+            return Response::new()
+                    ->badRequest()
+                    ->body([
+                        "error"=>"missing body params",
+                        "params"=>$body_not_found
+                    ]);
+        }
+        
+        throw new BadRequest("");
     }
 
     /**
@@ -46,4 +91,16 @@ abstract class Controller
      * @return void
      */
     abstract function manageRequest(Request $request, Params $params): Response;
+
+    protected function view(string $path): \Core\Response
+    {
+
+        if (!is_file($path)) {
+            throw new InternalServerError("View not found: " . $path);
+        }
+
+        return \Core\Response::new()
+            ->ok()
+            ->body(file_get_contents($path));
+    }
 }

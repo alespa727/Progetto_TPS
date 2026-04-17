@@ -29,7 +29,7 @@ use OpenApi\Attributes as OA;
                 new OA\Property(
                     property: "name",
                     type: "string",
-                    example: "ASUS"
+                    example: "Default"
                 ),
                 new OA\Property(
                     property: "description",
@@ -47,11 +47,14 @@ use OpenApi\Attributes as OA;
 class PostBuilds extends Controller
 {
 
+    function validateBody(): array{
+        return ["name", "description"];
+    }
+
     function manageRequest(Request $request, Params $params): Response
     {
         $name = $request->getBody("name");
         $description = $request->getBody("description");
-
 
         $db = Database::getDatabase();
         $username = Authorization::verify();

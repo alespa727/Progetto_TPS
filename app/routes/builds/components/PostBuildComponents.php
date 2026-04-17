@@ -25,14 +25,15 @@ use OpenApi\Attributes as OA;
             required: ["component_id"],
             properties: [
                 new OA\Property(
-                    property: "component_id",
-                    type: "integer",
-                    example: 12
+                    property: "component_name",
+                    description: "url-name del componente",
+                    type: "string",
+                    example: "ryzen-5600g"
                 )
             ]
         )
     ),
-    tags: ["Builds"],
+    tags: ["Build-Components"],
     parameters: [
         new OA\Parameter(
             name: "buildId",
@@ -49,31 +50,38 @@ use OpenApi\Attributes as OA;
 )]
 class PostBuildComponents extends Controller
 {
+    function validateBody(): array
+    {
+        return ["component_name"];
+    }
 
     function manageRequest(Request $request, Params $params): Response
     {
         $build_id = $params->getInt("buildId");
-        $component_id = $request->getBody("component_id");
-
-        if (!isset($build_id))
-            throw new BadRequest("build_id mancante");
-        if (!isset($component_id))
-            throw new BadRequest("component_id mancante");
+        $url_name = $request->getBody("component_name");
 
         $db = Database::getDatabase();
-        $username = Authorization::verify();
-
-        $stmt = $db->prepare("SELECT id FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $userId = Authorization::userId();
 
         $stmt = $db->prepare("SELECT * FROM builds WHERE id = ? AND user_id = ?");
-        $stmt->execute([$build_id, $user["id"]]);
+        $stmt->execute([$build_id, $userId]);
+
+
+        $pr = $db->prepare("SELECT id, url_name FROM components WHERE url_name=?");
+
+        $pr->execute([$url_name]);
+        $component = $pr->fetch(PDO::FETCH_ASSOC);
+
+         if (empty($component)) {
+            throw new BadRequest("Componente non trovato");
+        }
+
+        $component_id = $component["id"];
 
         $build = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (empty($build)) {
-            throw new BadRequest("build non trovata");
+            throw new BadRequest("Build non trovata");
         }
 
         $stmt = $db->prepare("SELECT cr.*, cs_new.spec_value AS new_value, cs_existing.spec_value AS existing_value
@@ -99,18 +107,24 @@ class PostBuildComponents extends Controller
                 default => false,
             };
 
-            if(!$isCompatible){
-                $conflicts[]="Componente non compatibile: " . $new_value . " !" .$operator ." " . $existing_value;
+            if (!$isCompatible) {
+                $conflicts[] = "Componente non compatibile: " . $new_value . " !" . $operator . " " . $existing_value;
             }
         }
 
-        if(!empty($conflicts)){
+        if (!empty($conflicts)) {
             return Response::new()
                 ->status(409)
-                ->body(["errors"=>$conflicts]);
+                ->body(["errors" => $conflicts]);
         }
+        $stmt = $db->prepare("
+                    INSERT INTO build_components (build_id, component_id, quantity)
+                    VALUES (?, ?, 1)
+                    ON DUPLICATE KEY UPDATE quantity = quantity + 1
+                "); 
 
+        $stmt->execute([$build_id, $component_id]);
 
-        return Response::new()->ok()->body($rules);
+        return Response::new()->ok()->body($component);
     }
 }

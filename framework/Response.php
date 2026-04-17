@@ -6,7 +6,7 @@ class Response
     public array $headers=[];
     public array $file=[];
     
-    public int $responseCode;
+    public int $responseCode=200;
 
     public function addFile($path, $filename): Response{
         $this->file["path"]=$path;

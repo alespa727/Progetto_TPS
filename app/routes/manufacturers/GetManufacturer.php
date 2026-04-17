@@ -47,7 +47,7 @@ use OpenApi\Attributes as OA;
         )
     ]
 )]
-class GetManufacturersam extends Controller
+class GetManufacturer extends Controller
 {
    
     function manageRequest(Request $request, Params $params): Response

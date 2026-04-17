@@ -47,6 +47,11 @@ use OpenApi\Attributes as OA;
 class PostCategories extends Controller
 {
 
+
+    function validateBody(): array{
+        return ["name", "specs"];
+    }
+    
     function manageRequest(Request $request, Params $params): Response
     {
 
@@ -56,9 +61,6 @@ class PostCategories extends Controller
          */
         $required_specified_specs = $request->getBody("specs");
 
-        if (!isset($nome_categoria)) {
-            throw new BadRequest("Inserisci un nome nel body");
-        }
         $nome_url = str_replace(" ", "-", strtolower($nome_categoria));
         /**
          * @var PDO $db

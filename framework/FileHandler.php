@@ -58,7 +58,9 @@ class FileHandler
         if (file_exists(__DIR__ . '/file_permissions/' . $hash . '.php')) {
             $permissions = (require __DIR__ . '/file_permissions/' . $hash . '.php');
             $middlewares = $permissions["middlewares"];
-            importMiddlewares($middlewares);
+            foreach ($middlewares as $key => $middleware) {
+                require Config::path("directories.middlewares")."/".$middleware.".php";
+            }
         } else
             return null;
 
@@ -85,7 +87,9 @@ class FileHandler
         if (file_exists(__DIR__ . '/file_permissions/' . $hash . '.php')) {
             $permissions = (require __DIR__ . '/file_permissions/' . $hash . '.php');
             $middlewares = $permissions["middlewares"];
-            importMiddlewares($middlewares);
+            foreach ($middlewares as $key => $middleware) {
+                require Config::path("directories.middlewares")."/".$middleware.".php";
+            }
         } else
             return null;
 

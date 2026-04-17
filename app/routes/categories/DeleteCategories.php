@@ -45,6 +45,10 @@ use OpenApi\Attributes as OA;
 )]
 class DeleteCategories extends Controller
 {
+
+    function validateParams(): array{
+        return ["categoryName"];
+    }
    
     function manageRequest(Request $request, Params $params): Response
     {

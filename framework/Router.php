@@ -123,13 +123,13 @@ class Router
             if (!$isLast) {
 
                 if (array_key_exists($segment, $array)) {
+                    
                     $array = &$array[$segment];
 
                 } else {
-
+                    
                     if (array_key_exists("_param", $array)) {
                         $param = explode(":", $array["_param"]);
-                        continue;
                     }
 
                     $paramName = null;
@@ -138,7 +138,6 @@ class Router
 
                     if (array_key_exists("_type", $array)) {
                         $type = $array["_type"];
-                        continue;
                     }
 
                     if (!$paramName)

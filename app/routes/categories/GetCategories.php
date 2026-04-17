@@ -62,9 +62,20 @@ use OpenApi\Attributes as OA;
 class GetCategories extends Controller
 {
 
+    function validateParams(): array{
+        return ["url_name"=>"string"];
+    }
+
     function manageRequest(Request $request, Params $params): Response
     {
         $url_name = $params->getString("url_name");
+      
+        $result = preg_replace('/\s+/', '', $url_name);
+        
+        if($result===""){
+            throw new BadRequest("Dare una categoria valida");
+        }
+
         $db = \DatabaseUtil\Database::getDatabase();
 
         $pr = $db->prepare("

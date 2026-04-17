@@ -6,10 +6,10 @@ error_reporting(E_ERROR);
 define('BASE_PATH', __DIR__);
 $start = microtime(true);
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Core\FileHandler;
 use Core\Router;
-
-require __DIR__ . '/vendor/autoload.php';
 
 Config::load(__DIR__."/config/config.yaml");
 Router::init();

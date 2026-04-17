@@ -47,6 +47,11 @@ use OpenApi\Attributes as OA;
 class PostRule extends Controller
 {
 
+    function validateBody(): array {
+        return ["category1_id", "category2_id"];
+    }
+
+
     function manageRequest(Request $request, Params $params): Response
     {
         $db = Database::getDatabase();

@@ -37,6 +37,10 @@ class Login extends Controller
 {
     private $key = 'example_key_of_sufficient_length';
 
+    function validateBody(): array {
+        return ["username", "password"];
+    }
+
 
     function manageRequest(Request $request, Params $params): Response
     {

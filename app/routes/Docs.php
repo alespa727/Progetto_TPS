@@ -16,10 +16,7 @@ class Docs extends Controller
 {
     function manageRequest(Request $request, Params $params): Response
     {
-        $html = file_get_contents(Config::path("app.docs"));
-        $res = Response::new()
-            ->ok()
-            ->body($html);
-        return $res;
+        return $this->view(Config::path("app.docs"));
     }
 }
+ 
