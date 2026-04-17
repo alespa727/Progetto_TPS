@@ -1,5 +1,5 @@
 app:
-  debug: true
+  debug: false
   allowed_hosts:
     - localhost
     - 127.0.0.1
@@ -11,3 +11,12 @@ directories:
   middlewares: /app/middlewares
   static: /static
   
+database:
+  driver: mysql
+  host: 127.0.0.1
+  port: 3306
+  socket: /run/mysqld/mysqld.sock
+  name: tps
+  user: root
+  password: ""
+  charset: utf8mb4
