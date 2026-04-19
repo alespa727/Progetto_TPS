@@ -42,8 +42,6 @@ use DatabaseUtil\Database;
 )]
 class Profile extends Controller
 {
-    private $key = 'example_key_of_sufficient_length';
-
 
     function manageRequest(Request $request, Params $params): Response
     {

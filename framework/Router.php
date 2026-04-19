@@ -63,7 +63,7 @@ class Router
         }
 
         include_once "functions.php";
-        if (true || routesHaveChanged(Router::$routesPath)) {
+        if (routesHaveChanged(Router::$routesPath)) {
             RouteBuilder::build(self::$routesPath);
         }
 

@@ -1,0 +1,1445 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "my api",
+        "description": "idk",
+        "version": "3.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost"
+        }
+    ],
+    "paths": {
+        "/api/builds": {
+            "get": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Lista delle build dell'utente loggato",
+                "operationId": "d1af1a5088cdfb6322b9c76c686eb35f",
+                "responses": {
+                    "200": {
+                        "description": "Lista build",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "user_id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            },
+                                            "is_public": {
+                                                "type": "boolean"
+                                            },
+                                            "total_price": {
+                                                "type": "integer",
+                                                "nullable": true
+                                            },
+                                            "created_at": {
+                                                "type": "string"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non autorizzato"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Crea una nuova build per il tuo account",
+                "operationId": "3bfed69716fd885033ef65d3c4e4bd7f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Default"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "lunga descrizione"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Build creata con successo"
+                    }
+                }
+            }
+        },
+        "/api/components": {
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Lista componenti",
+                "operationId": "6cced28b011a9e0dc337106ec9858bf4",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Pagina (default 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "url_name": {
+                                                "type": "string"
+                                            },
+                                            "price": {
+                                                "type": "integer",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Crea un nuovo componente",
+                "operationId": "586339211dd0e0dc6a25fa70d105c486",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "description": "Category url-name",
+                                        "type": "string",
+                                        "example": "processori"
+                                    },
+                                    "manufacturer": {
+                                        "description": "Manufacturer url-name",
+                                        "type": "string",
+                                        "example": "amd"
+                                    },
+                                    "name": {
+                                        "description": "Nome del nuovo componente",
+                                        "type": "string",
+                                        "example": "Ryzen 5600G"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "custom_specs": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string",
+                                                    "example": "frequency"
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "5Ghz"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Componente creato con successo"
+                    },
+                    "400": {
+                        "description": "Componente non esistente o errore nella richiesta"
+                    },
+                    "403": {
+                        "description": "Non autorizzato"
+                    }
+                }
+            }
+        },
+        "/api/manufacturers": {
+            "get": {
+                "tags": [
+                    "Manufacturers"
+                ],
+                "summary": "Lista di tutti i produttori",
+                "operationId": "35ffb46c75a555662f7cbb0c25572ce9",
+                "responses": {
+                    "200": {
+                        "description": "Lista produttori",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "example": "ASUS"
+                                            },
+                                            "url_name": {
+                                                "type": "string",
+                                                "example": "asus"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Errore richiesta"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Manufacturers"
+                ],
+                "summary": "Crea un nuovo produttore",
+                "operationId": "2d49abf98dfb084df4d63955778d7360",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "ASUS"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produttore creato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "description": {
+                                            "type": "string",
+                                            "example": "creata nuovo marca"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Errore richiesta"
+                    },
+                    "403": {
+                        "description": "Non autorizzato"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Fai il login",
+                "operationId": "d6827308a526a60560c67612dfd96265",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login riuscito, cookie JWT impostato"
+                    }
+                }
+            }
+        },
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Vedi il tuo profilo",
+                "operationId": "f5d515caa7f11a758b09b0b5751053e1",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "username": {
+                                            "type": "string",
+                                            "example": "Ale"
+                                        },
+                                        "pfp_path": {
+                                            "type": "string",
+                                            "example": "/idk.jpg"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "data"
+                                        },
+                                        "is_owner": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Fai il register",
+                "operationId": "3e416f426f344639d49690132c506f8c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Creato nuovo account",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "description": "Creazione nuovo account"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Nome utente già utilizzato",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "error": "Nome utente già utilizzato"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rules": {
+            "post": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Crea una nuova regola di compatibilità",
+                "operationId": "3f05951fb3f20f8facf39773f5524d5f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category1_id",
+                                    "category2_id",
+                                    "spec_key1",
+                                    "spec_key2",
+                                    "operator"
+                                ],
+                                "properties": {
+                                    "category1_id": {
+                                        "type": "string"
+                                    },
+                                    "category2_id": {
+                                        "type": "string"
+                                    },
+                                    "spec_key1": {
+                                        "type": "string"
+                                    },
+                                    "spec_key2": {
+                                        "type": "string"
+                                    },
+                                    "operator": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Regola creata con successo"
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "tags": [
+                    "/"
+                ],
+                "summary": "Welcomes the user into my web service",
+                "operationId": "0b38c890f1564d79beabfde872e83090",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/builds/{buildId}": {
+            "get": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Dettagli di una build",
+                "operationId": "b4484473907ee140214523227a2ec9c8",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID del build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "user_id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "is_public": {
+                                            "type": "boolean"
+                                        },
+                                        "total_price": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Build non trovata"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Sostituisce completamente una build",
+                "operationId": "ac4ec411ad1feb962f8d6040a31314b0",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID della build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Default"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "lunga descrizione"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Build aggiornata"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Build non trovata"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Cancella una build",
+                "operationId": "c86a328864c449b23f3a6935da3e763f",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID del build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Build cancellata con successo"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Build non trovata"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Builds"
+                ],
+                "summary": "Modifica una build",
+                "operationId": "3cec0d7df97c46d0d6816316b0ed3dec",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID della build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Default"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "lunga descrizione"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Build modificata con successo"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Build non trovata"
+                    }
+                }
+            }
+        },
+        "/api/builds/{buildId}/components": {
+            "get": {
+                "tags": [
+                    "Build-Components"
+                ],
+                "summary": "Dettagli di una build",
+                "operationId": "0d36a66406ce1670516b6913eabd36bb",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID del build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "url_name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "price": {
+                                                "type": "integer"
+                                            },
+                                            "quantity": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Build non trovata"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Build-Components"
+                ],
+                "summary": "Aggiunge un componente a un build specifico",
+                "operationId": "af64df20ce62b93af07094d97e953a59",
+                "parameters": [
+                    {
+                        "name": "buildId",
+                        "in": "path",
+                        "description": "ID del build",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "component_id"
+                                ],
+                                "properties": {
+                                    "component_name": {
+                                        "description": "url-name del componente",
+                                        "type": "string",
+                                        "example": "ryzen-5600g"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Componente aggiunto con successo"
+                    },
+                    "409": {
+                        "description": "Conflitti di compatibilità"
+                    }
+                }
+            }
+        },
+        "/api/categories/{url_name}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Dettagli categoria",
+                "operationId": "db40b38e63daefd04ffd9c2b65f3ea30",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "description": "url-name della categoria",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "CPU"
+                                        },
+                                        "url_name": {
+                                            "type": "string",
+                                            "example": "cpu"
+                                        },
+                                        "max_per_build": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "specs": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "key": {
+                                                        "type": "string"
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "unit": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoria non esistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Sostituisce completamente una categoria",
+                "operationId": "089a567c14b3c945fe2c0c8cd6d7fee5",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "specs"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "specs": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "label": {
+                                                    "type": "string"
+                                                },
+                                                "unit": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categoria aggiornata"
+                    },
+                    "404": {
+                        "description": "Categoria non trovata"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Elimina una categoria",
+                "operationId": "87904a32e4e2c8afe5e78ee1add369d1",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "description": "url_name della categoria",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "cpu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Categoria eliminata"
+                    },
+                    "400": {
+                        "description": "Categoria non esistente"
+                    },
+                    "403": {
+                        "description": "Non autorizzato"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Modifica parziale categoria",
+                "operationId": "7c560bc9813afb3c35291d90092e7673",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "specs": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "label": {
+                                                    "type": "string"
+                                                },
+                                                "unit": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categoria aggiornata"
+                    },
+                    "404": {
+                        "description": "Categoria non trovata"
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Lista di tutte le categorie",
+                "operationId": "bfe9db11c5dd40cd09cf71c4ae2857e3",
+                "responses": {
+                    "200": {
+                        "description": "Lista categorie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "example": "CPU"
+                                            },
+                                            "url_name": {
+                                                "type": "string",
+                                                "example": "cpu"
+                                            },
+                                            "max_per_build": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Errore richiesta"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Crea una nuova categoria con le sue specifiche",
+                "operationId": "bcd041a82f81cffef605efb4f2218d12",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "specs"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "CPU"
+                                    },
+                                    "max_per_build": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "specs": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "label": {
+                                                    "type": "string"
+                                                },
+                                                "unit": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Categoria creata con successo"
+                    },
+                    "400": {
+                        "description": "Errore nella richiesta"
+                    }
+                }
+            }
+        },
+        "/api/components/{url_name}": {
+            "get": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Dettaglio componente",
+                "operationId": "64088a91512c860162d8d8d4ed0ff9f9",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "description": "url-name del componente",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "url_name": {
+                                            "type": "string"
+                                        },
+                                        "price": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Componente non esistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Cancella componente componente",
+                "operationId": "ac5ea2daa1a5a187892e7b917c823d72",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "description": "url-name del componente",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Componente non esistente"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Components"
+                ],
+                "summary": "Aggiorna parzialmente un componente",
+                "operationId": "0d2eda1014e854cd27abb2c7f56ee1a9",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category": {
+                                        "type": "string",
+                                        "example": "processori"
+                                    },
+                                    "manufacturer": {
+                                        "type": "string",
+                                        "example": "amd"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ryzen 5600G"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "CPU 6 core"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 199
+                                    },
+                                    "specs": {
+                                        "type": "object",
+                                        "example": {
+                                            "frequency": "4.6GHz",
+                                            "cores": "6"
+                                        },
+                                        "additionalProperties": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Componente aggiornato con successo"
+                    },
+                    "400": {
+                        "description": "Richiesta non valida"
+                    },
+                    "404": {
+                        "description": "Componente non trovato"
+                    }
+                }
+            }
+        },
+        "/api/manufacturers/{manufacturerName}": {
+            "delete": {
+                "tags": [
+                    "Manufacturers"
+                ],
+                "summary": "Elimina un produttore",
+                "operationId": "8e1b1ef4f6dfda77e92b110b0b972923",
+                "parameters": [
+                    {
+                        "name": "manufacturerName",
+                        "in": "path",
+                        "description": "url_name del produttore",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Produttore eliminato con successo"
+                    },
+                    "400": {
+                        "description": "Produttore non esistente",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "error": "Azienda non esistente"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorizzato",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "error": "Non autorizzato"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/manufacturers/{url_name}": {
+            "get": {
+                "tags": [
+                    "Manufacturers"
+                ],
+                "summary": "Dettagli produttori",
+                "operationId": "e6eae066f67f305406d412819de1f9bf",
+                "parameters": [
+                    {
+                        "name": "url_name",
+                        "in": "path",
+                        "description": "url-name del produttore",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "url_name": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Componente non esistente"
+                    }
+                }
+            }
+        },
+        "/api/rules/{id}": {
+            "delete": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Elimina una regola di compatibilità",
+                "operationId": "e79d190d0f1608abe94d3e5904817416",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Regola eliminata"
+                    },
+                    "404": {
+                        "description": "Regola non trovata"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Builds"
+        },
+        {
+            "name": "Components"
+        },
+        {
+            "name": "Manufacturers"
+        },
+        {
+            "name": "Profile"
+        },
+        {
+            "name": "Rules"
+        },
+        {
+            "name": "/",
+            "description": "/"
+        },
+        {
+            "name": "Build-Components",
+            "description": "Build-Components"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        }
+    ]
+}

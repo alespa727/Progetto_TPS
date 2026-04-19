@@ -5,7 +5,6 @@
     "require": {
         "firebase/php-jwt": "^7.0",
         "symfony/var-exporter": "^7.0",
-        "doctrine/dbal": "^4.4",
         "zircote/swagger-php": "^4.0",
       "ext-pdo": "*"
     },
@@ -20,6 +19,6 @@
         }
     },
     "scripts": {
-        "docs": "./vendor/bin/openapi --bootstrap vendor/autoload.php app/routes/ -o public/openapi.json"
+        "docs": "./vendor/bin/openapi --bootstrap vendor/autoload.php app/routes/ -o docs/openapi.json"
     }
 }
