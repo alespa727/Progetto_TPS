@@ -1,5 +1,6 @@
 <?php
 
+use Authorization\Authorization;
 use Core\Exceptions\BadRequest;
 use Core\Exceptions\Unauthorized;
 use Core\Route;
@@ -47,22 +48,7 @@ class Profile extends Controller
     function manageRequest(Request $request, Params $params): Response
     {
 
-        /**
-         * @var PDO $db
-         */
-        $db = Database::getDatabase();
-        if (!array_key_exists("token", $_COOKIE))
-            throw new Unauthorized("Esegui il login");
-
-        $cookie_jwt = $_COOKIE["token"];
-        $decoded = JWT::decode($cookie_jwt, new Key($this->key, 'HS256'), $headers);
-        $decoded_array = (array) $decoded;
-
-        $pr = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
-
-        $pr->execute(["username" => $decoded_array["username"]]);
-        $user = $pr->fetch(PDO::FETCH_ASSOC);
-
+        $user = Authorization::getUser();
 
         $res = Response::new()
             ->ok()
