@@ -27,14 +27,14 @@ CREATE TABLE `build_components` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `build_id` int(11) NOT NULL,
   `component_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT 1,
-  `price_at_add` decimal(10,2) DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_build_component` (`build_id`,`component_id`),
   KEY `build_id` (`build_id`),
   KEY `component_id` (`component_id`),
-  CONSTRAINT `1` FOREIGN KEY (`build_id`) REFERENCES `builds` (`id`),
+  CONSTRAINT `fk_bc_build` FOREIGN KEY (`build_id`) REFERENCES `builds` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_build_components_component` FOREIGN KEY (`component_id`) REFERENCES `components` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE `builds` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `fk_builds_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,8 +95,10 @@ CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `url_name` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  `max_per_build` int(11) NOT NULL DEFAULT 10,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url_name` (`url_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,9 +108,6 @@ CREATE TABLE `categories` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES
-(23,'Schede Madri','schede-madri'),
-(24,'Processori','processori');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -128,9 +127,9 @@ CREATE TABLE `category_specs` (
   `spec_label` varchar(100) NOT NULL,
   `unit` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
-  CONSTRAINT `1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_category_specs_category` (`category_id`),
+  CONSTRAINT `fk_category_specs_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,10 +139,6 @@ CREATE TABLE `category_specs` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `category_specs` WRITE;
 /*!40000 ALTER TABLE `category_specs` DISABLE KEYS */;
-INSERT INTO `category_specs` VALUES
-(18,23,'socket','Socket',''),
-(19,24,'socket','Socket',''),
-(20,24,'frequency','Frequenza','GHz');
 /*!40000 ALTER TABLE `category_specs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -165,10 +160,10 @@ CREATE TABLE `compatibility_rules` (
   `operator` enum('=','<','>') DEFAULT NULL,
   `required_value` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
-  KEY `target_category_id` (`target_category_id`),
-  CONSTRAINT `1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `2` FOREIGN KEY (`target_category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+  KEY `fk_rules_category` (`category_id`),
+  KEY `fk_rules_target_category` (`target_category_id`),
+  CONSTRAINT `fk_rules_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rules_target_category` FOREIGN KEY (`target_category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,7 +198,7 @@ CREATE TABLE `component_specs` (
   PRIMARY KEY (`id`),
   KEY `component_id` (`component_id`),
   CONSTRAINT `fk_component_specs_component` FOREIGN KEY (`component_id`) REFERENCES `components` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,6 +208,9 @@ CREATE TABLE `component_specs` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `component_specs` WRITE;
 /*!40000 ALTER TABLE `component_specs` DISABLE KEYS */;
+INSERT INTO `component_specs` VALUES
+(48,80,'frequency','10GHz','GHz'),
+(49,80,'cores','9','');
 /*!40000 ALTER TABLE `component_specs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -231,11 +229,11 @@ CREATE TABLE `components` (
   `manufacturer_id` int(11) DEFAULT NULL,
   `name` varchar(200) NOT NULL,
   `url_name` varchar(200) NOT NULL,
-  `image_path` varchar(200) DEFAULT NULL,
-  `description` varchar(400) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `quantity` int(11) DEFAULT 1,
+  `quantity` int(11) DEFAULT NULL,
   `price` int(11) DEFAULT NULL,
+  `image_hash` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`),
   UNIQUE KEY `unique_url_name` (`url_name`),
@@ -243,7 +241,7 @@ CREATE TABLE `components` (
   KEY `manufacturer_id` (`manufacturer_id`),
   CONSTRAINT `fk_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_manufacturer` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,8 +267,9 @@ CREATE TABLE `manufacturers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `url_name` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url_name` (`url_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -280,10 +279,6 @@ CREATE TABLE `manufacturers` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `manufacturers` WRITE;
 /*!40000 ALTER TABLE `manufacturers` DISABLE KEYS */;
-INSERT INTO `manufacturers` VALUES
-(11,'AMD','amd'),
-(12,'Intel','intel'),
-(14,'ASUS','asus');
 /*!40000 ALTER TABLE `manufacturers` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -300,12 +295,12 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password_hash` text NOT NULL,
-  `pfp_path` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `is_owner` tinyint(1) NOT NULL DEFAULT 0,
+  `pfp_hash` varchar(256) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,8 +310,6 @@ CREATE TABLE `users` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES
-(5,'ale','$2y$10$4pETeWvFYVhDqf2Rc6kpMuObVrjhvWngQju03rB2.kviORK.nEsqu',NULL,'2026-04-15 07:44:39',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -331,4 +324,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-04-16 21:20:29
+-- Dump completed on 2026-04-19 17:58:37
