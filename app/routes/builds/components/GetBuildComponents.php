@@ -10,7 +10,7 @@ use Core\Response;
 use Core\Method;
 use Core\ContentTypes;
 use Core\Params;
-use Core\ApiDoc; 
+use Core\ApiDoc;
 use DatabaseUtil\Database;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -55,7 +55,8 @@ use OpenApi\Attributes as OA;
 )]
 class GetBuildComponents extends Controller
 {
-    function manageRequest(Request $request, Params $params): Response{
+    function manageRequest(Request $request, Params $params): Response
+    {
         $buildId = $params->getInt("buildId");
 
         $db = Database::getDatabase();
@@ -75,17 +76,38 @@ class GetBuildComponents extends Controller
         if ($build["user_id"] !== $user["id"]) {
             throw new Forbidden("Non hai il permesso di accedere a questa risorsa");
         }
-        
-        $pr = $db->prepare("SELECT C.id, C.url_name, C.name, C.description, C.price, BC.quantity FROM components AS C
-                            INNER JOIN build_components AS BC on C.id = BC.component_id
-                            WHERE BC.build_id=?");
+        $pr = $db->prepare("
+                            SELECT 
+                                c.id,
+                                c.name,
+                                c.url_name,
+                                c.description,
+                                c.created_at,
+                                c.price AS price_per_item,
+                                bc.quantity,
+                                (c.price * bc.quantity) AS total_price,
+                                cat.name AS category_name,
+                                cat.url_name AS category_url,
+                                m.name AS manufacturer_name,
+                                m.url_name AS manufacturer_url
+                            FROM build_components bc
+                            INNER JOIN components c ON c.id = bc.component_id
+                            LEFT JOIN categories cat ON c.category_id = cat.id
+                            LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
+                            WHERE bc.build_id = ?
+                        ");
         $pr->execute([$buildId]);
 
         $components = $pr->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($components as $key => $c) {
+            $components[$key]["image_url"] =
+                "http://" . $_SERVER["HTTP_HOST"] . "/api/components/" . $c["url_name"] . "/image";
+        }
+
         return Response::new()
-                ->ok()
-                ->body($components);
+            ->ok()
+            ->body($components);
 
     }
 }

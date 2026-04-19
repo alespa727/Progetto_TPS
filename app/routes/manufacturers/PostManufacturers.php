@@ -58,32 +58,36 @@ use OpenApi\Attributes as OA;
 )]
 class PostManufacturers extends Controller
 {
-   
+    function validateBody(): array {
+        return ["name"];
+    }
+
     function manageRequest(Request $request, Params $params): Response
     {
-        
         $name = $request->getBody("name");
-        if(!isset($name)){
-            throw new BadRequest("Inserisci un nome nel body");
+
+        if (empty(trim($name))) {
+            throw new BadRequest("Il nome non può essere vuoto");
         }
-        $nome_url = str_replace(" ", "-", strtolower($name));
-        /**
-         * @var PDO $db
-         */
+
+        $nome_url = preg_replace('/[^a-z0-9]+/', '-', strtolower($name));
+        $nome_url = trim($nome_url, '-');
+
+        /** @var PDO $db */
         $db = \DatabaseUtil\Database::getDatabase();
 
-
-        $pr = $db->prepare("INSERT INTO manufacturers (name, url_name) values (?, ?)");
-
-        $success = $pr->execute([$name, $nome_url]);
-        if($success){
-            $res = Response::new()
-                ->created()
-                ->body(["description"=>"creata nuovo marca"]);
-        }else{
-            throw new BadRequest("Error Processing Request");
+        try {
+            $pr = $db->prepare("INSERT INTO manufacturers (name, url_name) VALUES (?, ?)");
+            $pr->execute([$name, $nome_url]);
+        } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                throw new BadRequest("Produttore già esistente");
+            }
+            throw $e;
         }
-        return $res;
 
-    } 
+        return Response::new()
+            ->created()
+            ->body(["description" => "creato nuovo produttore"]);
+    }
 }

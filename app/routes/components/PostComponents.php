@@ -84,20 +84,9 @@ use OpenApi\Attributes as OA;
 class PostComponents extends Controller
 {
 
-    function validateRequest(Request $request, Params $params): bool
-    {
-        $category = $request->getBody("category");
-        $manufacturer = $request->getBody("manufacturer");
-        $name = $request->getBody("name");
-        $price = $request->getBody("price");
-
-        if (!isset($category) || !isset($manufacturer) || !isset($name) || !isset($price)) {
-            return false;
-        }
-
-        return true;
+    function validateBody(): array{
+        return ["category", "manufacturer", "name", "price"];
     }
-
 
     function manageRequest(Request $request, Params $params): Response
     {
@@ -109,10 +98,14 @@ class PostComponents extends Controller
         $quantity = $request->getBody("quantity") ?? 1;
         $price = $request->getBody("price");
 
+        if($price<=0){
+            throw new BadRequest("Non è possibile inserire un prezzo negativo");
+        }
+
         /**
          * @var array $specs
          */
-        $specs = $request->getBody("specs");
+        $specs = $request->getBody("specs") ?? [];
 
         $db = \DatabaseUtil\Database::getDatabase();
 

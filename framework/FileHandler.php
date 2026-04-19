@@ -47,7 +47,7 @@ class FileHandler
         return $hash;
     }
 
-    public static function getFilePath(Request $r, string $hash): string
+    public static function getFilePath(Request $r, string $hash): string|null
     {
         $hash = basename($hash);
         if (!is_dir(__DIR__ . '/file_permissions/')) {
@@ -55,18 +55,21 @@ class FileHandler
         }
 
         $permissions = null;
+        $middlewares=[];
         if (file_exists(__DIR__ . '/file_permissions/' . $hash . '.php')) {
             $permissions = (require __DIR__ . '/file_permissions/' . $hash . '.php');
             $middlewares = $permissions["middlewares"];
             foreach ($middlewares as $key => $middleware) {
                 require Config::path("directories.middlewares")."/".$middleware.".php";
             }
-        } else
-            return null;
+        } 
 
+        
         $path = null;
         runMiddleware($r, $middlewares, function () use ($permissions, &$path) {
-
+            if(!$permissions){
+                return null;
+            }
             if (file_exists(FileHandler::getStaticFilesPath() . "/" . $permissions["hash"] .".". $permissions["ext"])) {
                 $path = FileHandler::getStaticFilesPath() . "/" . $permissions["hash"] .".". $permissions["ext"];
             }
@@ -76,7 +79,7 @@ class FileHandler
         return $path;
     }
 
-     public static function getFileName(Request $r, string $hash): string
+     public static function getFileName(Request $r, string $hash): string|null
     {
         $hash = basename($hash);
         if (!is_dir(__DIR__ . '/file_permissions/')) {

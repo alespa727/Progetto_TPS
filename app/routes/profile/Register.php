@@ -32,10 +32,10 @@ use OpenApi\Attributes as OA;
     responses: [
         new OA\Response(
             response: 200,
-            description: "Login riuscito, cookie JWT impostato",
+            description: "Creato nuovo account",
             content: new OA\JsonContent(
                 example: [
-                    "message" => "Login effettuato con successo"
+                    "description" => "Creazione nuovo account"
                 ]
             )
         ),
@@ -58,7 +58,12 @@ class Register extends Controller
 
     function manageRequest(Request $request, Params $params): Response
     {
+
         $username = $request->getBody("username");
+        if(strlen($username) < 4){
+            throw new BadRequest("Inserisci uno username valido");
+            
+        }
         $password = $request->getBody("password");
 
         /**
@@ -66,13 +71,18 @@ class Register extends Controller
          */
         $db = \DatabaseUtil\Database::getDatabase();
 
+        // Controllo se è il primo utente inserito (quindi l'owner)
+        $countStmt = $db->query("SELECT COUNT(*) FROM users");
+        $userCount = (int) $countStmt->fetchColumn();
+        $isOwner = $userCount === 0 ? 1 : 0;
+
         $hash = password_hash($password, PASSWORD_BCRYPT);
 
-        $pr = $db->prepare("INSERT INTO users (username, password_hash) values (?, ?)");
+        $pr = $db->prepare("INSERT INTO users (username, password_hash, is_owner) values (?, ?, ?)");
         $hash = password_hash($password, PASSWORD_BCRYPT);
 
         try {
-            $pr->execute([$username, $hash]);
+            $pr->execute([$username, $hash, $isOwner]);
 
         } catch (\Throwable $th) {
             $res = Response::new()
@@ -80,9 +90,15 @@ class Register extends Controller
                     ->body(["error"=>"Nome utente già utilizzato"]);
             return $res;
         } 
-        $res = Response::new()
+
+        if($isOwner===1){
+            return Response::new()
+                ->created()
+                ->body(["description"=>"Creato nuovo account owner"]);; 
+        }
+        
+        return Response::new()
             ->created()
-            ->body("Register riuscito");
-        return $res; 
+            ->body(["description"=>"Register riuscito"]);
     }
 }

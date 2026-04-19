@@ -14,7 +14,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "manufacturers", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "manufacturers", "{url_name}:{string}"], [], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/manufacturers/{url_name}",
     summary: "Dettagli produttori",

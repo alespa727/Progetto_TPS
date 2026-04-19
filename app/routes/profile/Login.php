@@ -58,9 +58,7 @@ class Login extends Controller
         $pr->execute(["username" => $username]);
         $user = $pr->fetch(PDO::FETCH_ASSOC);
 
-        $user_password = $user["password_hash"];
-
-        if ($user && password_verify($password, $user_password)) {
+        if ($user && password_verify($password, $user["password_hash"])) {
 
             $jwt = JWT::encode(["username" => $user["username"]], $this->key, 'HS256');
             setcookie(

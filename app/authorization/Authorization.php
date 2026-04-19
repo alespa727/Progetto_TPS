@@ -29,7 +29,7 @@ final class Authorization
         $decoded = JWT::decode($cookie_jwt, new Key(self::$secret, 'HS256'), $headers);
         $decoded_array = (array) $decoded;
 
-        $pr = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $pr = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
 
         $pr->execute(["username" => $decoded_array["username"]]);
         $user = $pr->fetch(PDO::FETCH_ASSOC);
@@ -56,7 +56,7 @@ final class Authorization
         $decoded = JWT::decode($cookie_jwt, new Key(self::$secret, 'HS256'), $headers);
         $decoded_array = (array) $decoded;
 
-        $pr = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $pr = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
 
         $pr->execute(["username" => $decoded_array["username"]]);
         $user = $pr->fetch(PDO::FETCH_ASSOC);
@@ -86,7 +86,7 @@ final class Authorization
     public static function getUser() : array {
         $username = self::verify();
         $db = Database::getDatabase();
-        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $stmt = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
         $stmt->execute(["username" => $username]);
 
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -96,7 +96,7 @@ final class Authorization
     public static function userId() : int {
         $username = self::verify();
         $db = Database::getDatabase();
-        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $stmt = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
         $stmt->execute(["username" => $username]);
 
         $res = $stmt->fetch(PDO::FETCH_ASSOC);

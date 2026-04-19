@@ -13,15 +13,15 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Delete, ["api", "categories", "{categoryName}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Delete, ["api", "categories", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 
 #[OA\Delete(
-    path: "/api/categories/{categoryName}",
+    path: "/api/categories/{url_name}",
     summary: "Elimina una categoria",
     tags: ["Categories"],
     parameters: [
         new OA\Parameter(
-            name: "categoryName",
+            name: "url_name",
             description: "url_name della categoria",
             in: "path",
             required: true,
@@ -45,14 +45,10 @@ use OpenApi\Attributes as OA;
 )]
 class DeleteCategories extends Controller
 {
-
-    function validateParams(): array{
-        return ["categoryName"];
-    }
    
     function manageRequest(Request $request, Params $params): Response
     {
-        $name = $params->getString("categoryName");
+        $name = $params->getString("url_name");
        
         if(!isset($name)){
             throw new BadRequest("Inserisci un nome valido");

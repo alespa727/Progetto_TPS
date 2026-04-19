@@ -14,7 +14,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "categories", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "categories", "{url_name}:{string}"], [], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/categories/{url_name}",
     summary: "Dettagli categoria",
@@ -35,8 +35,9 @@ use OpenApi\Attributes as OA;
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: "id", type: "integer"),
-                    new OA\Property(property: "name", type: "string"),
-                    new OA\Property(property: "url_name", type: "string"),
+                    new OA\Property(property: "name", type: "string", example: "CPU"),
+                    new OA\Property(property: "url_name", type: "string", example: "cpu"),
+                    new OA\Property(property: "max_per_build", type: "integer", example: 1),
                     new OA\Property(
                         property: "specs",
                         type: "array",
@@ -62,17 +63,13 @@ use OpenApi\Attributes as OA;
 class GetCategories extends Controller
 {
 
-    function validateParams(): array{
-        return ["url_name"=>"string"];
-    }
-
     function manageRequest(Request $request, Params $params): Response
     {
         $url_name = $params->getString("url_name");
-      
+
         $result = preg_replace('/\s+/', '', $url_name);
-        
-        if($result===""){
+
+        if ($result === "") {
             throw new BadRequest("Dare una categoria valida");
         }
 
@@ -83,6 +80,7 @@ class GetCategories extends Controller
                             C.id,
                             C.name,
                             C.url_name,
+                            C.max_per_build,
                             CS.spec_key,
                             CS.spec_label,
                             CS.unit

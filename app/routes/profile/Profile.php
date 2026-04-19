@@ -58,7 +58,7 @@ class Profile extends Controller
         $decoded = JWT::decode($cookie_jwt, new Key($this->key, 'HS256'), $headers);
         $decoded_array = (array) $decoded;
 
-        $pr = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $pr = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
 
         $pr->execute(["username" => $decoded_array["username"]]);
         $user = $pr->fetch(PDO::FETCH_ASSOC);

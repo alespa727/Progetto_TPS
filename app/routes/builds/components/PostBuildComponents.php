@@ -1,6 +1,7 @@
 <?php
 
 use Core\Exceptions\BadRequest;
+use Core\Exceptions\NotFound;
 use Core\Route;
 use Core\Controller;
 use Core\Request;
@@ -66,20 +67,32 @@ class PostBuildComponents extends Controller
         $stmt = $db->prepare("SELECT * FROM builds WHERE id = ? AND user_id = ?");
         $stmt->execute([$build_id, $userId]);
 
+        $build = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $pr = $db->prepare("SELECT id, url_name FROM components WHERE url_name=?");
+        if (empty($build)) {
+            throw new NotFound("Build non trovata");
+        }
+
+        $pr = $db->prepare("SELECT id, category_id, url_name FROM components WHERE url_name=?");
 
         $pr->execute([$url_name]);
         $component = $pr->fetch(PDO::FETCH_ASSOC);
 
-         if (empty($component)) {
+
+        if (empty($component)) {
             throw new BadRequest("Componente non trovato");
         }
 
+
         $component_id = $component["id"];
 
-        $build = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pr = $db->prepare("SELECT name, max_per_build FROM categories WHERE id=?");
+        $pr->execute([$component["category_id"]]);
 
+        $category = $pr->fetch(PDO::FETCH_ASSOC);
+        $name = $category["name"];
+        $max_per_build = $category["max_per_build"];
+      
         if (empty($build)) {
             throw new BadRequest("Build non trovata");
         }
@@ -117,6 +130,20 @@ class PostBuildComponents extends Controller
                 ->status(409)
                 ->body(["errors" => $conflicts]);
         }
+
+        $stmt = $db->prepare("
+            SELECT quantity 
+            FROM build_components 
+            WHERE build_id = ? AND component_id = ?
+        ");
+        $stmt->execute([$build_id, $component_id]);
+
+        $current = $stmt->fetchColumn() ?: 0;
+        
+        if ($current >= $max_per_build) {
+            throw new BadRequest("Limite massimo di $name per build raggiunto");
+        }
+
         $stmt = $db->prepare("
                     INSERT INTO build_components (build_id, component_id, quantity)
                     VALUES (?, ?, 1)

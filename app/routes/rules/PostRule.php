@@ -14,7 +14,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Post, ["api", "rules"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Post, ["api", "rules"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 #[OA\Tag(name: "Rules")]
 #[OA\PathItem(path: "/api/rules")]
 #[OA\Post(
@@ -48,7 +48,7 @@ class PostRule extends Controller
 {
 
     function validateBody(): array {
-        return ["category1_id", "category2_id"];
+        return ["category1_id", "category2_id", "spec_key1", "spec_key2"];
     }
 
 

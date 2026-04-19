@@ -1,5 +1,4 @@
 <?php
-
 use Core\Exceptions\BadRequest;
 use Core\Route;
 use Core\Controller;
@@ -20,9 +19,10 @@ use OpenApi\Attributes as OA;
     requestBody: new OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
-            required: ["name"],
+            required: ["name", "specs"],
             properties: [
                 new OA\Property(property: "name", type: "string", example: "CPU"),
+                new OA\Property(property: "max_per_build", type: "integer", example: 1),
                 new OA\Property(
                     property: "specs",
                     type: "array",
@@ -46,46 +46,44 @@ use OpenApi\Attributes as OA;
 )]
 class PostCategories extends Controller
 {
-
-
-    function validateBody(): array{
+    function validateBody(): array {
         return ["name", "specs"];
     }
-    
+
     function manageRequest(Request $request, Params $params): Response
     {
-
         $nome_categoria = $request->getBody("name");
-        /**
-         * @var array
-         */
         $required_specified_specs = $request->getBody("specs");
+        $max_per_build = $request->getBody("max_per_build") ?? 1;
 
-        $nome_url = str_replace(" ", "-", strtolower($nome_categoria));
-        /**
-         * @var PDO $db
-         */
+        $nome_url = preg_replace('/[^a-z0-9]+/', '-', strtolower($nome_categoria));
+        $nome_url = trim($nome_url, '-');
+
+        /** @var PDO $db */
         $db = \DatabaseUtil\Database::getDatabase();
 
-        $pr = $db->prepare("INSERT INTO categories (name, url_name) values (?, ?)");
-        $success = $pr->execute([$nome_categoria, $nome_url]);
-        $lastId = $db->lastInsertId();
+        $db->beginTransaction();
+        try {
+            $pr = $db->prepare("INSERT INTO categories (name, url_name, max_per_build) VALUES (?, ?, ?)");
+            $pr->execute([$nome_categoria, $nome_url, $max_per_build]);
+            $lastId = $db->lastInsertId();
 
-        $pr = $db->prepare("INSERT INTO category_specs (category_id, spec_key, spec_label, unit) values (?, ?, ?, ?)");
-
-        if ($success) {
-
-            foreach ($required_specified_specs as $key => $spec) {
+            $pr = $db->prepare("INSERT INTO category_specs (category_id, spec_key, spec_label, unit) VALUES (?, ?, ?, ?)");
+            foreach ($required_specified_specs as $spec) {
                 $pr->execute([$lastId, $spec["key"], $spec["label"], $spec["unit"] ?? ""]);
             }
 
-            $res = Response::new()
-                ->created()
-                ->body(["description" => "creata nuova categoria"]);
-        } else {
-            throw new BadRequest("Error Processing Request");
+            $db->commit();
+        } catch (\PDOException $e) {
+            $db->rollBack();
+            if ($e->getCode() === '23000') {
+                throw new BadRequest("Categoria già esistente");
+            }
+            throw $e;
         }
-        return $res;
 
+        return Response::new()
+            ->created()
+            ->body(["description" => "creata nuova categoria"]);
     }
 }

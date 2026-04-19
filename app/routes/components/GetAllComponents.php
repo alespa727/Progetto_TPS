@@ -42,7 +42,7 @@ use OpenApi\Attributes as OA;
         new OA\Response(response: 401, description: "Unauthorized")
     ]
 )]
-#[Route(Method::Get, ["api", "components"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "components"], [], ContentTypes::Json)]
 class GetAllComponents extends Controller
 {
 
@@ -50,17 +50,46 @@ class GetAllComponents extends Controller
     {
 
         $db = \DatabaseUtil\Database::getDatabase();
-        
+
         $page = (int) ($request->getQuery('page') ?? 1);
         $limit = 50;
 
-        $offset = ($page - 1) * $limit;
+        if($page<=0){
+            throw new BadRequest("Pagina non esistente");
+            
+        }
 
-        $pr = $db->prepare("SELECT * FROM components LIMIT $limit OFFSET $offset");
+        $offset = ($page - 1) * $limit;
+        $pr = $db->prepare("
+                SELECT 
+                    c.id,
+                    c.name,
+                    c.url_name,
+                    c.description,
+                    c.created_at,
+                    c.quantity,
+                    c.price,
+                    cat.name AS category_name,
+                    cat.url_name AS category_url,
+                    m.name AS manufacturer_name,
+                    m.url_name AS manufacturer_url
+                FROM components c
+                LEFT JOIN categories cat ON c.category_id = cat.id
+                LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
+                LIMIT :limit OFFSET :offset
+            ");
+
+        $pr->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+        $pr->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+        $pr->execute();
 
         $success = $pr->execute();
         $res = $pr->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($res as $key => $c) {
+            $res[$key]["image_url"] =
+                "http://" . $_SERVER["HTTP_HOST"] . "/api/components/" . $c["url_name"] . "/image";
+        }
         if ($success) {
             $res = Response::new()
                 ->ok()

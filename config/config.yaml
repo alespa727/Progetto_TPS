@@ -1,15 +1,16 @@
 app:
-  debug: false
+  debug: true
   allowed_hosts:
     - localhost
     - 127.0.0.1
+    - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
     /docs/swagger.html
 
 directories:
   controllers: /app/routes
   middlewares: /app/middlewares
-  static: /static
+  static: static
   
 database:
   driver: mysql

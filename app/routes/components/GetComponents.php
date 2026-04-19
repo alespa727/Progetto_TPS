@@ -14,7 +14,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "components", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "components", "{url_name}:{string}"], [], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/components/{url_name}",
     summary: "Dettaglio componente",
@@ -51,25 +51,46 @@ use OpenApi\Attributes as OA;
 )]
 class GetComponents extends Controller
 {
-   
+
     function manageRequest(Request $request, Params $params): Response
     {
-        $url_name=$params->getString("url_name");
+        $url_name = $params->getString("url_name");
         $db = \DatabaseUtil\Database::getDatabase();
 
 
-        $pr = $db->prepare("SELECT * FROM components WHERE url_name=?");
-       
+        $pr = $db->prepare("
+                SELECT 
+                    c.id,
+                    c.name,
+                    c.url_name,
+                    c.description,
+                    c.created_at,
+                    c.quantity,
+                    c.price,
+                    cat.name AS category_name,
+                    cat.url_name AS category_url,
+                    m.name AS manufacturer_name,
+                    m.url_name AS manufacturer_url
+                FROM components c
+                LEFT JOIN categories cat ON c.category_id = cat.id
+                LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
+                WHERE c.url_name=?;
+            ");
+
         $success = $pr->execute([$url_name]);
-        $res = $pr->fetch(PDO::FETCH_ASSOC);
-        if($success && $res){
+        $component = $pr->fetch(PDO::FETCH_ASSOC);
+
+        if ($success && $component) {
+            $component["image_url"] =
+                "http://" . $_SERVER["HTTP_HOST"] . "/api/components/" . $component["url_name"] . "/image";
+
             $res = Response::new()
-                ->created()
-                ->body($res);
-        }else{
+                ->ok()
+                ->body($component);
+        } else {
             throw new NotFound("Componente non esistente");
         }
         return $res;
 
-    } 
+    }
 }

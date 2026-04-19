@@ -63,7 +63,7 @@ class Router
         }
 
         include_once "functions.php";
-        if (routesHaveChanged(Router::$routesPath)) {
+        if (true || routesHaveChanged(Router::$routesPath)) {
             RouteBuilder::build(self::$routesPath);
         }
 
@@ -272,20 +272,24 @@ class Router
                         throw new \Core\Exceptions\InternalServerError("Ricontrolla il codice mona");
                     }
                 } catch (\Throwable $th) {
+                    $status = $th->getCode();
+
+                    if (!is_int($status) || $status < 100 || $status > 599) {
+                        $status = 500;
+                    }
                     if (Router::$debug) {
                         $res = Response::new()
-                            ->status($th->getCode() ?? 500)
+                            ->status($status)
                             ->body([
-                                "message" => "Ricontrolla il codice mona",
                                 "error" => $th->getMessage()
                             ]);
 
                         Router::sendResponse($res, ContentTypes::Json);
                     } else {
                         $res = Response::new()
-                            ->status($th->getCode() ?? 500)
+                            ->status($status ?? 500)
                             ->body([
-                                "error" => $th->getMessage() ?? "Internal Server Error"
+                                "error" => "Internal Server Error"
                             ]);
 
                         Router::sendResponse($res, ContentTypes::Json);

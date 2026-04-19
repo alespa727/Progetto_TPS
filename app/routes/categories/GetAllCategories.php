@@ -13,7 +13,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "categories"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "categories"], [], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/categories",
     summary: "Lista di tutte le categorie",
@@ -26,8 +26,9 @@ use OpenApi\Attributes as OA;
                 type: "array",
                 items: new OA\Items(
                     properties: [
-                        new OA\Property(property: "name", type: "string", example: "ASUS"),
-                        new OA\Property(property: "url_name", type: "string", example: "asus")
+                        new OA\Property(property: "name", type: "string", example: "CPU"),
+                        new OA\Property(property: "url_name", type: "string", example: "cpu"),
+                        new OA\Property(property: "max_per_build", type: "integer", example: 1)
                     ]
                 )
             )

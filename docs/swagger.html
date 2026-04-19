@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <title>API Docs</title>
 
-    <!-- Swagger UI -->
     <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
 
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Amoenus/SwaggerDark/SwaggerDark.css">
 
@@ -20,8 +18,11 @@
 <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
 
 <script>
+    const specUrl =
+    window.location.origin + "/api/openapi";
+
     SwaggerUIBundle({
-        url: "http://localhost/api/openapi",
+        url: specUrl,
         dom_id: "#swagger-ui",
         deepLinking: true,
         persistAuthorization: true

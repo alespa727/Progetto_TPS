@@ -47,13 +47,13 @@ use OpenApi\Attributes as OA;
         )
     ]
 )]
-#[Route(Method::Delete, ["api", "manufacturers", "{manufacturerName}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Delete, ["api", "manufacturers", "{url_name}:{string}"], [OwnerAuthMiddleware::class], ContentTypes::Json)]
 class DeleteManufacturers extends Controller
 {
    
     function manageRequest(Request $request, Params $params): Response
     {
-        $name = $params->getString("manufacturerName");
+        $name = $params->getString("url_name");
         if(!isset($name)){
             throw new BadRequest("Inserisci un nome nel body");
         }

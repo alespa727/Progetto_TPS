@@ -14,7 +14,7 @@ use Firebase\JWT\Key;
 use Authorization\Authorization;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "manufacturers"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "manufacturers"], [], ContentTypes::Json)]
 #[OA\Tag(name: "Manufacturers")]
 #[OA\PathItem(path: "/api/manufacturers")]
 #[OA\Get(

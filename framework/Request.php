@@ -75,7 +75,9 @@ class Request
 
     public function getBody(string $key)
     {
-        $value = $key ? ($this->body[$key] ?? null) : $this->body;
+        if(array_key_exists($key, $this->body))
+            $value = $key ? ($this->body[$key] ?? null) : $this->body;
+        else return null;
         
         return $value;
     }
