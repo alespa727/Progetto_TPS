@@ -35,9 +35,6 @@ Tutti gli indirizzi vengono riscritti da Apache (mod_rewrite) verso un unico ent
 | Script | Quando viene richiamato |
 |---|---|
 | `index.php` | Viene richiamato per **ogni richiesta HTTP** al web service. Carica la configurazione da `config/config.yaml`, inizializza il `Router` e lo `FileHandler`, e avvia la gestione della richiesta. |
-
-Il `Router` (`framework/Router.php`) riceve la richiesta da `index.php`, individua il controller corretto in base a metodo HTTP e percorso URI, applica i middleware di autorizzazione e delega l'esecuzione al controller appropriato.
-
 ---
 
 ### Struttura delle directory
@@ -136,9 +133,3 @@ directories:
   static: /static
 ```
 
----
-
-
-## Organizzazione dei lavori
-
-TODO

@@ -6,6 +6,8 @@ app:
     - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
     /docs/swagger.html
+  mkdocs:
+    /docs/index.html
 
 directories:
   controllers: /app/routes

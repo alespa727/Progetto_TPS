@@ -11,7 +11,7 @@ use Core\Params;
 use DatabaseUtil\Database;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Get, ["api", "rules", "{id}:{int}"], [AuthMiddleware::class], ContentTypes::Json)]
+#[Route(Method::Get, ["api", "rules", "{id}:{int}"], [], ContentTypes::Json)]
 #[OA\Get(
     path: "/api/rules/{id}",
     summary: "Dettaglio regola di compatibilità",

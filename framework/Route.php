@@ -3,6 +3,7 @@
 namespace Core;
 
 use Attribute;
+
 /**
  * Attributo PHP che definisce una route HTTP associata a una classe controller.
  *
