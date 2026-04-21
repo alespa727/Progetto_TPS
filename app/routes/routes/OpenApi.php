@@ -14,6 +14,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Info("3.0.0", "idk", "my api")]
 #[OA\Server(url: "http://localhost")]
+#[OA\Server(url: "https://weightlessly-tres-dagmar.ngrok-free.dev")]
 #[Route(Method::Get, ["api", "openapi"], [], ContentTypes::Json)]
 class OpenApi extends Controller
 {

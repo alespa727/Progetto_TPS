@@ -3,6 +3,7 @@ app:
   allowed_hosts:
     - localhost
     - 127.0.0.1
+    - 34.154.100.33
     - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
     /docs/swagger.html
