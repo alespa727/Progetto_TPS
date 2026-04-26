@@ -2,18 +2,19 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: server
     steps:
       - name: SSH e git pull
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
+          host: ${{ secrets.GCE_HOST }}
+          username: ${{ secrets.GCE_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/html
-            sudo git pull
+            git pull
