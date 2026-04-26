@@ -17,4 +17,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/html
-            sudo git pull
+            git pull
