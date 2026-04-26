@@ -1,7 +1,13 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: server   
+    environment: server
     steps:
       - name: SSH e git pull
         uses: appleboy/ssh-action@v1.0.0
