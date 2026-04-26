@@ -95,7 +95,7 @@ class GetAllComponents extends Controller
 
 
         foreach ($res as &$row) {
-            $row['specs'] = json_decode($row['specs'], true) ?? [];
+            $row['specs'] = $row['specs'] !== null ? json_decode($row['specs'], true) : [];
         }
 
         foreach ($res as $key => $c) {

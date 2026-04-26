@@ -89,7 +89,7 @@ class GetComponents extends Controller
         $success = $pr->execute([$url_name]);
         $component = $pr->fetch(PDO::FETCH_ASSOC);
 
-        $component['specs'] = json_decode($component['specs'], true) ?? [];
+        $component['specs'] =  $component['specs'] !== null ? json_decode($component['specs'], true) : [];
 
         if ($success && $component) {
             $component["image_url"] =
