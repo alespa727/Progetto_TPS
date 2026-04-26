@@ -52,6 +52,6 @@ return array(
     'Root' => $baseDir . '/app/routes/Root.php',
     'UpdateQuantityBuildComponent' => $baseDir . '/app/routes/builds/components/UpdateQuantityBuildComponent.php',
     'UploadComponentImage' => $baseDir . '/app/routes/components/UploadComponentImage.php',
-    'UploadProfileImage' => $baseDir . '/app/routes/profile/UploadPofileImage.php',
+    'UploadProfileImage' => $baseDir . '/app/routes/profile/UploadProfileImage.php',
     'routes\\Docs' => $baseDir . '/app/routes/Docs.php',
 );

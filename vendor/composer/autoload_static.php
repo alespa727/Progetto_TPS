@@ -12,77 +12,77 @@ class ComposerStaticInit923194bb016a246f3de4bebc635e8ab9
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' =>
+        'S' => 
         array (
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarExporter\\' => 30,
             'Symfony\\Component\\Finder\\' => 25,
         ),
-        'P' =>
+        'P' => 
         array (
             'Psr\\Log\\' => 8,
         ),
-        'O' =>
+        'O' => 
         array (
             'OpenApi\\' => 8,
         ),
-        'F' =>
+        'F' => 
         array (
             'Firebase\\JWT\\' => 13,
         ),
-        'D' =>
+        'D' => 
         array (
             'DatabaseUtil\\' => 13,
         ),
-        'C' =>
+        'C' => 
         array (
             'Core\\' => 5,
         ),
-        'A' =>
+        'A' => 
         array (
             'Authorization\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Ctype\\' =>
+        'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Symfony\\Component\\Yaml\\' =>
+        'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
-        'Symfony\\Component\\VarExporter\\' =>
+        'Symfony\\Component\\VarExporter\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/var-exporter',
         ),
-        'Symfony\\Component\\Finder\\' =>
+        'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
-        'Psr\\Log\\' =>
+        'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
-        'OpenApi\\' =>
+        'OpenApi\\' => 
         array (
             0 => __DIR__ . '/..' . '/zircote/swagger-php/src',
         ),
-        'Firebase\\JWT\\' =>
+        'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
-        'DatabaseUtil\\' =>
+        'DatabaseUtil\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app/database',
         ),
-        'Core\\' =>
+        'Core\\' => 
         array (
             0 => __DIR__ . '/../..' . '/framework',
         ),
-        'Authorization\\' =>
+        'Authorization\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app/authorization',
         ),
@@ -135,7 +135,7 @@ class ComposerStaticInit923194bb016a246f3de4bebc635e8ab9
         'Root' => __DIR__ . '/../..' . '/app/routes/Root.php',
         'UpdateQuantityBuildComponent' => __DIR__ . '/../..' . '/app/routes/builds/components/UpdateQuantityBuildComponent.php',
         'UploadComponentImage' => __DIR__ . '/../..' . '/app/routes/components/UploadComponentImage.php',
-        'UploadProfileImage' => __DIR__ . '/../..' . '/app/routes/profile/UploadPofileImage.php',
+        'UploadProfileImage' => __DIR__ . '/../..' . '/app/routes/profile/UploadProfileImage.php',
         'routes\\Docs' => __DIR__ . '/../..' . '/app/routes/Docs.php',
     );
 
