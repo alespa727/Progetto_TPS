@@ -112,7 +112,13 @@ class PostComponents extends Controller
         $pr = $db->prepare("SELECT id FROM categories WHERE url_name=?");
         $pr->execute([$category]);
 
-        $category_id = $pr->fetch(PDO::FETCH_ASSOC)["id"];
+        $cat= $pr->fetch(PDO::FETCH_ASSOC);
+        if(!$cat){
+            throw new BadRequest("Categoria non trovata");
+        }
+
+        $category_id = $cat["id"];
+        
 
         $pr = $db->prepare("SELECT id FROM manufacturers WHERE url_name=?");
         $pr->execute([$manufacturer]);
@@ -138,16 +144,20 @@ class PostComponents extends Controller
 
         $prUnits = $db->prepare("SELECT spec_key, unit FROM category_specs WHERE category_id = :category_id");
         $prUnits->execute(["category_id" => $category_id]);
-        $units = array_column($prUnits->fetchAll(PDO::FETCH_ASSOC), 'unit', 'spec_key');
+        $units = array_column($prUnits->fetchAll(PDO::FETCH_ASSOC), 'unit', 'spec_key') ?? [];
 
         if ($success) {
-
-            foreach ($specs as $key => $spec) {
+            
+            foreach ($specs as $spec) {
+                $key = $spec['key'];
+                $value = $spec['value'];
+                $unit = array_key_exists($key, $units) ? $units[$key] : "";
+                
                 $pr->execute([
                     "component_id" => $componentId,
                     "spec_key" => $key,
-                    "spec_value" => $spec,
-                    "unit" => $units[$key] ?? '',
+                    "spec_value" => $value,
+                    "unit" => $unit,
                 ]);
             }
             $res = Response::new()->created()->body(["id" => $componentId, "message" => "Componente creato"]);
