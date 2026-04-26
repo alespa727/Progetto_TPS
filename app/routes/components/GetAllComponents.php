@@ -88,14 +88,15 @@ class GetAllComponents extends Controller
 
         $pr->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
         $pr->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
-        $pr->execute();
-
+    
         $success = $pr->execute();
         $res = $pr->fetchAll(PDO::FETCH_ASSOC);
 
 
         foreach ($res as &$row) {
-            $row['specs'] = !empty($row['specs']) ? json_decode($row['specs'], true) ?? [] : [];
+            $row['specs'] = isset($row['specs']) && is_string($row['specs']) && $row['specs'] !== ''
+                ? json_decode($row['specs'], true) ?? []
+                : [];
         }
 
         foreach ($res as $key => $c) {
