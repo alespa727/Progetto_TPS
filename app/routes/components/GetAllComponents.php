@@ -78,11 +78,11 @@ class GetAllComponents extends Controller
                             JSON_OBJECT('key', cs.spec_key, 'value', cs.spec_value, 'label', cats.spec_label, 'unit', cs.unit)
                         )
                         FROM component_specs cs
+                        INNER JOIN category_specs cats ON cats.category_id = cat.id AND cats.spec_key = cs.spec_key
                         WHERE cs.component_id = c.id
                     ) AS specs
                 FROM components c
                 LEFT JOIN categories cat ON c.category_id = cat.id
-                INNER JOIN category_specs cats ON c.category_id = cat.id
                 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
                 LIMIT :limit OFFSET :offset
             ");
