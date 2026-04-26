@@ -59,6 +59,10 @@ class GetComponentImage extends Controller
         if (!$component) {
             throw new NotFound("Componente non esistente");
         }
+        
+        if(!isset($component["image_hash"])) {
+            throw new NotFound("Immagine non esistente");
+        }
 
         $path = FileHandler::getFilePath($request, $component["image_hash"]);
 

@@ -38,6 +38,9 @@ class GetProfileImage extends Controller
 
         $user = Authorization::getUser();
        
+        if(!isset($user["pfp_hash"])) {
+            throw new NotFound("Immagine non esistente");
+        }
         $path = FileHandler::getFilePath($request, $user["pfp_hash"]);
 
         if(!$path){

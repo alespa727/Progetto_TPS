@@ -70,15 +70,26 @@ class GetComponents extends Controller
                     cat.name AS category_name,
                     cat.url_name AS category_url,
                     m.name AS manufacturer_name,
-                    m.url_name AS manufacturer_url
+                    m.url_name AS manufacturer_url,
+                    (
+                        SELECT JSON_ARRAYAGG(
+                            JSON_OBJECT('key', cs.spec_key, 'value', cs.spec_value, 'unit', cs.unit)
+                        )
+                        FROM component_specs cs
+                        WHERE cs.component_id = c.id
+                    ) AS specs
                 FROM components c
                 LEFT JOIN categories cat ON c.category_id = cat.id
                 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
-                WHERE c.url_name=?;
+                WHERE c.url_name = ?
             ");
 
+        
+         
         $success = $pr->execute([$url_name]);
         $component = $pr->fetch(PDO::FETCH_ASSOC);
+
+        $component['specs'] = json_decode($component['specs'], true) ?? [];
 
         if ($success && $component) {
             $component["image_url"] =

@@ -54,9 +54,9 @@ class GetAllComponents extends Controller
         $page = (int) ($request->getQuery('page') ?? 1);
         $limit = 50;
 
-        if($page<=0){
+        if ($page <= 0) {
             throw new BadRequest("Pagina non esistente");
-            
+
         }
 
         $offset = ($page - 1) * $limit;
@@ -72,7 +72,14 @@ class GetAllComponents extends Controller
                     cat.name AS category_name,
                     cat.url_name AS category_url,
                     m.name AS manufacturer_name,
-                    m.url_name AS manufacturer_url
+                    m.url_name AS manufacturer_url,
+                    (
+                        SELECT JSON_ARRAYAGG(
+                            JSON_OBJECT('key', cs.spec_key, 'value', cs.spec_value, 'unit', cs.unit)
+                        )
+                        FROM component_specs cs
+                        WHERE cs.component_id = c.id
+                    ) AS specs
                 FROM components c
                 LEFT JOIN categories cat ON c.category_id = cat.id
                 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
@@ -86,18 +93,23 @@ class GetAllComponents extends Controller
         $success = $pr->execute();
         $res = $pr->fetchAll(PDO::FETCH_ASSOC);
 
+
+        foreach ($res as &$row) {
+            $row['specs'] = json_decode($row['specs'], true) ?? [];
+        }
+
         foreach ($res as $key => $c) {
             $res[$key]["image_url"] =
                 "http://" . $_SERVER["HTTP_HOST"] . "/api/components/" . $c["url_name"] . "/image";
         }
         if ($success) {
-            $res = Response::new()
+            $resp = Response::new()
                 ->ok()
                 ->body($res);
         } else {
             throw new BadRequest("Error Processing Request");
         }
-        return $res;
+        return $resp;
 
     }
 }
