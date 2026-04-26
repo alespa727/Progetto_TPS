@@ -1,7 +1,7 @@
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: server   # ← aggiungi questa riga
+    environment: server   
     steps:
       - name: SSH e git pull
         uses: appleboy/ssh-action@v1.0.0
