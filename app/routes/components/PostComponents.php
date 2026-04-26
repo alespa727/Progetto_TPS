@@ -54,7 +54,7 @@ use OpenApi\Attributes as OA;
                     example: 100
                 ),
                 new OA\Property(
-                    property: "custom_specs",
+                    property: "specs",
                     type: "array",
                     items: new OA\Items(
                         properties: [
