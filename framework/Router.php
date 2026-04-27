@@ -289,7 +289,7 @@ class Router
                         $res = Response::new()
                             ->status($status ?? 500)
                             ->body([
-                                "error" => "Internal Server Error"
+                                "error" => $th->getMessage() ?? "Internal Server Error"
                             ]);
 
                         Router::sendResponse($res, ContentTypes::Json);

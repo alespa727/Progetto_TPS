@@ -55,13 +55,9 @@ class GetMyBuilds extends Controller
     {
       
         $db = Database::getDatabase();
-        $username = Authorization::verify();
+        Authorization::verify();
 
-
-        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
-        $stmt->execute(["username" => $username]);
-        
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = Authorization::getUser();
 
         $stmt = $db->prepare("SELECT id, user_id, name, description, status, is_public, total_price, created_at, updated_at FROM builds WHERE user_id=?");
         $stmt->execute([$user["id"]]);
