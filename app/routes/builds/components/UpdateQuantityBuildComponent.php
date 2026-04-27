@@ -17,7 +17,7 @@ use Firebase\JWT\Key;
 use Authorization\Authorization;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Patch, ["api", "builds", "{buildId}:{int}", "components"], [], ContentTypes::Json)]
+#[Route(Method::Patch, ["api", "builds", "{buildId}:{int}", "components"], [AuthMiddleware::class], ContentTypes::Json)]
 #[OA\Patch(
     path: "/api/builds/{buildId}/components",
     summary: "Setta quantità",

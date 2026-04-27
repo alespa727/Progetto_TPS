@@ -16,7 +16,7 @@ use Firebase\JWT\Key;
 use Authorization\Authorization;
 use OpenApi\Attributes as OA;
 
-#[Route(Method::Post, ["api", "builds", "{buildId}:{int}", "components"], [], ContentTypes::Json)]
+#[Route(Method::Post, ["api", "builds", "{buildId}:{int}", "components"], [AuthMiddleware::class], ContentTypes::Json)]
 #[OA\Post(
     path: "/api/builds/{buildId}/components",
     summary: "Aggiunge un componente a un build specifico",
