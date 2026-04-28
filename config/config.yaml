@@ -10,7 +10,7 @@ app:
     /docs/swagger.html
   mkdocs:
     /docs/index.html
-
+ 
 directories:
   controllers: /app/routes
   middlewares: /app/middlewares
