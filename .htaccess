@@ -2,6 +2,6 @@ RewriteEngine On
 
 RewriteRule ^mkdocs/ - [L]
 
-RewriteRule ^(app|framework|vendor|config|resources|static|docs|composer\.json|composer\.lock|backup\.sql|README\.md|documentazione\.pdf) - [F,L]
+RewriteRule ^(app|framework|vendor|config|resources|static|docs|composer\.json|composer\.lock|db\.sql|README\.md|documentazione_progetto\.pdf) - [F,L]
 
 RewriteRule ^ index.php [QSA,L]
