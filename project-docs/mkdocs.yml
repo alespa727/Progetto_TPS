@@ -1,0 +1,50 @@
+site_name: Documentazione
+theme:
+    name: material
+    font:
+      text: Space Grotesk
+    palette:
+        - media: "(prefers-color-scheme: dark)"
+          scheme: slate
+          toggle:
+            icon: material/brightness-7 
+            name: Switch to light mode
+          primary: black
+          accent: teal
+        - media: "(prefers-color-scheme: light)"
+          scheme: default
+          toggle:
+            icon: material/brightness-2
+            name: Switch to dark mode
+          primary: black
+          accent: teal
+          font: Cascadia Code
+
+
+markdown_extensions: 
+  - attr_list
+  - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.caret
+
+
+nav:
+  - Home: index.md
+  - Web API:
+    - Informazioni Generali: webapi/informazioni-webapi.md
+    - Script PHP: webapi/scripts-php.md
+    - Risorse gestite: webapi/risorse-webapi.md
+    - Autenticazione: webapi/autenticazione.md
+  - Database:
+    - Schema ER: database/schema-er.md
+    - Schema logico: database/schema-logico.md
