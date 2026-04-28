@@ -20,7 +20,7 @@ class Config
 
         foreach ($keys as $k) {
             if (!is_array($value) || !array_key_exists($k, $value)) {
-                if(self::get("app.debug") || self::get("app.debug")===null){
+                if(self::get("app.debug") && self::get("app.debug")!==null){
                     $res = Response::new()
                             ->internalServerError()
                             ->body("Configurare il config.yaml correttamente, manca: ".$key);

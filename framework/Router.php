@@ -119,7 +119,6 @@ class Router
         foreach ($segments as $key => $segment) {
             $isLast = $i === count($segments) - 1;
 
-
             if (!$isLast) {
 
                 if (array_key_exists($segment, $array)) {
@@ -189,7 +188,7 @@ class Router
                             $isValidType = !is_numeric($segment);
                             break;
                         default:
-                            $isValidType = true;
+                            $isValidType = false;
                             break;
                     }
 
