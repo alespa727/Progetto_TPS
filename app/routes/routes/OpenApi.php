@@ -12,7 +12,7 @@ use Core\Router;
 
 use OpenApi\Attributes as OA;
 
-#[OA\Info("3.0.0", "idk", "my api")]
+#[OA\Info("1.0.0", "Documentazione progetto TPS di Alessio, Andrea, Ashan e Lorenzo", "Sketch PC API documentation")]
 #[Route(Method::Get, ["api", "openapi"], [], ContentTypes::Json)]
 class OpenApi extends Controller
 {
