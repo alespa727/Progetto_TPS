@@ -7,9 +7,7 @@ app:
     - sketchpc.hopto.org
     - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
-    /docs/swagger.html
-  mkdocs:
-    /docs/index.html
+    /project-docs/swagger/swagger.html
  
 directories:
   controllers: /app/routes
