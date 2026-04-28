@@ -60,7 +60,7 @@ class PostBuilds extends Controller
         $username = Authorization::verify();
 
 
-        $stmt = $db->prepare("SELECT id, username, pfp_path, created_at, is_owner FROM users WHERE username=:username");
+        $stmt = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
         $stmt->execute(["username" => $username]);
         
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
