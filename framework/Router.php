@@ -109,8 +109,9 @@ class Router
         $params = [];
 
         $i = 0;
-
+        
         if (empty($segments)) {
+            
             if (isset($array["_" . $request_method])) {
                 $route = $array["_" . $request_method];
             }
@@ -339,17 +340,27 @@ class Router
     {
         Router::sendHeaders($response, $contentType);
 
-        if ($contentType === ContentTypes::Json) {
-            echo json_encode($response->body);
-        } else if ($contentType === ContentTypes::DownloadFile) {
-            FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
-        } else if ($contentType === ContentTypes::InlineFile) {
-            FileHandler::returnInlineFile($response->file["path"]);
-        } else if(ContentTypes::Redirect){
-            header($contentType.$response->url);
-        }else{
-            echo $response->body;
+        switch ($contentType) {
+            case ContentTypes::Json:
+                echo json_encode($response->body);
+                break;
+            case ContentTypes::DownloadFile:
+                FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
+                break;
+
+            case ContentTypes::InlineFile:
+                FileHandler::returnInlineFile($response->file["path"]);
+                break;
+
+            case ContentTypes::Redirect:
+                header($contentType.$response->url);
+                break;
+
+            default:
+                echo $response->body;
+                break;
         }
+        
         die;
     }
 }
