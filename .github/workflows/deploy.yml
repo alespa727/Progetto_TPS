@@ -17,4 +17,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/html
+            git reset --hard
             git pull
