@@ -114,6 +114,11 @@ class UpdateQuantityBuildComponent extends Controller
         $pr->execute([$component["category_id"]]);
 
         $category = $pr->fetch(PDO::FETCH_ASSOC);
+        
+        if (empty($category)) {
+            throw new BadRequest("Categoria non trovata");
+        }
+
         $name = $category["name"];
         $max_per_build = $category["max_per_build"];
 

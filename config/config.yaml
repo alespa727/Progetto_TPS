@@ -4,6 +4,7 @@ app:
     - localhost
     - 127.0.0.1
     - 34.154.100.33
+    - sketchpc.hopto.org
     - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
     /docs/swagger.html

@@ -57,13 +57,9 @@ class PostBuilds extends Controller
         $description = $request->getBody("description");
 
         $db = Database::getDatabase();
-        $username = Authorization::verify();
-
-
-        $stmt = $db->prepare("SELECT id, username, pfp_hash, created_at, is_owner FROM users WHERE username=:username");
-        $stmt->execute(["username" => $username]);
         
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        Authorization::verify();
+        $user = Authorization::getUser();
 
         $stmt = $db->prepare("INSERT INTO builds (user_id, name, description) values (?, ?, ?)");
         $stmt->execute([$user["id"], $name ?? "Default", $description ?? ""]);
