@@ -16,5 +16,6 @@ jobs:
           username: ${{ secrets.GCE_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            whoami
             cd /var/www/html
             git pull
