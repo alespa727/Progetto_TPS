@@ -345,7 +345,9 @@ class Router
             FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
         } else if ($contentType === ContentTypes::InlineFile) {
             FileHandler::returnInlineFile($response->file["path"]);
-        } else {
+        } else if(ContentTypes::Redirect){
+            header($contentType.$response->url);
+        }else{
             echo $response->body;
         }
         die;

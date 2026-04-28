@@ -5,6 +5,7 @@ class Response
     public $body="";
     public array $headers=[];
     public array $file=[];
+    public string $url;
     
     public int $responseCode=200;
 
@@ -51,6 +52,11 @@ class Response
 
     public function created(): Response{
         $this->responseCode=HttpResponseCodes::CREATED;
+        return $this;
+    }
+
+    public function redirect($url): Response{
+        $this->url=$url;
         return $this;
     }
 
