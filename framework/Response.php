@@ -5,7 +5,7 @@ class Response
     public $body="";
     public array $headers=[];
     public array $file=[];
-    public string $url;
+    public string $url="";
     
     public int $responseCode=200;
 
@@ -55,7 +55,7 @@ class Response
         return $this;
     }
 
-    public function redirect($url): Response{
+    public function redirect(string $url): Response{
         $this->url=$url;
         return $this;
     }
