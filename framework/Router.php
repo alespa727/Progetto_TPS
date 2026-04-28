@@ -119,6 +119,13 @@ class Router
         foreach ($segments as $key => $segment) {
             $isLast = $i === count($segments) - 1;
 
+            if (!is_array($array)) {
+                    $res = Response::new()
+                        ->status(HttpResponseCodes::NOT_FOUND)
+                        ->body(["description" => "route non trovata"]);
+                    Router::sendResponse($res, ContentTypes::Json);
+                }
+                
             if (!$isLast) {
 
                 if (array_key_exists($segment, $array)) {
@@ -151,12 +158,6 @@ class Router
 
                 }
             } else {
-                if (!is_array($array)) {
-                    $res = Response::new()
-                        ->status(HttpResponseCodes::NOT_FOUND)
-                        ->body(["description" => "route non trovata"]);
-                    Router::sendResponse($res, ContentTypes::Json);
-                }
 
                 if (array_key_exists($segment, $array)) {
                     if (array_key_exists("_" . $request_method, $array[$segment]))
