@@ -11,7 +11,7 @@ use Core\Request;
 use Core\Response;
 use Core\Route;
 
-#[Route(Method::Get, ["docs"], [], ContentTypes::Html)]
+#[Route(Method::Get, ["documentazione"], [], ContentTypes::Html)]
 class Docs extends Controller
 {
     function manageRequest(Request $request, Params $params): Response

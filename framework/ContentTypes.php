@@ -11,4 +11,5 @@ class ContentTypes{
 
 
     const InlineFile = 'inline';
+    const Redirect = "Location:";
 }

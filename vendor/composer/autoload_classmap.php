@@ -30,6 +30,7 @@ return array(
     'GetRoutes' => $baseDir . '/app/routes/routes/GetRoutes.php',
     'GetRule' => $baseDir . '/app/routes/rules/GetRule.php',
     'Login' => $baseDir . '/app/routes/profile/Login.php',
+    'Mkdocs' => $baseDir . '/app/routes/Mkdocs.php',
     'OpenApi' => $baseDir . '/app/routes/routes/OpenApi.php',
     'PatchBuilds' => $baseDir . '/app/routes/builds/PatchBuilds.php',
     'PatchCategories' => $baseDir . '/app/routes/categories/PatchCategories.php',

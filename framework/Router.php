@@ -109,8 +109,9 @@ class Router
         $params = [];
 
         $i = 0;
-
+        
         if (empty($segments)) {
+            
             if (isset($array["_" . $request_method])) {
                 $route = $array["_" . $request_method];
             }
@@ -119,7 +120,13 @@ class Router
         foreach ($segments as $key => $segment) {
             $isLast = $i === count($segments) - 1;
 
-
+            if (!is_array($array)) {
+                    $res = Response::new()
+                        ->status(HttpResponseCodes::NOT_FOUND)
+                        ->body(["description" => "route non trovata"]);
+                    Router::sendResponse($res, ContentTypes::Json);
+                }
+                
             if (!$isLast) {
 
                 if (array_key_exists($segment, $array)) {
@@ -152,12 +159,6 @@ class Router
 
                 }
             } else {
-                if (!is_array($array)) {
-                    $res = Response::new()
-                        ->status(HttpResponseCodes::NOT_FOUND)
-                        ->body(["description" => "route non trovata"]);
-                    Router::sendResponse($res, ContentTypes::Json);
-                }
 
                 if (array_key_exists($segment, $array)) {
                     if (array_key_exists("_" . $request_method, $array[$segment]))
@@ -189,7 +190,7 @@ class Router
                             $isValidType = !is_numeric($segment);
                             break;
                         default:
-                            $isValidType = true;
+                            $isValidType = false;
                             break;
                     }
 
@@ -339,15 +340,27 @@ class Router
     {
         Router::sendHeaders($response, $contentType);
 
-        if ($contentType === ContentTypes::Json) {
-            echo json_encode($response->body);
-        } else if ($contentType === ContentTypes::DownloadFile) {
-            FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
-        } else if ($contentType === ContentTypes::InlineFile) {
-            FileHandler::returnInlineFile($response->file["path"]);
-        } else {
-            echo $response->body;
+        switch ($contentType) {
+            case ContentTypes::Json:
+                echo json_encode($response->body);
+                break;
+            case ContentTypes::DownloadFile:
+                FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
+                break;
+
+            case ContentTypes::InlineFile:
+                FileHandler::returnInlineFile($response->file["path"]);
+                break;
+
+            case ContentTypes::Redirect:
+                header($contentType.$response->url);
+                break;
+
+            default:
+                echo $response->body;
+                break;
         }
+        
         die;
     }
 }

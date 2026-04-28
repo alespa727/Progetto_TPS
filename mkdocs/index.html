@@ -1,0 +1,825 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="webapi/informazioni-webapi/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Documentazione</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Space+Grotesk:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Space Grotesk";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduzione-al-progetto" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Documentazione" class="md-header__button md-logo" aria-label="Documentazione" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentazione
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 2c-1.82 0-3.53.5-5 1.35C8 5.08 10 8.3 10 12s-2 6.92-5 8.65C6.47 21.5 8.18 22 10 22a10 10 0 0 0 10-10A10 10 0 0 0 10 2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Documentazione" class="md-nav__button md-logo" aria-label="Documentazione" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentazione
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#caratteristiche-distintive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caratteristiche distintive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operazioni-crud-e-documentazione-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operazioni CRUD e Documentazione API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struttura-delle-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struttura delle directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configurazione" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configurazione
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Web API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="webapi/informazioni-webapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informazioni Generali
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="webapi/scripts-php/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Script PHP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="webapi/risorse-webapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risorse gestite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="webapi/autenticazione/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticazione
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="database/schema-er/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema ER
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="database/schema-logico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema logico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#caratteristiche-distintive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caratteristiche distintive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operazioni-crud-e-documentazione-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operazioni CRUD e Documentazione API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struttura-delle-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struttura delle directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configurazione" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configurazione
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="introduzione-al-progetto">Introduzione al progetto</h1>
+<p>Il nostro progetto consiste in un applicazione flutter e web-service per la progettazione di computer fissi personalizzati. L'applicazione permette di selezionare progressivamente diversi componenti come il processore, scheda madre, ram, alimentatore e storage. Tutto attraverso un'interfaccia giudata e adattando automaticamente le opzioni compatibili in base alle scelte precedenti.</p>
+<ul>
+<li>Consultare un catalogo di <strong>componenti hardware</strong> (CPU, GPU, RAM, ecc.) organizzati per categoria e produttore.</li>
+<li><strong>Creare e gestire build</strong> (configurazioni PC) personalizzate, aggiungendo componenti con verifica automatica della compatibilità.</li>
+<li>Gestire <strong>categorie</strong> di componenti con le relative specifiche tecniche (es. socket, frequenza).</li>
+<li>Gestire i <strong>produttori</strong> dei componenti.</li>
+<li>Autenticarsi tramite <strong>JWT</strong> (cookie <code>token</code>) con due livelli di accesso: utente normale e owner (amministratore).</li>
+</ul>
+<h2 id="caratteristiche-distintive">Caratteristiche distintive</h2>
+<p>Elementi technici innovativi del nostro progetto.</p>
+<div class="grid cards">
+<ul>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.186 9.07 21.41 8.019a2.78 2.78 0 0 1-1.344-2.391V3.523c0-.431-.19-.837-.516-1.108A12 12 0 0 0 16.317.493a1.36 1.36 0 0 0-1.193.091L13.347 1.64a2.62 2.62 0 0 1-2.688 0L8.882.584a1.35 1.35 0 0 0-1.194-.09 12 12 0 0 0-3.231 1.918 1.44 1.44 0 0 0-.516 1.108v2.104c0 .986-.51 1.897-1.344 2.392L.823 9.068c-.363.215-.61.588-.675 1.013A12 12 0 0 0 0 12.001q0 .978.145 1.916c.065.425.312.801.675 1.016l1.774 1.052a2.78 2.78 0 0 1 1.344 2.392v2.104c0 .431.191.837.516 1.108.965.8 2.054 1.452 3.231 1.919.393.155.831.124 1.194-.091l1.777-1.055a2.62 2.62 0 0 1 2.688 0l1.777 1.055c.363.215.804.246 1.193.091a12 12 0 0 0 3.232-1.92 1.44 1.44 0 0 0 .516-1.107v-2.104a2.78 2.78 0 0 1 1.344-2.392l1.774-1.052c.363-.215.61-.588.675-1.016q.143-.938.145-1.916 0-.98-.145-1.917a1.41 1.41 0 0 0-.67-1.013zM12.003 19.41c-3.981 0-7.21-3.317-7.21-7.407s3.229-7.406 7.21-7.406 7.21 3.316 7.21 7.406-3.23 7.407-7.21 7.407"/></svg></span> <strong>Framework</strong> – Framework programmato da zero, secondo standard moderni e interamente assestante e riutilizzabile.</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 5.724V8c0 .248.238.7 1.169 1.159.874.43 2.144.745 3.62.822a.75.75 0 1 1-.078 1.498c-1.622-.085-3.102-.432-4.204-.975a6 6 0 0 1-.507-.28V12.5c0 .133.058.318.282.551.227.237.591.483 1.101.707 1.015.447 2.47.742 4.117.742q.61 0 1.183-.052a.751.751 0 1 1 .134 1.494Q8.676 15.999 8 16c-1.805 0-3.475-.32-4.721-.869-.623-.274-1.173-.619-1.579-1.041-.408-.425-.7-.964-.7-1.59v-9c0-.626.292-1.165.7-1.591.406-.42.956-.766 1.579-1.04C4.525.32 6.195 0 8 0s3.476.32 4.721.869c.623.274 1.173.619 1.579 1.041.408.425.7.964.7 1.59s-.292 1.165-.7 1.591c-.406.42-.956.766-1.578 1.04C11.475 6.68 9.805 7 8 7s-3.475-.32-4.721-.869a6 6 0 0 1-.779-.407m0-2.224c0 .133.058.318.282.551.227.237.591.483 1.101.707C4.898 5.205 6.353 5.5 8 5.5s3.101-.295 4.118-.742c.508-.224.873-.471 1.1-.708.224-.232.282-.417.282-.55s-.058-.318-.282-.551c-.227-.237-.591-.483-1.101-.707C11.102 1.795 9.647 1.5 8 1.5s-3.101.295-4.118.742c-.508.224-.873.471-1.1.708-.224.232-.282.417-.282.55"/><path d="M14.49 7.582a.375.375 0 0 0-.66-.313l-3.625 4.625a.375.375 0 0 0 .295.606h2.127l-.619 2.922a.375.375 0 0 0 .666.304l3.125-4.125A.375.375 0 0 0 15.5 11h-1.778z"/></svg></span> <strong>Caching</strong> – Alta Scalabilità grazie alle prestazioni avanzate garantite dal sistema di chaching integrato.</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m0 2v4h12V4z"/></svg></span> <strong>Endpoints</strong> – flessibilità e semplicità d'uso per programmare endpoint custom in base alle proprie esigenze.</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.039 0a2.96 2.96 0 0 0-2.65 4.274l-6.447 6.447a2.96 2.96 0 1 0 1.335 1.336l6.447-6.447A2.959 2.959 0 1 0 21.04 0zM10.628 2.745q-.108.001-.214.004-.107.002-.215.005a11 11 0 0 0-1.335.138l-.03.005-.185.033-.105.02a8 8 0 0 0-.289.062l-.032.008a10.7 10.7 0 0 0-2.55.95l-.155.089q-.094.052-.187.105-.07.039-.14.079H5.19l-.01.005-.036.02v.002l.111.184 3.15 5.23a4 4 0 0 1 .38-.202 4.3 4.3 0 0 1 1.628-.413q.107-.007.214-.008zm.428.01v6.333q.489.05.96.209l4.66-4.66q-.259-.181-.528-.347l-.026-.015q-.084-.052-.168-.1l-.098-.056-.099-.055-.171-.092-.027-.014a11 11 0 0 0-1.425-.617c-.69-.241-1.403-.41-2.128-.505l-.089-.012-.09-.01-.17-.019-.049-.004-.204-.017a6 6 0 0 0-.255-.015q-.046-.004-.093-.004M4.782 4.498a10 10 0 0 0-1.36 1.062l4.461 4.461.018.018q.073-.06.149-.116l-.011-.018zm-1.67 1.36q-.074.076-.147.154l-.149.155q-.494.536-.902 1.118l-.039.056a11 11 0 0 0-.216.326 10.6 10.6 0 0 0-1.65 5.276l-.006.215-.003.214h6.317c0-.072.007-.143.01-.214.005-.072.006-.144.013-.215a4.3 4.3 0 0 1 .952-2.3c.045-.055.096-.106.144-.16.048-.052.093-.107.144-.158zm16.255 1.464-4.663 4.663q.158.47.21.959h6.332l-.004-.094a12 12 0 0 0-.032-.456l-.005-.052-.026-.241v-.009l-.033-.24v-.009a11 11 0 0 0-.327-1.493l-.003-.01-.07-.228-.01-.03-.069-.204-.02-.055a6 6 0 0 0-.153-.405l-.093-.227-.063-.144-.037-.081-.08-.171-.024-.052-.096-.194-.014-.027-.112-.212-.004-.008a11 11 0 0 0-.604-.98m-4.43 6.05c0 .071-.006.142-.01.214q-.003.108-.012.214a4.3 4.3 0 0 1-.952 2.301c-.045.055-.096.107-.144.16s-.093.108-.144.159l4.467 4.467q.075-.078.148-.155.076-.078.148-.155.497-.538.905-1.122l.032-.046.098-.144.085-.13.04-.063a10.6 10.6 0 0 0 1.647-5.272q.004-.107.006-.214.003-.107.004-.214zM.01 13.8l.004.093.01.179.005.076.017.206.005.046q.01.115.024.228l.003.022.033.248q.109.758.327 1.497l.002.006q.034.116.071.23l.004.014.005.014a16 16 0 0 0 .153.439l.03.08.059.148.093.228.062.14.038.084.078.169.027.054a11 11 0 0 0 .225.441l.025.043 5.408-3.258.02-.012a4.3 4.3 0 0 1-.395-1.414h-.025zm.505 2.846-.206.058.002.005zm6.425-1.052-5.415 3.262q.125.207.259.406l.008.014.004.005.008.014h.001l.022.032.001.002v.001a11 11 0 0 0 .298.417l.006.008a10 10 0 0 0 .29.368l.033.04q.064.078.13.153l.057.065.112.127.064.069.029.031.083.09.035.035q.073.077.149.153L7.58 16.42a4 4 0 0 1-.285-.321 4.4 4.4 0 0 1-.356-.505zm6.416 1.111q-.075.06-.15.116l.011.018 3.257 5.407q.227-.148.446-.307.473-.348.914-.756l-4.46-4.46zm-5.457.003-.015.015-4.46 4.46.195.176q.033.03.065.058l.152.13.215.174.023.017.191.148.008.005q.403.3.834.564l.03.018.164.097.101.057a6 6 0 0 0 .27.148q.012.007.025.013.243.127.493.24l.158-.385 2.243-5.448.009-.02a4.3 4.3 0 0 1-.701-.467m4.951.353q-.092.054-.187.104a4.32 4.32 0 0 1-3.271.336c-.069-.02-.135-.047-.203-.071-.067-.024-.136-.044-.202-.072l-2.242 5.444-.088.213-.075.183v.001l.017.007.019.007.005.003q.079.03.159.06.1.04.2.077l.102.04c.702.247 1.43.42 2.168.518l.087.012.09.01.172.019a7 7 0 0 0 .252.022q.035 0 .071.003l.184.011.112.005a7 7 0 0 0 .358.007h.05a10.7 10.7 0 0 0 1.793-.15l.185-.034.105-.02.109-.023.18-.04.032-.008a10.7 10.7 0 0 0 2.55-.95q.078-.044.156-.089.094-.052.187-.105.065-.035.13-.073h.001l.002-.002.002-.001.002-.001.007-.004.042-.025-.11-.183-.11-.184zm3.262 5.414-.042.025zm-.055.033h-.002z"/></svg></span> <strong>OpenAPI</strong> – Ottima compatibilità grazie alle api conformi alle specificazione openAPI</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12c6.616 0 12-5.383 12-12S18.616 0 12 0m0 1.144c5.995 0 10.856 4.86 10.856 10.856S17.996 22.856 12 22.856 1.144 17.996 1.144 12 6.004 1.144 12 1.144M8.37 5.868a7 7 0 0 0-.423.005c-.983.056-1.573.517-1.735 1.472-.115.665-.096 1.348-.143 2.017q-.018.526-.115 1.038c-.134.609-.397.798-1.016.83a3 3 0 0 0-.244.042v1.463c1.126.055 1.278.452 1.37 1.629.033.429-.013.858.015 1.287.018.406.073.808.156 1.2.259 1.075 1.307 1.435 2.575 1.218v-1.283c-.203 0-.383.005-.558 0-.43-.013-.591-.12-.632-.535-.056-.535-.042-1.08-.075-1.62-.064-1.001-.175-1.988-1.153-2.625.503-.37.868-.812.983-1.398.083-.41.134-.821.166-1.237.028-.415-.023-.84.014-1.25.06-.665.102-.937.9-.91.12 0 .235-.017.369-.027v-1.31q-.239-.001-.454-.006m7.593.009a4.3 4.3 0 0 0-.813.06v1.274c.245 0 .434 0 .623.005.328.004.577.13.61.494.032.332.031.669.064 1.006.065.669.101 1.347.217 2.007.102.544.475.95.941 1.283-.817.549-1.057 1.333-1.098 2.215-.023.604-.037 1.213-.069 1.822-.028.554-.222.734-.78.748-.157.004-.31.018-.484.028v1.305c.327 0 .627.019.927 0 .932-.055 1.495-.507 1.68-1.412q.117-.748.138-1.504c.032-.461.028-.927.074-1.384.069-.715.397-1.01 1.112-1.057a1 1 0 0 0 .199-.046v-1.463c-.12-.014-.204-.027-.291-.032-.536-.023-.804-.203-.937-.71a5 5 0 0 1-.152-.993c-.037-.618-.033-1.241-.074-1.86-.08-1.192-.794-1.753-1.887-1.786m-6.89 5.28a.844.844 0 0 0-.083 1.684h.055a.83.83 0 0 0 .877-.78v-.046a.845.845 0 0 0-.83-.858zm2.911 0a.81.81 0 0 0-.834.78c0 .027 0 .05.004.078 0 .503.342.826.859.826.507 0 .826-.332.826-.853-.005-.503-.342-.836-.855-.831m2.963 0a.86.86 0 0 0-.876.835c0 .47.378.849.849.849h.009c.425.074.853-.337.881-.83.023-.457-.392-.854-.863-.854"/></svg></span> <strong>Swagger UI</strong> – Integrazione di Swagger Ui che presenta la api in modo interattivo ed efficace per rendere il development del frontend ancora più diretto.</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 4a4 4 0 0 1 8 0v2h.25c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25v-5.5C2 6.784 2.784 6 3.75 6H4Zm8.25 3.5h-8.5a.25.25 0 0 0-.25.25v5.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-5.5a.25.25 0 0 0-.25-.25M10.5 6V4a2.5 2.5 0 1 0-5 0v2Z"/></svg></span> <strong>Authentication</strong> Sistema di gestione delle autorizzazioni sulle richieste</li>
+</ul>
+</div>
+<hr />
+<h2 id="operazioni-crud-e-documentazione-api">Operazioni CRUD e Documentazione API</h2>
+<p><em>Vedi <code>http://localhost/docs</code> per la documentazione</em></p>
+<hr />
+<h2 id="struttura-delle-directory">Struttura delle directory</h2>
+<div class="highlight"><pre><span></span><code>/
+├── index.php                  ← entry point unico (eseguito dal web server)
+├── .htaccess                  ← rewrite engine: tutte le richieste → index.php
+├── config/
+│   └── config.yaml            ← configurazione (debug, hosts, path)
+├── app/
+│   ├── authorization/         ← codice di supporto: gestione JWT e auth
+│   │   └── Authorization.php
+│   ├── middlewares/           ← middleware di autenticazione
+│   │   ├── AuthMiddleware.php
+│   │   └── OwnerAuthMiddleware.php
+│   └── routes/                ← controller specifici per ogni risorsa
+│       ├── builds/
+│       ├── categories/
+│       ├── components/
+│       ├── manufacturers/
+│       └── profile/
+├── framework/                 ← codice generale (Router, Request, Response, ecc.)
+└── db.sql                     ← file SQL per la creazione del database
+</code></pre></div>
+<hr />
+<h2 id="configurazione">Configurazione</h2>
+<p>Il file <code>config/config.yaml</code> contiene i dati di configurazione del web service:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">app</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">allowed_hosts</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+<span class="w">  </span><span class="nt">docs</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">/docs/swagger.html</span>
+
+<span class="nt">directories</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">controllers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/app/routes</span>
+<span class="w">  </span><span class="nt">middlewares</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/app/middlewares</span>
+<span class="w">  </span><span class="nt">static</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/static</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
