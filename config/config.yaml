@@ -12,6 +12,8 @@ app:
     /db.sql
   populate:
     /populate.sql
+  bash:
+    /init.sh
  
 directories:
   controllers: /app/routes
