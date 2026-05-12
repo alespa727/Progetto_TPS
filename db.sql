@@ -25,7 +25,7 @@ CREATE TABLE `build_components` (
   KEY `component_id` (`component_id`),
   CONSTRAINT `fk_bc_build` FOREIGN KEY (`build_id`) REFERENCES `builds` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_build_components_component` FOREIGN KEY (`component_id`) REFERENCES `components` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -53,7 +53,7 @@ CREATE TABLE `builds` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `fk_builds_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -74,7 +74,7 @@ CREATE TABLE `categories` (
   `max_per_build` int(11) NOT NULL DEFAULT 10,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url_name` (`url_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -97,7 +97,7 @@ CREATE TABLE `category_specs` (
   PRIMARY KEY (`id`),
   KEY `fk_category_specs_category` (`category_id`),
   CONSTRAINT `fk_category_specs_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -124,7 +124,7 @@ CREATE TABLE `compatibility_rules` (
   KEY `fk_rules_target_category` (`target_category_id`),
   CONSTRAINT `fk_rules_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_rules_target_category` FOREIGN KEY (`target_category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -150,7 +150,7 @@ CREATE TABLE `component_specs` (
   PRIMARY KEY (`id`),
   KEY `component_id` (`component_id`),
   CONSTRAINT `fk_component_specs_component` FOREIGN KEY (`component_id`) REFERENCES `components` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -185,7 +185,7 @@ CREATE TABLE `components` (
   KEY `manufacturer_id` (`manufacturer_id`),
   CONSTRAINT `fk_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_manufacturer` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -205,7 +205,7 @@ CREATE TABLE `manufacturers` (
   `url_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url_name` (`url_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
@@ -228,7 +228,7 @@ CREATE TABLE `users` (
   `pfp_hash` varchar(256) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
