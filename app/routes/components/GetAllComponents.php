@@ -61,6 +61,8 @@ class GetAllComponents extends Controller
 
         $offset = ($page - 1) * $limit;
         $pr = $db->prepare("
+               
+
                 SELECT 
                     c.id,
                     c.name,
@@ -73,23 +75,41 @@ class GetAllComponents extends Controller
                     cat.url_name AS category_url,
                     m.name AS manufacturer_name,
                     m.url_name AS manufacturer_url,
+                
                     (
-                        SELECT JSON_ARRAYAGG(
-                            JSON_OBJECT('key', cs.spec_key, 'value', cs.spec_value, 'label', cats.spec_label, 'unit', cs.unit)
+                        SELECT CONCAT(
+                            '[',
+                            GROUP_CONCAT(
+                                JSON_OBJECT(
+                                    'key', cs.spec_key,
+                                    'value', cs.spec_value,
+                                    'label', cats.spec_label,
+                                    'unit', cs.unit
+                                )
+                            ),
+                            ']'
                         )
                         FROM component_specs cs
-                        INNER JOIN category_specs cats ON cats.category_id = cat.id AND cats.spec_key = cs.spec_key
+                        INNER JOIN category_specs cats 
+                            ON cats.category_id = cat.id 
+                            AND cats.spec_key = cs.spec_key
                         WHERE cs.component_id = c.id
                     ) AS specs
+                
                 FROM components c
-                LEFT JOIN categories cat ON c.category_id = cat.id
-                LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
-                LIMIT :limit OFFSET :offset
+                LEFT JOIN categories cat 
+                    ON c.category_id = cat.id
+                LEFT JOIN manufacturers m 
+                    ON c.manufacturer_id = m.id
+                
+                LIMIT :limit OFFSET :offset;
+
+
             ");
 
         $pr->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
         $pr->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
-    
+
         $success = $pr->execute();
         $res = $pr->fetchAll(PDO::FETCH_ASSOC);
 
