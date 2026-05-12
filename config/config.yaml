@@ -8,6 +8,8 @@ app:
     - weightlessly-tres-dagmar.ngrok-free.dev
   docs:
     /project-docs/swagger/swagger.html
+  sql:
+    /db.sql
  
 directories:
   controllers: /app/routes

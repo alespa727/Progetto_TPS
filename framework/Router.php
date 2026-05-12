@@ -345,6 +345,7 @@ class Router
                 echo json_encode($response->body);
                 break;
             case ContentTypes::DownloadFile:
+                
                 FileHandler::sendFileDownloadResponse($response->file["path"], $response->file["filename"]);
                 break;
 
