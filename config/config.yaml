@@ -10,6 +10,8 @@ app:
     /project-docs/swagger/swagger.html
   sql:
     /db.sql
+  populate:
+    /populate.sql
  
 directories:
   controllers: /app/routes
