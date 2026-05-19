@@ -10,14 +10,14 @@ use Core\ContentTypes;
 use Core\Params;
 use Core\Config;
 
-#[Route(Method::Get, ["api", "download", "init.sh"], [], ContentTypes::DownloadFile)]
-class Bash extends Controller
+#[Route(Method::Get, ["api", "download", "init.bat"], [], ContentTypes::DownloadFile)]
+class Bat extends Controller
 {
     function manageRequest(Request $request, Params $params): Response
     {
         $res = Response::new()
         ->ok()
-        ->addFile(Config::path("app.bash"), "init.sh");
+        ->addFile(Config::path("app.bat"), "init.bat");
 
         return $res; 
     } 

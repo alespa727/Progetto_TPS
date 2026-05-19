@@ -10,6 +10,9 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
+CREATE DATABASE IF NOT EXISTS tps;
+
+USE tps;
 
 DROP TABLE IF EXISTS `build_components`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

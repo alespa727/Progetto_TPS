@@ -13,7 +13,11 @@ app:
   populate:
     /populate.sql
   bash:
-    /init.sh
+    /init.bat
+  queryfix1:
+    /app/routes/components/GetComponents.php
+  queryfix2:
+    /app/routes/components/GetAllComponents.php
  
 directories:
   controllers: /app/routes
