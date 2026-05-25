@@ -1,6 +1,5 @@
 @echo off
 cls
-cd C:/xampp/htdocs/app/routes/components
 
 echo Downloading query fixes.
 ping localhost -n 2 >nul
@@ -8,8 +7,8 @@ cls
 echo Downloading query fixes.
 ping localhost -n 2 >nul
 
-curl -L -o C:/xampp/htdocs/GetComponents.php http://sketchpc.hopto.org/api/download/queryfix/1
-curl -L -o C:/xampp/htdocs/GetAllComponents.php http://sketchpc.hopto.org/api/download/queryfix/2
+curl -L -o C:/xampp/htdocs/app/routes/components/GetComponents.php http://sketchpc.hopto.org/api/download/queryfix/1
+curl -L -o C:/xampp/htdocs/app/routes/components/GetAllComponents.php http://sketchpc.hopto.org/api/download/queryfix/2
 
 echo Fetching database.
 ping localhost -n 2 >nul
@@ -17,7 +16,6 @@ cls
 echo Fetching database..
 ping localhost -n 2 >nul
 
-cd C:/xampp/htdocs/
 curl -L -o C:/xampp/htdocs/db.sql http://sketchpc.hopto.org/api/download/db.sql
 
 cls
