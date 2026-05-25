@@ -17,4 +17,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/html
-            git pull
+            git fetch origin
+            git reset --hard origin/master
+            git clean -fd
