@@ -2,7 +2,8 @@
     --md-code-hl-variable-color: #9177d7;
     /* --md-code-hl-variable-color: #cf6aa1; */
 
-    --md-code-hl-string-color: #8c8e95;
+    /* --md-code-hl-string-color: #8c8e95; */
+     --md-code-hl-string-color: #75ac85;
 }
 
 .na {
