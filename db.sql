@@ -276,11 +276,11 @@ INSERT INTO `category_specs` (`category_id`, `spec_key`, `spec_label`, `unit`) V
 (4, 'read_speed', 'Velocità lettura', 'MB/s');
 
 INSERT INTO `components` (`category_id`, `manufacturer_id`, `name`, `url_name`, `description`, `quantity`, `price`) VALUES
-(1, 1, 'Intel Core i9-14900K', 'intel-core-i9-14900k', 'CPU desktop top di gamma Intel', 50, 58999),
-(1, 2, 'AMD Ryzen 9 7950X', 'amd-ryzen-9-7950x', 'CPU AMD a 16 core per workstation', 30, 54999),
-(2, 3, 'NVIDIA GeForce RTX 4090', 'nvidia-rtx-4090', 'GPU flagship di NVIDIA', 15, 189999),
-(3, 4, 'Corsair Vengeance 32GB DDR5', 'corsair-vengeance-32gb-ddr5', 'Kit RAM DDR5 ad alte prestazioni', 100, 14999),
-(4, 5, 'Samsung 990 Pro 2TB', 'samsung-990-pro-2tb', 'SSD NVMe PCIe 4.0 velocissimo', 80, 19999);
+(1, 1, 'Intel Core i9-14900K', 'intel-core-i9-14900k', 'CPU desktop top di gamma Intel', 50, 589),
+(1, 2, 'AMD Ryzen 9 7950X', 'amd-ryzen-9-7950x', 'CPU AMD a 16 core per workstation', 30, 549),
+(2, 3, 'NVIDIA GeForce RTX 4090', 'nvidia-rtx-4090', 'GPU flagship di NVIDIA', 15, 1899),
+(3, 4, 'Corsair Vengeance 32GB DDR5', 'corsair-vengeance-32gb-ddr5', 'Kit RAM DDR5 ad alte prestazioni', 100, 149),
+(4, 5, 'Samsung 990 Pro 2TB', 'samsung-990-pro-2tb', 'SSD NVMe PCIe 4.0 velocissimo', 80, 199);
 
 INSERT INTO `component_specs` (`component_id`, `spec_key`, `spec_value`, `unit`) VALUES
 (1, 'cores', '24', ''),
